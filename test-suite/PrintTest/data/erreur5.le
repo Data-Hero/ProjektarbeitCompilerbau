@@ -1,3 +1,0 @@
-// Description: À la gauche des symboles d'assignation il doit seulement y avoir un identifiant valide
-
-c = b + 1 = 3;
