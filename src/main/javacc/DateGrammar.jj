@@ -13,22 +13,31 @@ SKIP : { " " | "\t" }
 
 TOKEN : 
 {
-  < DATATYPE: ("int" | "double" | "char" | "boolean" | "String")>
-| < IDENTIFIER: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* >
-| < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
-| < TWO_DIGIT: (["0"-"9"]) {2} >
-| < AMPM: "am"|"pm" >
-| < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
+    < DATATYPE: ("int" | "double" | "char" | "boolean" | "String")>
+|   < IDENTIFIER: ["a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])* >
+|   < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
+|   < TWO_DIGIT: (["0"-"9"]) {2} >
+|   < AMPM: "am"|"pm" >
+|   < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
 }
 
 
-// Datentypen
+// Keywords
 TOKEN :
 {
     < INT: "int" >
 |   < DOUBLE : "double">
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
+|   < STRING : "String" >
+|   < VOID : "void" >
+|   < SMARTSWITCH : "@">
+}
+
+// Selektoren
+TOKEN :
+{
+
 
 }
 
