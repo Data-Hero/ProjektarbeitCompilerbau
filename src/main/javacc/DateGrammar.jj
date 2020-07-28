@@ -21,4 +21,17 @@ TOKEN :
 | < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
 }
 
+
+// Datentypen
+TOKEN :
+{
+    < INT: "int" >
+|   < DOUBLE : "double">
+|   < CHAR : "char">
+|   < BOOLEAN : "boolean">
+
+}
+
+
+void Fun() :  {}{< DATATYPE >< IDENTIFIER >< >}
 void DateTime() : {}{<DATE><TIME>(<AMPM>)}
