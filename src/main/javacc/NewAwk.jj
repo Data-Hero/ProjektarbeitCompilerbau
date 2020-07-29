@@ -9,7 +9,7 @@ public class DateParser {
 }
 PARSER_END(DateParser)
 
-SKIP : { " " | "\t" }
+SKIP : { " " | "\t" |  "\n" |  "\r" }
 
 TOKEN : 
 {
@@ -38,9 +38,10 @@ TOKEN :
 TOKEN :
 {
     < INT: "int" >
-|   < DOUBLE : "double">
 |   < CHAR : "char">
+|   < DOUBLE : "double">
 |   < BOOLEAN : "boolean">
+|   < RETURN: "return">
 |   < STRING : "String" >
 |   < VOID : "void" >
 |   < SMARTSWITCH : "@">
@@ -50,16 +51,15 @@ TOKEN :
 TOKEN :
 {
     < PUNCT: ":punct" >
-|   < ALPHA: ":alpha:"> // Letters
-|   < LOWER: ":lower:"> // Lowercase Letters
-|   < DIGITS: ":digit:">// Digits
-|   < ALNUM: ":alnum:"> // Alphanumerics
-|   < CNTRL: ":cntrl:"> // Control characters
 |   < GRAPH: ":graph:"> // Letters, numbers and punctuation
-|   < PRINT: ":print:"> // Letters, numbers, punctuation and whitespace
+|   < LOWER: ":lower:"> // Lowercase Letters
+|   < ALPHA: ":alpha:"> // Letters
+|   < ALNUM: ":alnum:"> // Alphanumerics
+|   < PRINT: ":print:"> // Letters, numb ers, punctuation and whitespace
+|   < CNTRL: ":cntrl:"> // Control characters
 |   < SPACE: ":space:"> // Space characters
 |   < BLANK: ":blank:"> // Space and tab
-
+|   < DIGITS: ":digit:">// Digits
 }
 
 
@@ -75,4 +75,3 @@ TOKEN : {
 
 //void Fun() :  {}{< DATATYPE > < IDENTIFIER >< >}
 void DateTime() : {}{<DATE><TIME>(<AMPM>)}
-
