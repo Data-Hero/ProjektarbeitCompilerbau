@@ -46,10 +46,19 @@ TOKEN :
 |   < SMARTSWITCH : "@">
 }
 
-// Selektoren
+// Selector classes
 TOKEN :
 {
-
+    < PUNCT: ":punct" >
+|   < ALPHA: ":alpha:"> // Letters
+|   < LOWER: ":lower:"> // Lowercase Letters
+|   < DIGITS: ":digit:">// Digits
+|   < ALNUM: ":alnum:"> // Alphanumerics
+|   < CNTRL: ":cntrl:"> // Control characters
+|   < GRAPH: ":graph:"> // Letters, numbers and punctuation
+|   < PRINT: ":print:"> // Letters, numbers, punctuation and whitespace
+|   < SPACE: ":space:"> // Space characters
+|   < BLANK: ":blank:"> // Space and tab
 
 }
 
@@ -64,5 +73,6 @@ TOKEN : {
 }
 
 
-void Fun() :  {}{< DATATYPE > < IDENTIFIER >< >}
+//void Fun() :  {}{< DATATYPE > < IDENTIFIER >< >}
 void DateTime() : {}{<DATE><TIME>(<AMPM>)}
+
