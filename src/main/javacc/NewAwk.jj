@@ -9,10 +9,10 @@ public class DateParser {
 }
 PARSER_END(DateParser)
 
-SKIP : { " " | "\t" }
+SKIP : { " " | "\t" |  "\n" |  "\r" }
 
 // Datatypes
-TOKEN : 
+TOKEN :
 {
     < BASIC_DATATYPE: <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>>
 |   < ARRAY : <BASIC_DATATYPE> "[]" ("[]")*>
@@ -48,9 +48,25 @@ TOKEN :
 |   < ENUM_SEPERATOR: ",">
 }
 
+// Selector classes
+TOKEN :
+{
+    < PUNCT: ":punct" >
+|   < GRAPH: ":graph:"> // Letters, numbers and punctuation
+|   < LOWER: ":lower:"> // Lowercase Letters
+|   < ALPHA: ":alpha:"> // Letters
+|   < ALNUM: ":alnum:"> // Alphanumerics
+|   < PRINT: ":print:"> // Letters, numb ers, punctuation and whitespace
+|   < CNTRL: ":cntrl:"> // Control characters
+|   < SPACE: ":space:"> // Space characters
+|   < BLANK: ":blank:"> // Space and tab
+|   < DIGITS: ":digit:">// Digits
+}
+
 
 // Literals
-TOKEN : {
+TOKEN :
+{
     <INTEGER_LITERAL: <DECIMAL_LITERAL>>
 |   <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*>
 |   <FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])*>
@@ -59,13 +75,15 @@ TOKEN : {
 }
 
 // Built-in Functions
-TOKEN : {
+TOKEN :
+{
     < CONTERT_FUNCTION: (".toBoolean()" | ".toCharacter()" | ".toDouble()" | ".toInteger()" | ".toString()" )>
 |   < CHECKTYPE_FUNCTION: (".isBoolean()" | ".isCharacter()" | ".isDouble()" | ".isInteger()" | ".isString()" )>
 }
 
 // Identifier
-TOKEN : {
+TOKEN :
+{
     < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
