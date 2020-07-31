@@ -51,16 +51,17 @@ TOKEN :
 // Selector classes
 TOKEN :
 {
-    < PUNCT: ":punct" >
-|   < GRAPH: ":graph:"> // Letters, numbers and punctuation
-|   < LOWER: ":lower:"> // Lowercase Letters
-|   < ALPHA: ":alpha:"> // Letters
-|   < ALNUM: ":alnum:"> // Alphanumerics
-|   < PRINT: ":print:"> // Letters, numb ers, punctuation and whitespace
-|   < CNTRL: ":cntrl:"> // Control characters
-|   < SPACE: ":space:"> // Space characters
-|   < BLANK: ":blank:"> // Space and tab
-|   < DIGITS: ":digit:">// Digits
+    < SELECTOR: <PUNCT> | <GRAPH> | <LOWER> | <ALPHA> | <ALNUM> | <PRINT> | <CNTRL> | <SPACE> | <BLANK> | <DIGITS> >
+|   < PUNCT: "punct" >
+|   < GRAPH: "graph"> // Letters, numbers and punctuation
+|   < LOWER: "lower"> // Lowercase Letters
+|   < ALPHA: "alpha"> // Letters
+|   < ALNUM: "alnum"> // Alphanumerics
+|   < PRINT: "print"> // Letters, numb ers, punctuation and whitespace
+|   < CNTRL: "cntrl"> // Control characters
+|   < SPACE: "space"> // Space characters
+|   < BLANK: "blank"> // Space and tab
+|   < DIGITS: "digit">// Digits
 }
 
 
@@ -175,8 +176,13 @@ void FunctionDefinition():{} {
 
 
 // Smart Switch
+void SmartSwitchSelektor():{} {
+    <SELECTOR>
+}
+
+
 void SmartSwitchConditionDefinition():{} {
-    "!" ":" ":" // ToDo: Implement condition
+    "!" ":" SmartSwitchSelektor() ":" | ":" SmartSwitchSelektor() ":" // 2 functions or OR seem like the only options
 }
 
 void SmartSwitchCaseDefinition():{} {
