@@ -11,26 +11,25 @@ PARSER_END(DateParser)
 
 SKIP : { " " | "\t" }
 
+// Datatypes
 TOKEN : 
 {
-  < BASIC_DATATYPE: <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>>
-| < ARRAY : <BASIC_DATATYPE> "[]">
-| < DATATYPE: <BASIC_DATATYPE> | <ARRAY> >
-| < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
-| < #LETTER: ["A"-"Z","_","a"-"z"]>
-| < #DIGIT: ["0"-"9"]>
-| < BOOLEAN_OPERATOR: ("&&" | "||" | "!")>
-| < NUMERIC_OPERATOR: ("+" | "-" | "*" | "/" | "%")> // ToDO: Funktion
+    < BASIC_DATATYPE: <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>>
+|   < ARRAY : <BASIC_DATATYPE> "[]" ("[]")*>
+|   < DATATYPE: <BASIC_DATATYPE> | <ARRAY>>
+|   < RETURN_DATATYPE: <DATATYPE> | <VOID>>
+|   < #LETTER: ["A"-"Z","_","a"-"z"]>
+|   < #DIGIT: ["0"-"9"]>
 }
 
 
 // Date
 TOKEN :
 {
-  < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
-| < TWO_DIGIT: (["0"-"9"]) {2} >
-| < AMPM: "am"|"pm" >
-| < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
+    < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
+|   < TWO_DIGIT: (["0"-"9"]) {2} >
+|   < AMPM: "am"|"pm" >
+|   < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
 }
 
 
@@ -43,26 +42,139 @@ TOKEN :
 |   < BOOLEAN : "boolean">
 |   < STRING : "String" >
 |   < VOID : "void" >
+|   < NULL: "null">
 |   < SMARTSWITCH : "@">
-}
-
-// Selektoren
-TOKEN :
-{
-
-
+|   < RETURN: "return">
+|   < ENUM_SEPERATOR: ",">
 }
 
 
-// Literale
+// Literals
 TOKEN : {
- <INTEGER_LITERAL: <DECIMAL_LITERAL>>
-|  <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*>
-|  <FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])*>
-|  <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
-|  <STRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ( ["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
+    <INTEGER_LITERAL: <DECIMAL_LITERAL>>
+|   <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*>
+|   <FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])*>
+|   <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
+|   <STRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ( ["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
+}
+
+// Built-in Functions
+TOKEN : {
+    < CONTERT_FUNCTION: (".toBoolean()" | ".toCharacter()" | ".toDouble()" | ".toInteger()" | ".toString()" )>
+|   < CHECKTYPE_FUNCTION: (".isBoolean()" | ".isCharacter()" | ".isDouble()" | ".isInteger()" | ".isString()" )>
+}
+
+// Identifier
+TOKEN : {
+    < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
 
-void Fun() :  {}{< DATATYPE > < IDENTIFIER >< >}
 void DateTime() : {}{<DATE><TIME>(<AMPM>)}
+
+void Start():{} {
+    Expression() ";"
+}
+
+
+// Expressions
+void Expression():{} {
+    AssingmentExpression()
+}
+
+void AssingmentExpression():{} {
+    Identifier() ("=" LogicalExpression())*
+}
+
+void LogicalExpression():{} {
+    CompareExpression() ("&&" CompareExpression())*
+    | CompareExpression() ("||" CompareExpression())*
+}
+
+void CompareExpression():{} {
+    AdditiveExpression() ("==" AdditiveExpression())*
+    | AdditiveExpression() ("!=" AdditiveExpression())*
+    | AdditiveExpression() ("<=" AdditiveExpression())*
+    | AdditiveExpression() (">=" AdditiveExpression())*
+    | AdditiveExpression() ("<" AdditiveExpression())*
+    | AdditiveExpression() (">" AdditiveExpression())*
+}
+
+void AdditiveExpression():{} {
+    MultiplicativeExpression() ("+" MultiplicativeExpression())*
+    | StringExpression() ("+" StringExpression())* // Support "Hello" + 5 == "Hello5"
+}
+
+void MultiplicativeExpression():{} {
+    PrefixExpression() ("*" PrefixExpression())*
+}
+
+void PrefixExpression():{} {
+    ("+")* UnaryExpression()
+    | ("-")* UnaryExpression()
+    | ("!")* UnaryExpression()
+}
+
+void FunctionCallExpression():{} {
+    Identifier() "(" (Identifier())* ")"
+}
+
+void UnaryExpression():{} {
+    "(" Expression() ")"
+    | FunctionCallExpression()
+    | Identifier()
+    | <INTEGER_LITERAL>
+    | <FLOATING_POINT_LITERAL>
+    | <NULL>
+}
+
+void StringExpression():{} {
+    <STRING_LITERAL>
+    | Identifier()
+    | <CHARACTER_LITERAL>
+    | <INTEGER_LITERAL>
+    | <FLOATING_POINT_LITERAL>
+    | <NULL>
+}
+
+void Identifier():{} {
+    <IDENTIFIER>
+}
+
+
+// Function
+void FunctionReturnExpression():{} {
+    <RETURN> LogicalExpression() ";"
+}
+
+void FunctionBodyDefinition():{} {
+    "{" (Start())* (FunctionReturnExpression())? "}"
+}
+
+void FunctionDefinition():{} {
+    <RETURN_DATATYPE> Identifier() "(" (<DATATYPE> Identifier())? (<ENUM_SEPERATOR> <DATATYPE> Identifier())* ")" FunctionBodyDefinition()
+}
+
+
+// Smart Switch
+void SmartSwitchConditionDefinition():{} {
+    "!" ":" ":" // ToDo: Implement condition
+}
+
+void SmartSwitchCaseDefinition():{} {
+    SmartSwitchConditionDefinition() FunctionBodyDefinition()
+}
+
+void SmartSwitchDefinition():{} {
+    StringExpression() "@{" SmartSwitchCaseDefinition() "}"
+}
+
+
+// Integrated Funtions
+void IsDatatype():{} {
+    UnaryExpression() <CHECKTYPE_FUNCTION>
+}
+
+void ToDatatype():{} {
+    UnaryExpression() <CONTERT_FUNCTION>
+}
