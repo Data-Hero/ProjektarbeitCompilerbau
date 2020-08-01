@@ -10,7 +10,7 @@ public class Main {
             NewAwkParserTokenManager scanner = new NewAwkParserTokenManager(new SimpleCharStream(br));
             Token t = scanner.getNextToken();
             while (t.kind != NewAwkParserConstants.EOF) {
-                System.out.println("Found: " + t.image + "(" + t.kind + ")");
+                System.out.println("Found: " + t.image + " (" + t.kind + ")");
                 t = scanner.getNextToken();
             }
         } catch (FileNotFoundException e) {
