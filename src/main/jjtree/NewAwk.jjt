@@ -11,8 +11,9 @@ import java.io.FileReader;
 public class NewAwkParser {
     public static void main(String[] args) {
         try {
-                NewAwkParser parser = new NewAwkParser(new FileReader("./src/main/test/test1.csv"));
-                parser.Start();
+                NewAwkParser parser = new NewAwkParser(new FileReader("./src/main/test/test1.na"));
+                SimpleNode node = parser.Start();
+                node.dump("");
             } catch (Exception e) { System.out.println(e); }
     }
 }
@@ -97,9 +98,10 @@ TOKEN :
 
 void DateTime() : {}{<DATE><TIME>(<AMPM>)}
 
-void Start():{} {
-    Expression() ";"
-|   FunctionDefinition()
+SimpleNode Start():{} {
+    (Expression() ";"
+|   FunctionDefinition()) // ToDo: Support multiple expressions function definitions
+    { return jjtThis; }
 }
 
 
@@ -168,7 +170,7 @@ void FunctionReturnExpression():{} {
 }
 
 void FunctionBodyDefinition():{} {
-    "{" (Start())* (FunctionReturnExpression())? "}"
+    "{" (Expression())* (FunctionReturnExpression())? "}"
 }
 
 void FunctionDefinition():{} {

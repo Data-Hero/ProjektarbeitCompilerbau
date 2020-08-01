@@ -46,7 +46,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>javacc</goal>
+                            <goal>jjtree-javacc</goal>
                         </goals>
                     </execution>
                 </executions>
