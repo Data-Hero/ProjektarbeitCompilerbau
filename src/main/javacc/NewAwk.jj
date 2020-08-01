@@ -1,11 +1,20 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
  */
-options { STATIC = false; }
+options { STATIC = false; LOOKAHEAD = 5;}
 
 PARSER_BEGIN(NewAwkParser)
 package date;
+
+import java.io.FileReader;
+
 public class NewAwkParser {
+    public static void main(String[] args) {
+        try {
+                NewAwkParser parser = new NewAwkParser(new FileReader("./src/main/test/test1.csv"));
+                parser.Start();
+            } catch (Exception e) { System.out.println(e); }
+    }
 }
 PARSER_END(NewAwkParser)
 
@@ -90,6 +99,7 @@ void DateTime() : {}{<DATE><TIME>(<AMPM>)}
 
 void Start():{} {
     Expression() ";"
+|   FunctionDefinition()
 }
 
 
@@ -99,7 +109,7 @@ void Expression():{} {
 }
 
 void AssingmentExpression():{} {
-    Identifier() ("=" LogicalExpression())*
+    [Datatype()] Identifier() ("=" LogicalExpression())*
 }
 
 void LogicalExpression():{} {
@@ -200,7 +210,7 @@ void BasicDatatype():{} {
 }
 
 void Array():{} {
-    ("[]")+ BasicDatatype()
+    ("[]")+ BasicDatatype() // ToDo: Fix order
 }
 
 void Datatype():{} {
