@@ -200,7 +200,7 @@ void BasicDatatype():{} {
 }
 
 void Array():{} {
-    BasicDatatype() "[]" ("[]")*
+    ("[]")+ BasicDatatype()
 }
 
 void Datatype():{} {
