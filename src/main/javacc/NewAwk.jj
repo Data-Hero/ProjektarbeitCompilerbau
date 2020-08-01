@@ -3,11 +3,11 @@
  */
 options { STATIC = false; }
 
-PARSER_BEGIN(DateParser)
+PARSER_BEGIN(NewAwkParser)
 package date;
-public class DateParser {
+public class NewAwkParser {
 }
-PARSER_END(DateParser)
+PARSER_END(NewAwkParser)
 
 SKIP : { " " | "\t" |  "\n" |  "\r" }
 
