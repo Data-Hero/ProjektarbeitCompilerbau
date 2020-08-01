@@ -100,7 +100,7 @@ void DateTime() : {}{<DATE><TIME>(<AMPM>)}
 
 SimpleNode Start():{} {
     (Expression() ";"
-|   FunctionDefinition()) // ToDo: Support multiple expressions function definitions
+|   FunctionDefinition())+ // ToDo: Support multiple expressions function definitions
     { return jjtThis; }
 }
 
@@ -170,7 +170,7 @@ void FunctionReturnExpression():{} {
 }
 
 void FunctionBodyDefinition():{} {
-    "{" (Expression())* (FunctionReturnExpression())? "}"
+    "{" (Start())* (FunctionReturnExpression())? "}"  // ToDo remove Start from Body
 }
 
 void FunctionDefinition():{} {
