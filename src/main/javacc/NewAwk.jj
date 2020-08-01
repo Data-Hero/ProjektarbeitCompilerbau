@@ -106,17 +106,11 @@ void AssingmentExpression():{} {
 }
 
 void LogicalExpression():{} {
-    CompareExpression() ("&&" CompareExpression())*
-    | CompareExpression() ("||" CompareExpression())*
+    CompareExpression() [("&&" | "||") CompareExpression()]
 }
 
 void CompareExpression():{} {
-    AdditiveExpression() ("==" AdditiveExpression())*
-    | AdditiveExpression() ("!=" AdditiveExpression())*
-    | AdditiveExpression() ("<=" AdditiveExpression())*
-    | AdditiveExpression() (">=" AdditiveExpression())*
-    | AdditiveExpression() ("<" AdditiveExpression())*
-    | AdditiveExpression() (">" AdditiveExpression())*
+    AdditiveExpression() [("==" | "!=" | "<=" | ">=" | "<" | ">") CompareExpression()]
 }
 
 void AdditiveExpression():{} {
@@ -125,13 +119,13 @@ void AdditiveExpression():{} {
 }
 
 void MultiplicativeExpression():{} {
-    PrefixExpression() ("*" PrefixExpression())*
+    PrefixExpression() [("*" | "/") MultiplicativeExpression()]
 }
 
 void PrefixExpression():{} {
-    ("+")* UnaryExpression()
-    | ("-")* UnaryExpression()
-    | ("!")* UnaryExpression()
+    "+" UnaryExpression()
+    | "-" UnaryExpression()
+    | "!" UnaryExpression()
 }
 
 void FunctionCallExpression():{} {
@@ -140,7 +134,7 @@ void FunctionCallExpression():{} {
 
 void UnaryExpression():{} {
     "(" Expression() ")"
-    | FunctionCallExpression()
+    //| LOOKAHEAD(FunctionCallExpression())
     | Identifier()
     | <INTEGER_LITERAL>
     | <FLOATING_POINT_LITERAL>
@@ -163,7 +157,7 @@ void Identifier():{} {
 
 // Function
 void FunctionReturnExpression():{} {
-    <RETURN> LogicalExpression() ";"
+    <RETURN> [LogicalExpression()] ";"
 }
 
 void FunctionBodyDefinition():{} {
