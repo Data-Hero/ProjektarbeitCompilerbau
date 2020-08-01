@@ -11,27 +11,6 @@ PARSER_END(NewAwkParser)
 
 SKIP : { " " | "\t" |  "\n" |  "\r" }
 
-// Datatypes
-TOKEN :
-{
-    < BASIC_DATATYPE: <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>>
-|   < ARRAY : <BASIC_DATATYPE> "[]" ("[]")*>
-|   < DATATYPE: <BASIC_DATATYPE> | <ARRAY>>
-|   < RETURN_DATATYPE: <DATATYPE> | <VOID>>
-|   < #LETTER: ["A"-"Z","_","a"-"z"]>
-|   < #DIGIT: ["0"-"9"]>
-}
-
-
-// Date
-TOKEN :
-{
-    < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
-|   < TWO_DIGIT: (["0"-"9"]) {2} >
-|   < AMPM: "am"|"pm" >
-|   < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
-}
-
 
 // Keywords
 TOKEN :
@@ -47,6 +26,25 @@ TOKEN :
 |   < RETURN: "return">
 |   < ENUM_SEPERATOR: ",">
 }
+
+
+// Datatypes
+TOKEN :
+{
+    < #LETTER: ["A"-"Z","_","a"-"z"]>
+|   < #DIGIT: ["0"-"9"]>
+}
+
+
+// Date
+TOKEN :
+{
+    < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
+|   < TWO_DIGIT: (["0"-"9"]) {2} >
+|   < AMPM: "am"|"pm" >
+|   < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
+}
+
 
 // Selector classes
 TOKEN :
@@ -165,7 +163,7 @@ void FunctionBodyDefinition():{} {
 }
 
 void FunctionDefinition():{} {
-    <RETURN_DATATYPE> Identifier() "(" (<DATATYPE> Identifier())? (<ENUM_SEPERATOR> <DATATYPE> Identifier())* ")" FunctionBodyDefinition()
+    Return_Datatype() Identifier() "(" (Datatype() Identifier())? (<ENUM_SEPERATOR> Datatype() Identifier())* ")" FunctionBodyDefinition()
 }
 
 
@@ -195,4 +193,21 @@ void IsDatatype():{} {
 
 void ToDatatype():{} {
     UnaryExpression() <CONTERT_FUNCTION>
+}
+
+// Datatype
+void BasicDatatype():{} {
+    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>
+}
+
+void Array():{} {
+    BasicDatatype() "[]" ("[]")*
+}
+
+void Datatype():{} {
+    BasicDatatype() | Array()
+}
+
+void Return_Datatype():{} {
+    Datatype() | <VOID>
 }
