@@ -51,8 +51,7 @@ TOKEN :
 // Selector classes
 TOKEN :
 {
-    < SELECTOR: <PUNCT> | <GRAPH> | <LOWER> | <ALPHA> | <ALNUM> | <PRINT> | <CNTRL> | <SPACE> | <BLANK> | <DIGITS> >
-|   < PUNCT: "punct" >
+    < PUNCT: "punct" >
 |   < GRAPH: "graph"> // Letters, numbers and punctuation
 |   < LOWER: "lower"> // Lowercase Letters
 |   < ALPHA: "alpha"> // Letters
@@ -171,7 +170,7 @@ void FunctionDefinition():{} {
 
 // Smart Switch
 void SmartSwitchSelektor():{} {
-    <SELECTOR>
+    <PUNCT> | <GRAPH> | <LOWER> | <ALPHA> | <ALNUM> | <PRINT> | <CNTRL> | <SPACE> | <BLANK> | <DIGITS>
 }
 
 
