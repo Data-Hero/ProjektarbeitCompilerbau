@@ -22,8 +22,8 @@ Todo
 
 ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) erledigt ![#f03c15]
 
-- Lexikalische Analyse (Scanner)
-- Syntax-Analyse (Parser)
+- ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)  Lexikalische Analyse (Scanner)
+- ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)  Syntax-Analyse (Parser)
 - Semantische Analyse
 - Fehlerbehandlung
 - Codeerzeugung/Interpreter (Codegenerator)
