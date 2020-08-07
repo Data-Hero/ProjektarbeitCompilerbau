@@ -2,7 +2,7 @@ package de.fhdo.fsc.project.DataType;
 
 import java.util.ArrayList;
 
-public class Array<E> {
+public class Array<E> implements DataType{
 
     ArrayList<E> al;
 
@@ -16,5 +16,25 @@ public class Array<E> {
 
     public boolean subtract(Array<E> b) {
         return al.removeAll(b.al);
+    }
+
+    @Override
+    public boolean add(Object b) {
+        return false;
+    }
+
+    @Override
+    public boolean subtract(Object b) {
+        return false;
+    }
+
+    @Override
+    public boolean multiply(Object b) {
+        return false;
+    }
+
+    @Override
+    public boolean divide(Object b) {
+        return false;
     }
 }
