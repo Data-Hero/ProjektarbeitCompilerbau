@@ -19,7 +19,13 @@ public class NewAwkParser {
 }
 PARSER_END(NewAwkParser)
 
-SKIP : { " " | "\t" |  "\n" |  "\r" }
+SKIP : {
+    " "
+|   "\t"
+|   "\n"
+|   "\r"
+|   < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") > // Skip single line comments
+}
 
 // Keywords
 TOKEN :
@@ -34,6 +40,7 @@ TOKEN :
 |   < SMARTSWITCH : "@">
 |   < RETURN: "return">
 |   < ENUM_SEPERATOR: ",">
+|   < EXPRESSION_TERMINATOR: ";">
 }
 
 // Datatypes
@@ -90,11 +97,10 @@ TOKEN :
     < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
-
 void DateTime() : {}{<DATE><TIME>(<AMPM>)}
 
 SimpleNode Start():{} {
-    (Expression() ";"
+    ((Expression() <EXPRESSION_TERMINATOR>)
 |   FunctionDefinition())+ // ToDo: Support multiple expressions function definitions
     { return jjtThis; }
 }
@@ -118,8 +124,7 @@ void CompareExpression():{} {
 }
 
 void AdditiveExpression():{} {
-    MultiplicativeExpression() ("+" MultiplicativeExpression())*
-    | StringExpression() ("+" StringExpression())* // Support "Hello" + 5 == "Hello5"
+    MultiplicativeExpression() [("+" |  "-") AdditiveExpression()]
 }
 
 void MultiplicativeExpression():{} {
@@ -127,22 +132,23 @@ void MultiplicativeExpression():{} {
 }
 
 void PrefixExpression():{} {
-    "+" UnaryExpression()
-    | "-" UnaryExpression()
-    | "!" UnaryExpression()
-}
-
-void FunctionCallExpression():{} {
-    Identifier() "(" (Identifier())* ")"
+    [("+" | "-" | "!")] UnaryExpression()
 }
 
 void UnaryExpression():{} {
     "(" Expression() ")"
-    //| LOOKAHEAD(FunctionCallExpression())
+    | FunctionCallExpression()
+    | SmartSwitchDefinition()
     | Identifier()
+    | <STRING_LITERAL>
+    | <CHARACTER_LITERAL>
     | <INTEGER_LITERAL>
     | <FLOATING_POINT_LITERAL>
     | <NULL>
+}
+
+void FunctionCallExpression():{} {
+    Identifier() "(" [LogicalExpression() (<ENUM_SEPERATOR> LogicalExpression())*] ")"
 }
 
 void StringExpression():{} {
@@ -161,15 +167,19 @@ void Identifier():{} {
 
 // Function
 void FunctionReturnExpression():{} {
-    <RETURN> [LogicalExpression()] ";"
+    <RETURN> [LogicalExpression()] <EXPRESSION_TERMINATOR>
 }
 
 void FunctionBodyDefinition():{} {
     "{" (Start())* (FunctionReturnExpression())? "}"  // ToDo remove Start from Body
 }
 
+void FunctionHeaderDefinition():{} {
+    Return_Datatype() Identifier() "(" (Datatype() Identifier())? (<ENUM_SEPERATOR> Datatype() Identifier())* ")"
+}
+
 void FunctionDefinition():{} {
-    Return_Datatype() Identifier() "(" (Datatype() Identifier())? (<ENUM_SEPERATOR> Datatype() Identifier())* ")" FunctionBodyDefinition()
+    FunctionHeaderDefinition() FunctionBodyDefinition()
 }
 
 
