@@ -175,7 +175,7 @@ void FunctionBodyDefinition():{} {
 }
 
 void FunctionHeaderDefinition():{} {
-    Return_Datatype() Identifier() "(" (Datatype() Identifier())? (<ENUM_SEPERATOR> Datatype() Identifier())* ")"
+    ReturnDatatype() Identifier() "(" (Datatype() Identifier())? (<ENUM_SEPERATOR> Datatype() Identifier())* ")"
 }
 
 void FunctionDefinition():{} {
@@ -221,6 +221,6 @@ void Datatype():{} {
     BasicDatatype() ("[]")*
 }
 
-void Return_Datatype():{} {
+void ReturnDatatype():{} {
     Datatype() | <VOID>
 }
