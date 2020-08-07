@@ -21,7 +21,6 @@ PARSER_END(NewAwkParser)
 
 SKIP : { " " | "\t" |  "\n" |  "\r" }
 
-
 // Keywords
 TOKEN :
 {
@@ -37,14 +36,12 @@ TOKEN :
 |   < ENUM_SEPERATOR: ",">
 }
 
-
 // Datatypes
 TOKEN :
 {
     < #LETTER: ["A"-"Z","_","a"-"z"]>
 |   < #DIGIT: ["0"-"9"]>
 }
-
 
 // Date
 TOKEN :
@@ -54,7 +51,6 @@ TOKEN :
 |   < AMPM: "am"|"pm" >
 |   < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
 }
-
 
 // Selector classes
 TOKEN :
@@ -70,7 +66,6 @@ TOKEN :
 |   < BLANK: "blank"> // Space and tab
 |   < DIGITS: "digit">// Digits
 }
-
 
 // Literals
 TOKEN :
@@ -211,12 +206,9 @@ void BasicDatatype():{} {
     <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>
 }
 
-void Array():{} {
-    ("[]")+ BasicDatatype() // ToDo: Fix order
-}
 
 void Datatype():{} {
-    BasicDatatype() | Array()
+    BasicDatatype() ("[]")*
 }
 
 void Return_Datatype():{} {
