@@ -1,10 +1,10 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
  */
-options { STATIC = false; LOOKAHEAD = 5;}
+options { STATIC = false; LOOKAHEAD = 50; MULTI=true; VISITOR=true; NODE_EXTENDS="BaseNode";}
 
 PARSER_BEGIN(NewAwkParser)
-package date;
+package de.fhdo.fsc.project;
 
 import java.io.FileReader;
 
