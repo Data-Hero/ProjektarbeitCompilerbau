@@ -3,4 +3,16 @@ int main(String[][] args) {
     return x;
 }
 
-int y = 7;
+void test() {
+    String test = "Test";
+}
+
+int x = 7;
+double y = 1.2;
+String z = "Hello world!";
+int a = main();
+int b = main(1);
+
+int x = test@{
+    :punct: { return x; }
+};

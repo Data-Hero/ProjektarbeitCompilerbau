@@ -190,7 +190,7 @@ void SmartSwitchSelektor():{} {
 
 
 void SmartSwitchConditionDefinition():{} {
-    "!" ":" SmartSwitchSelektor() ":" | ":" SmartSwitchSelektor() ":" // 2 functions or OR seem like the only options
+    ("!" ":" SmartSwitchSelektor() ":") | (":" SmartSwitchSelektor() ":") // 2 functions or OR seem like the only options
 }
 
 void SmartSwitchCaseDefinition():{} {
@@ -198,7 +198,7 @@ void SmartSwitchCaseDefinition():{} {
 }
 
 void SmartSwitchDefinition():{} {
-    StringExpression() "@{" SmartSwitchCaseDefinition() "}"
+    StringExpression() <SMARTSWITCH> "{" SmartSwitchCaseDefinition() "}" // ToDo: Replace string expression by logical expression
 }
 
 
