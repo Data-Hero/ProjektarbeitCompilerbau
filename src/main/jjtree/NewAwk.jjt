@@ -97,7 +97,7 @@ TOKEN :
     < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
-void DateTime() : {}{<DATE><TIME>(<AMPM>)}
+void DateTime() : {}{<DATE><TIME><AMPM>}
 
 SimpleNode Start():{} {
     ((Expression() <EXPRESSION_TERMINATOR>)
