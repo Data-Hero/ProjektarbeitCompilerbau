@@ -2,39 +2,37 @@ package de.fhdo.fsc.project.DataType;
 
 import java.util.ArrayList;
 
-public class Array<E> implements DataType{
+/**
+ * Dynamic array structure
+ * @param <E> Content of array
+ */
+public class Array<E> extends DataType<Array>{
 
     ArrayList<E> al;
 
-    public Array() {
+    public Array(String name) {
+        super(name);
         this.al = new ArrayList<>();
     }
 
-    public boolean add(Array<E> b) {
-        return al.addAll(b.al);
+    public int length() {
+        return al.size();
     }
 
-    public boolean subtract(Array<E> b) {
-        return al.removeAll(b.al);
+
+
+    @Override
+    public boolean subtract(Array k) {
+        return al.removeAll(k.al);
     }
 
     @Override
-    public boolean add(Object b) {
+    public boolean divide(Array k) {
         return false;
     }
 
     @Override
-    public boolean subtract(Object b) {
-        return false;
-    }
-
-    @Override
-    public boolean multiply(Object b) {
-        return false;
-    }
-
-    @Override
-    public boolean divide(Object b) {
+    public boolean check(String k) {
         return false;
     }
 }

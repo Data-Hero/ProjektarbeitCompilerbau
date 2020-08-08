@@ -131,6 +131,14 @@ void MultiplicativeExpression():{} {
     PrefixExpression() [("*" | "/") MultiplicativeExpression()]
 }
 
+void PowerExpression():{} {
+    PrefixExpression() [("**" | "//") PowerExpression() ]
+}
+
+void ModuloExpression():{} {
+    PrefixExpression() ["%" PowerExpression() ]
+}
+
 void PrefixExpression():{} {
     [("+" | "-" | "!")] UnaryExpression()
 }

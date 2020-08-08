@@ -60,6 +60,16 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     }
 
     @Override
+    public Object visit(ASTPowerExpression node, Object data) {
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTModuloExpression node, Object data) {
+        return null;
+    }
+
+    @Override
     public Object visit(ASTPrefixExpression node, Object data) {
         return null;
     }
@@ -145,7 +155,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     }
 
     @Override
-    public Object visit(ASTReturn_Datatype node, Object data) {
+    public Object visit(ASTReturnDatatype node, Object data) {
         return null;
     }
 
