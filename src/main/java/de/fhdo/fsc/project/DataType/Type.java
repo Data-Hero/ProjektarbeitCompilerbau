@@ -4,7 +4,6 @@ public class Type implements TypeI{
 
     String name;
 
-
     public Type(String name) {
         this.name = name;
     }
@@ -23,6 +22,7 @@ public class Type implements TypeI{
         }
         return false;
     }
+
 
 
     public boolean isNumericType() {
