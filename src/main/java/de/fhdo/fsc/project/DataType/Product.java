@@ -1,22 +1,29 @@
 package de.fhdo.fsc.project.DataType;
 
-public class Product<A extends DataType, W extends DataType> {
-    private A a;
-    private W w;
 
-    public A getA() {
+public class Product extends Type {
+    private TypeI a;
+    private TypeI w;
+
+    public Product(Type a, Type b) {
+        super("(" + a.name + ", " + b.name + ")");
+        this.a = a;
+        this.w = b;
+    }
+
+    public TypeI getA() {
         return a;
     }
 
-    public void setA(A a) {
+    public void setA(TypeI a) {
         this.a = a;
     }
 
-    public W getW() {
+    public TypeI getW() {
         return w;
     }
 
-    public void setW(W w) {
+    public void setW(TypeI w) {
         this.w = w;
     }
 }

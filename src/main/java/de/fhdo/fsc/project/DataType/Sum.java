@@ -5,6 +5,10 @@ public class Sum<A extends DataType, W extends DataType> extends DataType{
     private W w;
     private boolean aChosen;
 
+    public Sum(String name) {
+        super(name);
+    }
+
     public DataType getValue() {
         return aChosen?a:w;
     }
@@ -37,6 +41,6 @@ public class Sum<A extends DataType, W extends DataType> extends DataType{
 
     @Override
     public boolean check(String k) {
-        return ;
+        return a.check(k) ^ w.check(k);
     }
 }
