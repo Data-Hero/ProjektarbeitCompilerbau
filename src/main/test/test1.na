@@ -16,3 +16,11 @@ int b = main(1);
 int x = test@{
     :punct: { return x; }
 };
+
+while (a == 2) {
+    if (a == 2) {
+        test = test;
+    } else {
+        test = 5;
+    }
+}
