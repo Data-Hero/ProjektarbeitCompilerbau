@@ -41,6 +41,10 @@ TOKEN :
 |   < RETURN: "return">
 |   < ENUM_SEPERATOR: ",">
 |   < EXPRESSION_TERMINATOR: ";">
+|   < LOOP_IF: "if">
+|   < LOOP_ELSE: "else">
+|   < LOOP_WHILE: "while">
+|   < LOOP_FOREACH: "foreach">
 }
 
 // Datatypes
@@ -101,6 +105,7 @@ void DateTime() : {}{<DATE><TIME><AMPM>}
 
 SimpleNode Start():{} {
     ((Expression() <EXPRESSION_TERMINATOR>)
+|   LoopDefinition()
 |   FunctionDefinition())+ // ToDo: Support multiple expressions function definitions
     { return jjtThis; }
 }
@@ -188,6 +193,14 @@ void FunctionHeaderDefinition():{} {
 
 void FunctionDefinition():{} {
     FunctionHeaderDefinition() FunctionBodyDefinition()
+}
+
+void LoopDefinition():{} {
+    (   ((<LOOP_WHILE> "(" Identifier() ("==" LogicalExpression())* ")")
+        //| (<LOOP_FOREACH> "(" Identifier() "in" Identifier() ")") // TODO: replace secound identifier with array
+    )
+    FunctionBodyDefinition()    )
+    | (<LOOP_IF> "(" Identifier() ("==" LogicalExpression())* ")" FunctionBodyDefinition() (<LOOP_ELSE> FunctionBodyDefinition())*)
 }
 
 

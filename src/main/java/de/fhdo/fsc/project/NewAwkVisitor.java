@@ -115,6 +115,11 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     }
 
     @Override
+    public Object visit(ASTLoopDefinition node, Object data) {
+        return null;
+    }
+
+    @Override
     public Object visit(ASTSmartSwitchSelektor node, Object data) {
         return null;
     }
