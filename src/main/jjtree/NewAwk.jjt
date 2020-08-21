@@ -35,6 +35,7 @@ TOKEN :
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
 |   < STRING : "String" >
+|   < TYPE : "type">
 |   < VOID : "void" >
 |   < NULL: "null">
 |   < SMARTSWITCH : "@">
@@ -160,6 +161,7 @@ void UnaryExpression():{} {
     | Identifier()
     | <STRING_LITERAL>
     | <CHARACTER_LITERAL>
+    | <TYPE_LITERAL>
     | <INTEGER_LITERAL>
     | <FLOATING_POINT_LITERAL>
     | <NULL>
@@ -242,7 +244,7 @@ void ToDatatype():{} {
 
 // Datatype
 void BasicDatatype():{} {
-    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>
+    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING> | <TYPE> | <IDENTIFIER>
 }
 
 
