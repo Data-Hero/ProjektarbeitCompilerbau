@@ -13,6 +13,17 @@ String z = "Hello world!";
 int a = main();
 int b = main(1);
 
+type Whatever = (AM|am|aM|Am|PM|pm|pM|Pm)
+Whatever c = "AM"
+
 int x = test@{
     :punct: { return x; }
 };
+
+while (a == 2) {
+    if (a == 2) {
+        test = test;
+    } else {
+        test = 5;
+    }
+}

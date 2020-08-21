@@ -27,4 +27,20 @@ public class ArrayType extends Type{
                 && baseTyp.equals(((ArrayType)t).baseTyp)
                 && dim == ((ArrayType)t).dim);
     }
+
+    @Override
+    public boolean explicitTo(TypeI t) {
+        if (this == Types.errorType || t==Types.errorType) return true;
+        return ((t instanceof ArrayType)
+                && baseTyp.explicitTo(((ArrayType)t).baseTyp)
+                && dim == ((ArrayType)t).dim);
+    }
+
+    @Override
+    public boolean implicitTo(TypeI t) {
+        if (this == Types.errorType || t==Types.errorType) return true;
+        return ((t instanceof ArrayType)
+                && baseTyp.implicitTo(((ArrayType)t).baseTyp)
+                && dim == ((ArrayType)t).dim);
+    }
 }
