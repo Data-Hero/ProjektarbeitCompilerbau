@@ -20,6 +20,8 @@ int x = test@{
 while (a == 2) {
     if (a == 2) {
         test = test;
+    } else if (a == 3) {
+        test = 5;
     } else {
         test = 5;
     }

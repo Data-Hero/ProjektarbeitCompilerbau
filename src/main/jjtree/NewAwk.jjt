@@ -198,9 +198,12 @@ void FunctionDefinition():{} {
 void LoopDefinition():{} {
     (   ((<LOOP_WHILE> "(" Identifier() ("==" LogicalExpression())* ")")
         //| (<LOOP_FOREACH> "(" Identifier() "in" Identifier() ")") // TODO: replace secound identifier with array
-    )
-    FunctionBodyDefinition()    )
-    | (<LOOP_IF> "(" Identifier() ("==" LogicalExpression())* ")" FunctionBodyDefinition() (<LOOP_ELSE> FunctionBodyDefinition())*)
+        )
+        FunctionBodyDefinition()    )
+    | (<LOOP_IF> "(" Identifier() ("==" LogicalExpression())* ")" FunctionBodyDefinition()
+        (<LOOP_ELSE> <LOOP_IF> "(" Identifier() ("==" LogicalExpression())* ")" FunctionBodyDefinition())*
+        (<LOOP_ELSE> FunctionBodyDefinition())?
+      )
 }
 
 
