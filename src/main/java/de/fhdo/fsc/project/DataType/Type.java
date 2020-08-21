@@ -1,6 +1,5 @@
 package de.fhdo.fsc.project.DataType;
 
-import java.util.ArrayList;
 
 public class Type implements TypeI{
 
@@ -9,6 +8,17 @@ public class Type implements TypeI{
     public Type(String name) {
         this.name = name;
     }
+
+
+    public boolean isNumericType() {
+        return this instanceof NumericType;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
 
     /**
      * Check if implcit type cast is possible
@@ -26,22 +36,6 @@ public class Type implements TypeI{
     }
 
 
-
-    public boolean isNumericType() {
-        return this instanceof NumericType;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-
-    /**
-     *
-     * @param t
-     * @return
-     */
     @Override
     public boolean explicitTo(TypeI t){
         if (this == Types.errorType || t == Types.errorType) return true;
