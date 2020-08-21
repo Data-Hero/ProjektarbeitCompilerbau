@@ -1,5 +1,6 @@
 package de.fhdo.fsc.project.DataType;
 
+
 public class Type implements TypeI{
 
     String name;
@@ -7,6 +8,17 @@ public class Type implements TypeI{
     public Type(String name) {
         this.name = name;
     }
+
+
+    public boolean isNumericType() {
+        return this instanceof NumericType;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
 
     /**
      * Check if implcit type cast is possible
@@ -24,24 +36,23 @@ public class Type implements TypeI{
     }
 
 
-
-    public boolean isNumericType() {
-        return this instanceof NumericType;
-    }
-
-    /**
-     *
-     * @param type
-     * @return
-     */
     @Override
-    public boolean explicitTo(TypeI type){
+    public boolean explicitTo(TypeI t){
+        if (this == Types.errorType || t == Types.errorType) return true;
+        if (this == t) return true;
+        if (isNumericType() && t.isNumericType()) {
+            NumericType nt = (NumericType) t;
+            return ((NumericType) this).rank >= nt.rank;
+        }
         return false;
+
+
     }
 
     @Override
-    public boolean equals(Type type) {
-        return false;
+    public boolean equals(TypeI t) {
+        if (this == Types.errorType || t==Types.errorType) return true;
+        return this.name.equals(t.getName());
     }
 
 }

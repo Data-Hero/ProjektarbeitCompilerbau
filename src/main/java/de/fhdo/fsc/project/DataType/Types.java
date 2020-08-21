@@ -15,4 +15,6 @@ public class Types {
 
     public static final Type voidType = new Type("void");
     public static final Type errorType = new Type("error");
+
+    public static final Type typeType = new Type("type");
 }
