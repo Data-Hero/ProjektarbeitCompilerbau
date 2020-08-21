@@ -1,6 +1,6 @@
 package de.fhdo.fsc.project.DataType;
 
-public class Sum<A extends DataType, W extends DataType> extends DataType{
+public class Sum<A extends Type, W extends Type> extends Type{
     private A a;
     private W w;
     private boolean aChosen;
@@ -9,7 +9,7 @@ public class Sum<A extends DataType, W extends DataType> extends DataType{
         super(name);
     }
 
-    public DataType getValue() {
+    public Type getValue() {
         return aChosen?a:w;
     }
 
@@ -29,18 +29,4 @@ public class Sum<A extends DataType, W extends DataType> extends DataType{
         aChosen = false;
     }
 
-    @Override
-    public boolean subtract(DataType k) {
-        return false;
-    }
-
-    @Override
-    public boolean divide(DataType k) {
-        return false;
-    }
-
-    @Override
-    public boolean check(String k) {
-        return a.check(k) ^ w.check(k);
-    }
 }
