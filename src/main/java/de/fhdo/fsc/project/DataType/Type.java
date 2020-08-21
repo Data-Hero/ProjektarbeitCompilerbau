@@ -1,5 +1,7 @@
 package de.fhdo.fsc.project.DataType;
 
+import java.util.ArrayList;
+
 public class Type implements TypeI{
 
     String name;
@@ -29,19 +31,34 @@ public class Type implements TypeI{
         return this instanceof NumericType;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+
     /**
      *
-     * @param type
+     * @param t
      * @return
      */
     @Override
-    public boolean explicitTo(TypeI type){
+    public boolean explicitTo(TypeI t){
+        if (this == Types.errorType || t == Types.errorType) return true;
+        if (this == t) return true;
+        if (isNumericType() && t.isNumericType()) {
+            NumericType nt = (NumericType) t;
+            return ((NumericType) this).rank >= nt.rank;
+        }
         return false;
+
+
     }
 
     @Override
-    public boolean equals(Type type) {
-        return false;
+    public boolean equals(TypeI t) {
+        if (this == Types.errorType || t==Types.errorType) return true;
+        return this.name.equals(t.getName());
     }
 
 }
