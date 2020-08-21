@@ -48,6 +48,11 @@
                         <goals>
                             <goal>jjtree-javacc</goal>
                         </goals>
+                        <configuration>
+                            <!--<debugLookAhead>true</debugLookAhead>-->
+                            <debugParser>true</debugParser>
+                            <!--<debugTokenManager>true</debugTokenManager>-->
+                        </configuration>
                     </execution>
                 </executions>
                 <dependencies>

@@ -104,12 +104,16 @@ TOKEN :
 void DateTime() : {}{<DATE><TIME><AMPM>}
 
 SimpleNode Start():{} {
-    ((Expression() <EXPRESSION_TERMINATOR>)
-|   LoopDefinition()
-|   FunctionDefinition())+ // ToDo: Support multiple expressions function definitions
+    (Element())+ <EOF>
     { return jjtThis; }
 }
 
+// Base element
+void Element():{} {
+    (Expression() <EXPRESSION_TERMINATOR>)
+|   LoopDefinition()
+|   FunctionDefinition() // ToDo: Support multiple expressions function definitions
+}
 
 // Expressions
 void Expression():{} {
