@@ -13,7 +13,7 @@ String z = "Hello world!";
 int a = main();
 int b = main(1);
 
-type Whatever = (AM|am|aM|Am|PM|pm|pM|Pm)
+type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<
 Whatever c = "AM"
 
 int x = test@{
