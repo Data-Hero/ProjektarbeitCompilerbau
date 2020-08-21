@@ -112,9 +112,9 @@ SimpleNode Start():{} {
 
 // Base element
 void Element():{} {
-    (Expression() <EXPRESSION_TERMINATOR>)
+    ((Expression() <EXPRESSION_TERMINATOR>)
 |   LoopDefinition()
-|   FunctionDefinition() // ToDo: Support multiple expressions function definitions
+|   FunctionDefinition()) // ToDo: Support multiple expressions function definitions
 }
 
 // Expressions
