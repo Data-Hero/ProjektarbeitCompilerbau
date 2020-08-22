@@ -1,11 +1,11 @@
-// int main(String[][] args) {
-//     int x = 5;
-//     return x;
-// }
+int main(String[][] args) {
+    int x = 5;
+    return x;
+}
 
-// void test() {
-//     String test = "Test";
-// }
+void test() {
+    String test = "Test";
+}
 
 int x = 7;
 double y = 1.2;

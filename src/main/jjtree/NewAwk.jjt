@@ -42,10 +42,11 @@ TOKEN :
 |   < RETURN: "return">
 |   < ENUM_SEPERATOR: ",">
 |   < EXPRESSION_TERMINATOR: ";">
-|   < LOOP_IF: "if">
-|   < LOOP_ELSE: "else">
-|   < LOOP_WHILE: "while">
-|   < LOOP_FOREACH: "foreach">
+|   < IF: "if">
+|   < ELSE: "else">
+|   < WHILE: "while">
+|   < FOREACH: "foreach">
+|   < IN: "in">
 }
 
 // Datatypes
@@ -113,8 +114,14 @@ SimpleNode Start():{} {
 // Base element
 void Element():{} {
     ((Expression() <EXPRESSION_TERMINATOR>)
-|   LoopDefinition()
+|   Block()
 |   FunctionDefinition()) // ToDo: Support multiple expressions function definitions
+}
+
+void Block():{} {
+    WhileLoopDefinition()
+|   ForeachLoopDefinition()
+|   IfDefinition()
 }
 
 // Expressions
@@ -191,7 +198,7 @@ void FunctionReturnExpression():{} {
 }
 
 void FunctionBodyDefinition():{} {
-    "{" (Start())* (FunctionReturnExpression())? "}"  // ToDo remove Start from Body
+    "{" (Element())* (FunctionReturnExpression())? "}"
 }
 
 void FunctionHeaderDefinition():{} {
@@ -202,17 +209,19 @@ void FunctionDefinition():{} {
     FunctionHeaderDefinition() FunctionBodyDefinition()
 }
 
-void LoopDefinition():{} {
-    (   ((<LOOP_WHILE> "(" Identifier() ("==" LogicalExpression())* ")")
-        //| (<LOOP_FOREACH> "(" Identifier() "in" Identifier() ")") // TODO: replace secound identifier with array
-        )
-        FunctionBodyDefinition()    )
-    | (<LOOP_IF> "(" Identifier() ("==" LogicalExpression())* ")" FunctionBodyDefinition()
-        (<LOOP_ELSE> <LOOP_IF> "(" Identifier() ("==" LogicalExpression())* ")" FunctionBodyDefinition())*
-        (<LOOP_ELSE> FunctionBodyDefinition())?
-      )
+void ForeachLoopDefinition():{} {
+    <FOREACH> "(" Identifier() <IN> UnaryExpression() ")" FunctionBodyDefinition()
 }
 
+void WhileLoopDefinition():{} {
+    <WHILE> "(" LogicalExpression() ")" FunctionBodyDefinition()
+}
+
+void IfDefinition():{} {
+    <IF> "(" LogicalExpression()  ")" FunctionBodyDefinition()
+    (<ELSE> <IF> "(" LogicalExpression() ")" FunctionBodyDefinition())*
+    (<ELSE> FunctionBodyDefinition())?
+}
 
 // Smart Switch
 void SmartSwitchSelektor():{} {
