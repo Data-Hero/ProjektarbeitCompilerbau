@@ -1,11 +1,11 @@
-int main(String[][] args) {
-    int x = 5;
-    return x;
-}
+// int main(String[][] args) {
+//     int x = 5;
+//     return x;
+// }
 
-void test() {
-    String test = "Test";
-}
+// void test() {
+//     String test = "Test";
+// }
 
 int x = 7;
 double y = 1.2;
@@ -13,8 +13,8 @@ String z = "Hello world!";
 int a = main();
 int b = main(1);
 
-type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<
-Whatever c = "AM"
+type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<;
+Whatever c = "AM";
 
 int x = test@{
     :punct: { return x; }
