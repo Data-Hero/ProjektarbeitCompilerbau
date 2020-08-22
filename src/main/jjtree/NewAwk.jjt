@@ -113,9 +113,9 @@ SimpleNode Start():{} {
 
 // Base element
 void Element():{} {
-    ((Expression() <EXPRESSION_TERMINATOR>)
+    (Expression() <EXPRESSION_TERMINATOR>)
 |   Block()
-|   FunctionDefinition()) // ToDo: Support multiple expressions function definitions
+|   FunctionDefinition()
 }
 
 void Block():{} {
