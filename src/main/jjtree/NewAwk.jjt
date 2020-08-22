@@ -107,8 +107,9 @@ TOKEN :
 void DateTime() : {}{<DATE><TIME><AMPM>}
 
 SimpleNode Start():{} {
-    ((FunctionDefinition())*
-|   (Element())+ <EOF>)
+    (FunctionDefinition())*
+    (Element())+
+    <EOF>
     { return jjtThis; }
 }
 
