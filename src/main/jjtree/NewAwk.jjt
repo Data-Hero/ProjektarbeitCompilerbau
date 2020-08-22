@@ -115,10 +115,11 @@ SimpleNode Start():{} {
 
 // Base element
 void Element():{} {
-    (Expression() <EXPRESSION_TERMINATOR>)
-|   Block()
+    Block()
+|   (Expression() <EXPRESSION_TERMINATOR>)
 }
 
+// Block elements
 void Block():{} {
     WhileLoopDefinition()
 |   ForeachLoopDefinition()
@@ -163,7 +164,7 @@ void PrefixExpression():{} {
 }
 
 void UnaryExpression():{} {
-    "(" Expression() ")"
+    "(" LogicalExpression() ")"
     | FunctionCallExpression()
     | SmartSwitchDefinition()
     | Identifier()
