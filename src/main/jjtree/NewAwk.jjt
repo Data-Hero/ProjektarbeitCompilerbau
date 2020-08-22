@@ -132,7 +132,7 @@ void Expression():{} {
 }
 
 void AssingmentExpression():{} {
-    [Datatype()] Identifier() ("=" LogicalExpression())*
+    [LOOKAHEAD(Datatype() Identifier()) Datatype()] Identifier() ("=" LogicalExpression())*
 }
 
 void LogicalExpression():{} {
@@ -160,13 +160,12 @@ void ModuloExpression():{} {
 }
 
 void PrefixExpression():{} {
-    [("+" | "-" | "!")] UnaryExpression()
+    [("+" | "-" | "!")] UnaryExpression() [SmartSwitchDefinition()] // ToDo: Move SmartSwitchDefinition() to a better position?
 }
 
 void UnaryExpression():{} {
     LOOKAHEAD(2) "(" LogicalExpression() ")"
     | LOOKAHEAD(2) FunctionCallExpression()
-    | LOOKAHEAD(2) SmartSwitchDefinition()
     | <STRING_LITERAL>
     | <CHARACTER_LITERAL>
     | <TYPE_LITERAL>
@@ -203,7 +202,7 @@ void FunctionBodyDefinition():{} {
 }
 
 void FunctionHeaderDefinition():{} {
-    ReturnDatatype() Identifier() "(" (Datatype() Identifier())? (<ENUM_SEPERATOR> Datatype() Identifier())* ")"
+    ReturnDatatype() Identifier() "(" (LOOKAHEAD(2) Datatype() Identifier())? (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() Identifier())* ")"
 }
 
 void FunctionDefinition():{} {
@@ -239,7 +238,7 @@ void SmartSwitchCaseDefinition():{} {
 }
 
 void SmartSwitchDefinition():{} {
-    StringExpression() <SMARTSWITCH> "{" SmartSwitchCaseDefinition() "}" // ToDo: Replace string expression by logical expression
+    <SMARTSWITCH> "{" SmartSwitchCaseDefinition() "}"
 }
 
 
@@ -254,7 +253,7 @@ void ToDatatype():{} {
 
 // Datatype
 void BasicDatatype():{} {
-    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING> | <TYPE> // | <IDENTIFIER> // ToDo: Fix identifier as data type
+    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING> | <TYPE> | <IDENTIFIER>
 }
 
 

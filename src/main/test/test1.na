@@ -16,7 +16,7 @@ int b = main(1);
 x = 9;
 
 type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<;
-// Whatever c = "AM"; // ToDo: Fix identifier as data type
+Whatever c = "AM";
 
 int x = test@{
     :punct: { return x; }
