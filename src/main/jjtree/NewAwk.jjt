@@ -1,7 +1,7 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
  */
-options { STATIC = false; LOOKAHEAD = 50; MULTI=true; VISITOR=true; NODE_EXTENDS="BaseNode";}
+options { STATIC = false; MULTI=true; VISITOR=true; NODE_EXTENDS="BaseNode";}
 
 PARSER_BEGIN(NewAwkParser)
 package de.fhdo.fsc.project;
@@ -34,7 +34,7 @@ TOKEN :
 |   < DOUBLE : "double">
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
-|   < STRING : "String" >
+|   < STRING : "string" >
 |   < TYPE : "type">
 |   < VOID : "void" >
 |   < NULL: "null">
@@ -107,7 +107,7 @@ TOKEN :
 void DateTime() : {}{<DATE><TIME><AMPM>}
 
 SimpleNode Start():{} {
-    (FunctionDefinition())*
+    (LOOKAHEAD(3) FunctionDefinition())*
     (Element())+
     <EOF>
     { return jjtThis; }
@@ -164,16 +164,16 @@ void PrefixExpression():{} {
 }
 
 void UnaryExpression():{} {
-    "(" LogicalExpression() ")"
-    | FunctionCallExpression()
-    | SmartSwitchDefinition()
-    | Identifier()
+    LOOKAHEAD(2) "(" LogicalExpression() ")"
+    | LOOKAHEAD(2) FunctionCallExpression()
+    | LOOKAHEAD(2) SmartSwitchDefinition()
     | <STRING_LITERAL>
     | <CHARACTER_LITERAL>
     | <TYPE_LITERAL>
     | <INTEGER_LITERAL>
     | <FLOATING_POINT_LITERAL>
     | <NULL>
+    | Identifier()
 }
 
 void FunctionCallExpression():{} {
@@ -192,7 +192,6 @@ void StringExpression():{} {
 void Identifier():{} {
     <IDENTIFIER>
 }
-
 
 // Function
 void FunctionReturnExpression():{} {
@@ -221,7 +220,7 @@ void WhileLoopDefinition():{} {
 
 void IfDefinition():{} {
     <IF> "(" LogicalExpression()  ")" FunctionBodyDefinition()
-    (<ELSE> <IF> "(" LogicalExpression() ")" FunctionBodyDefinition())*
+    (LOOKAHEAD(2) <ELSE> <IF> "(" LogicalExpression() ")" FunctionBodyDefinition())*
     (<ELSE> FunctionBodyDefinition())?
 }
 
@@ -232,7 +231,7 @@ void SmartSwitchSelektor():{} {
 
 
 void SmartSwitchConditionDefinition():{} {
-    ("!" ":" SmartSwitchSelektor() ":") | (":" SmartSwitchSelektor() ":") // 2 functions or OR seem like the only options
+    ("!" ":" SmartSwitchSelektor() ":") | (":" SmartSwitchSelektor() ":") // 2 functions or OR seem like the only options. What about >>["!"] ":" SmartSwitchSelektor() ":"<< ?
 }
 
 void SmartSwitchCaseDefinition():{} {
@@ -255,7 +254,7 @@ void ToDatatype():{} {
 
 // Datatype
 void BasicDatatype():{} {
-    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING> | <TYPE> | <IDENTIFIER>
+    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING> | <TYPE> // | <IDENTIFIER> // ToDo: Fix identifier as data type
 }
 
 

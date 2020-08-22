@@ -1,22 +1,22 @@
-int main(String[][] args) {
+int main(string[][] args) {
     int x = 5;
     return x;
 }
 
 void test() {
-    String test = "Test";
+    string test = "Test";
 }
 
 int x = 7;
 double y = 1.2;
-String z = "Hello world!";
+string z = "Hello world!";
 int a = main();
 int b = main(1);
 
-// x = 9; // ToDo: Fix it
+x = 9;
 
 type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<;
-Whatever c = "AM";
+// Whatever c = "AM"; // ToDo: Fix identifier as data type
 
 int x = test@{
     :punct: { return x; }
