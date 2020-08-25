@@ -27,7 +27,7 @@ Todo
 - Semantische Analyse
 - Fehlerbehandlung
 - Codeerzeugung/Interpreter (Codegenerator)
-- zusätzliche Anfo:
+- zusätzliche Info:
   - Datentypen und Operatoren
     - Als Datentypen benutzen wir
       – int, double, char, boolean, String
