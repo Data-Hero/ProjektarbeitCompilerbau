@@ -48,3 +48,37 @@ Todo
     - Feldzugriff über Index (0,1,2,…) 
     - x = [1,2,3,4,5]: x[2] -> 3 & x[ i[0]%2 == 0 ] -> 1,3,5
     - y = { { 1,2,3 }, { 4,5,6 }, { 7,8,9 } }: y[i[0] % 2 == 1][i[0] == i[1]] -> { {5} }
+
+## Bestandteile
+
+### Datentypen
+
+- int
+- double
+- char
+- boolean
+- string
+- types (Custom type)
+
+### Besondere Konstrukte
+
+#### Smart switch function
+
+Nach bestimmten Token filtern und diese als Array zurückgeben.
+
+```
+string test = "a.b.c.d";
+string[] x = test@{
+    :punct: { return this; }
+};
+
+// x = [".", ".", "."]
+```
+
+#### Addition von Arrays
+
+["a", "b", "c"] + ["c", "d", "e", "f"] == ["a", "b", "c", "d", "e", "f"]
+
+#### Subtraktion von Arrays
+
+["a", "b", "c", "d", "e", "f"] - ["a", "b", "c"] == ["d", "e", "f"]

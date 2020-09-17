@@ -3,7 +3,7 @@ package de.fhdo.fsc.project.DataType;
 
 public class Types {
     public static final Type boolType = new Type("boolean");
-    public static final Type stringType = new Type("String");
+    public static final Type stringType = new Type("string");
 
     public static final Type byteType = new NumericType("byte", 1);
     public static final Type shortType = new NumericType("short", 2);
