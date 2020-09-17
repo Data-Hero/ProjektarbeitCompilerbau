@@ -1,6 +1,8 @@
 package de.fhdo.fsc.project;
 
+import de.fhdo.fsc.project.DataType.ArrayType;
 import de.fhdo.fsc.project.DataType.TypeI;
+import de.fhdo.fsc.project.DataType.Types;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,7 +47,6 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     public Object visit(ASTAssingmentExpression node, Object data) {
         node.childrenAccept(this, data);
         Object a = pop();
-
         return null;
     }
 
@@ -64,9 +65,15 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         node.childrenAccept(this, data);
         Object a = pop();
         Object b = pop();
-        if(a instanceof Integer && b instanceof Integer) {// Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
-            Integer e = ((Integer) a) + ((Integer) b);
+        if(symbolTable.get(a).isNumericType() && symbolTable.get(b).isNumericType()) {// Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
+            Double e = ((Double) a) + ((Double) b);
             stack.addFirst(e);
+        } else if ( symbolTable.get(a).isNumericType() && !symbolTable.get(b).isArrayType()
+                || !symbolTable.get(a).isArrayType() && symbolTable.get(b).isNumericType()) {
+            String e = String.valueOf(a) + String.valueOf(b);
+            stack.addFirst(e);
+        } else if (symbolTable.get(a).isNumericType() && symbolTable.get(b).isArrayType()) {
+                // Check baseType
         }
         return null;
     }
