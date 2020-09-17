@@ -66,14 +66,14 @@ Todo
 
 Nach bestimmten Token filtern und diese als Array zurückgeben.
 
-<code>
+```
 string test = "a.b.c.d";
 string[] x = test@{
     :punct: { return this; }
 };
 
 // x = [".", ".", "."]
-</code>
+```
 
 #### Addition von Arrays
 
