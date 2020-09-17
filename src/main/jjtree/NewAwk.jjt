@@ -84,8 +84,8 @@ TOKEN :
 TOKEN :
 {
     <INTEGER_LITERAL: <DECIMAL_LITERAL>>
-|   <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*>
-|   <FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])*>
+|   <#DECIMAL_LITERAL: ("+" | "-")? ["1"-"9"] (["0"-"9"])*>
+|   <FLOATING_POINT_LITERAL: ("+" | "-")? (["0"-"9"])+ "." (["0"-"9"])*>
 |   <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
 |   <STRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ( ["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
 |   <TYPE_LITERAL: ">" ( ~["<",">","\\","\n","\r"] | "\\" ( [">", "<", "n","t","b","r","f","\\"] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "<">
@@ -94,8 +94,9 @@ TOKEN :
 // Built-in Functions
 TOKEN :
 {
-    < CONTERT_FUNCTION: (".toBoolean()" | ".toCharacter()" | ".toDouble()" | ".toInteger()" | ".toString()" )>
-|   < CHECKTYPE_FUNCTION: (".isBoolean()" | ".isCharacter()" | ".isDouble()" | ".isInteger()" | ".isString()" )>
+    < CONTERT_FUNCTION: ( "toBoolean" | "toCharacter" | "toDouble" | "toInteger" | "toString" )>
+|   < CHECKTYPE_FUNCTION: ( "isBoolean" | "isCharacter" | "isDouble" | "isInteger" | "isString" )>
+|   < LENGTH_FUNCTION: ( "length" )>
 }
 
 // Identifier
@@ -144,7 +145,7 @@ void CompareExpression():{} {
 }
 
 void AdditiveExpression():{} {
-    MultiplicativeExpression() [("+" |  "-") AdditiveExpression()]
+    MultiplicativeExpression() [("+" | "-") AdditiveExpression()]
 }
 
 void MultiplicativeExpression():{} {
@@ -160,12 +161,15 @@ void ModuloExpression():{} {
 }
 
 void PrefixExpression():{} {
-    [("+" | "-" | "!")] UnaryExpression() [SmartSwitchDefinition()] // ToDo: Move SmartSwitchDefinition() to a better position?
+    ["!"] UnaryExpression() [SmartSwitchDefinition()] // ToDo: Move SmartSwitchDefinition() to a better position?
 }
 
 void UnaryExpression():{} {
     LOOKAHEAD(2) "(" LogicalExpression() ")"
     | LOOKAHEAD(2) FunctionCallExpression()
+    | IsDatatype()
+    | ToDatatype()
+    | lengthDatatype()
     | <STRING_LITERAL>
     | <CHARACTER_LITERAL>
     | <TYPE_LITERAL>
@@ -244,11 +248,15 @@ void SmartSwitchDefinition():{} {
 
 // Integrated Funtions
 void IsDatatype():{} {
-    UnaryExpression() <CHECKTYPE_FUNCTION>
+     <CHECKTYPE_FUNCTION> "(" UnaryExpression() ")"
 }
 
 void ToDatatype():{} {
-    UnaryExpression() <CONTERT_FUNCTION>
+    <CONTERT_FUNCTION> "(" UnaryExpression() ")"
+}
+
+void lengthDatatype():{} {
+    <LENGTH_FUNCTION> "(" UnaryExpression() ")"
 }
 
 // Datatype

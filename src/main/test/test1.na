@@ -7,13 +7,11 @@ void test() {
     string test = "Test";
 }
 
-
 int x = 7;
 double y = 1.2;
 string z = "Hello world!";
 int a = main();
 int b = main(1);
-
 
 x = 9;
 
@@ -34,6 +32,8 @@ while (a == 2) {
     }
 }
 
-
-
-
+foreach (test in test) {
+  test = length("zwei");
+  test = toDouble(5);
+  test = isBoolean(y);
+}
