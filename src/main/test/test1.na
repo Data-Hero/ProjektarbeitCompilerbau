@@ -31,3 +31,9 @@ while (a == 2) {
         test = 5;
     }
 }
+
+foreach (test in test) {
+  test = length("zwei");
+  test = toDouble(5);
+  test = isBoolean(y);
+}
