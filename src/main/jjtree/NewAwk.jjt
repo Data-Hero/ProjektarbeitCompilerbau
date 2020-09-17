@@ -32,6 +32,7 @@ TOKEN :
 {
     < INT: "int" >
 |   < DOUBLE : "double">
+|   < FLOAT : "float">
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
 |   < STRING : "string" >
