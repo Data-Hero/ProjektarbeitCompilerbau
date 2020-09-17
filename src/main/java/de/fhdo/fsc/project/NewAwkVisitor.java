@@ -1,14 +1,15 @@
 package de.fhdo.fsc.project;
 
+import de.fhdo.fsc.project.DataType.TypeI;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class NewAwkVisitor implements NewAwkParserVisitor {
 
-    private LinkedList stack = new LinkedList();
-    private HashMap symbolTable = new HashMap();
-
-
+    private LinkedList<Object> stack = new LinkedList<>();
+    private HashMap<String, TypeI> symbolTable = new HashMap<>(); // Variablenname -> Type
+    
     @Override
     public Object visit(SimpleNode node, Object data) {
         node.childrenAccept(this, data);
@@ -42,6 +43,9 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTAssingmentExpression node, Object data) {
+        node.childrenAccept(this, data);
+        Object a = pop();
+
         return null;
     }
 
@@ -60,7 +64,10 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         node.childrenAccept(this, data);
         Object a = pop();
         Object b = pop();
-        //stack.addFirst();
+        if(a instanceof Integer && b instanceof Integer) {// Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
+            Integer e = ((Integer) a) + ((Integer) b);
+            stack.addFirst(e);
+        }
         return null;
     }
 
