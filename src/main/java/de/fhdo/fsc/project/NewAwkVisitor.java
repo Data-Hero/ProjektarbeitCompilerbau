@@ -177,7 +177,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     }
 
     @Override
-    public Object visit(ASTlengthDatatype node, Object data) { return null; }
+    public Object visit(ASTLengthDatatype node, Object data) { return null; }
 
     @Override
     public Object visit(ASTBasicDatatype node, Object data) {

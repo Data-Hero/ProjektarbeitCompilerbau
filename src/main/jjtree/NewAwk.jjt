@@ -169,7 +169,7 @@ void UnaryExpression():{} {
     | LOOKAHEAD(2) FunctionCallExpression()
     | IsDatatype()
     | ToDatatype()
-    | lengthDatatype()
+    | LengthDatatype()
     | <STRING_LITERAL>
     | <CHARACTER_LITERAL>
     | <TYPE_LITERAL>
@@ -255,7 +255,7 @@ void ToDatatype():{} {
     <CONTERT_FUNCTION> "(" UnaryExpression() ")"
 }
 
-void lengthDatatype():{} {
+void LengthDatatype():{} {
     <LENGTH_FUNCTION> "(" UnaryExpression() ")"
 }
 
