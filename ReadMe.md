@@ -60,12 +60,84 @@ Todo
 - string
 - types (Custom type)
 
-### Besondere Konstrukte
+## Eingebaute Funktionen
 
-#### Smart switch function
+### isDatatype
+`boolean isDatatype(x, datatype)`
 
-Nach bestimmten Token filtern und diese als Array zurückgeben.
+#### Beschreibung
+Gibt zurück, ob der angegebene Wert dem angegebenen Datentypen entspricht.
 
+#### Parameter
+- `x`: Wert
+- `datatype`: Erwarteter Datentyp
+
+#### Rückgabewert
+`true` falls der Wert dem Datentypen entspricht und `false` falls dies nicht der Fall ist.
+
+#### Beispiele
+- `isDatatype("test", string) == true`
+- `isDatatype(1, string) == false`
+- `isDatatype("1", int) == false`
+- `isDatatype(1, int) == true`
+
+### toDatatype
+`datatype toDatatype(x, datatype)`
+
+#### Beschreibung
+Konvertiert den gegebenen Wert in den angegebenen Datentypen.
+
+#### Parameter
+- `x`: Wert
+- `datatype`: Datentyp zu welchem der angegebene Wert konvertiert wird
+
+#### Rückgabewert
+Falls die Konvertierung möglich ist, wird der Wert mit dem entsprechenden Datentypen zurück gegeben.
+Falls die Konvertierung fehl schlägt wird `NULL` zurückgegeben.
+
+#### Beispiele
+- `toDatatype("1", int) == 1`
+- `toDatatype(1, String) == "1"`
+
+### length
+`int length(x)`
+
+#### Beschreibung
+Ermittelt die Länge des Wertes und gibt diese zurück. 
+
+#### Parameter
+- `x`: Wert
+
+#### Rückgabewert
+Gibt die Länge des Wertes zurück.
+- int: 1
+- double: 1
+- char: 1
+- boolean: 1
+- string: Anzahl der Zeichen
+- type: Anzahl der Optionen
+- Custom Datatype: 1
+- Array: Anzahl der Elemente
+
+#### Beispiele
+- `length("hallo") == 5`
+- `length("a") == 1`
+- `length(5) == 1`
+- `length([a, b, c]) == 3`
+
+### Smart Switch
+`@{  }`
+
+#### Beschreibung
+???
+
+#### Parameter
+???
+
+#### Rückgabewert
+???
+
+#### Beispiel
 ```
 string test = "a.b.c.d";
 string[] x = test@{
@@ -75,10 +147,16 @@ string[] x = test@{
 // x = [".", ".", "."]
 ```
 
-#### Addition von Arrays
+### Besonderes Verhalten
 
-["a", "b", "c"] + ["c", "d", "e", "f"] == ["a", "b", "c", "d", "e", "f"]
+#### Addition von Arrays
+Bei der Addition von zwei Arrays werden die Arrays mengenmäßig vereinigt. 
+`["a", "b", "c"] + ["c", "d", "e", "f"] == ["a", "b", "c", "d", "e", "f"]`
 
 #### Subtraktion von Arrays
+Bei der Subtraktion von Arrays werden die überschneidenden Elemente aus dem ersten Array entfernt.
+`["a", "b", "c", "d", "e", "f"] - ["a", "b", "c"] == ["d", "e", "f"]`
 
-["a", "b", "c", "d", "e", "f"] - ["a", "b", "c"] == ["d", "e", "f"]
+#### Addition von Strings und anderen Datentypen
+Bei der Addition von Strings und anderen Datentypen, werden die anderen Datentypen implizit zu Strings konvertiert.
+`"Hallo" + 5 == "Hallo5"`
