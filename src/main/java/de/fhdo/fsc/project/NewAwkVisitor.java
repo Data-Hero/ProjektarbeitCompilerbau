@@ -1,7 +1,7 @@
 package de.fhdo.fsc.project;
 
 import de.fhdo.fsc.project.DataType.ArrayType;
-import de.fhdo.fsc.project.DataType.TypeException;
+import de.fhdo.fsc.project.DataType.TypeError;
 import de.fhdo.fsc.project.DataType.TypeI;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     }
 
     @Override
-    public Object visit(ASTAdditiveExpression node, Object data) throws TypeException {
+    public Object visit(ASTAdditiveExpression node, Object data) {
         node.childrenAccept(this, data);
         Object a = pop();
         Object b = pop();
@@ -97,7 +97,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
                 newList.addAll((List<Object>)a);
                 newList.addAll((List<Object>)b);
             } else {
-                throw new TypeException();
+                throw new TypeError();
             }
         } else if (isExpression(aType) && isExpression(bType)) {
             String e = String.valueOf(a) + String.valueOf(b);
@@ -237,7 +237,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         return stack.removeFirst();
     }
 
-    private void arrayAddition(Object a, Object b) throws TypeException {
+    private void arrayAddition(Object a, Object b) {
         TypeI aType = symbolTable.get(a);
         TypeI bType = symbolTable.get(b);
         ArrayType oldArrayType = (ArrayType)bType;
@@ -248,7 +248,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
             array.addAll((List<Object>) b);
             stack.addFirst(array);
         } else
-            throw new TypeException();
+            throw new TypeError();
     }
 
     private boolean isExpression(TypeI t) {
