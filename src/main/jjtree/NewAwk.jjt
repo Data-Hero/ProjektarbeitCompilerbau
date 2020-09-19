@@ -130,11 +130,15 @@ void Block():{} {
 
 // Expressions
 void Expression():{} {
-    AssingmentExpression()
+    VariableDefinitionExpression()
+}
+
+void VariableDefinitionExpression():{} {
+    [LOOKAHEAD(Datatype() Identifier()) Datatype()] AssingmentExpression()
 }
 
 void AssingmentExpression():{} {
-    [LOOKAHEAD(Datatype() Identifier()) Datatype()] Identifier() ("=" LogicalExpression())*
+    Identifier() ("=" LogicalExpression())*
 }
 
 void LogicalExpression():{} {

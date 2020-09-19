@@ -46,6 +46,11 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     }
 
     @Override
+    public Object visit(ASTVariableDefinitionExpression node, Object data) {
+        return null;
+    }
+
+    @Override
     public Object visit(ASTAssingmentExpression node, Object data) {
         node.childrenAccept(this, data);
         Object a = pop();
