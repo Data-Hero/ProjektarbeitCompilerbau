@@ -14,6 +14,10 @@ public class Type implements TypeI{
         return this instanceof NumericType;
     }
 
+    public boolean isArrayType() {
+        return this instanceof ArrayType;
+    }
+
     @Override
     public String getName() {
         return name;

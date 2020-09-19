@@ -5,5 +5,6 @@ public interface TypeI {
     public boolean explicitTo(TypeI o);
     public boolean implicitTo(TypeI k);
     public boolean isNumericType();
+    public boolean isArrayType();
     public String getName();
 }
