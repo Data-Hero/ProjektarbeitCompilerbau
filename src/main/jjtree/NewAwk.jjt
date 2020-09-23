@@ -108,7 +108,7 @@ TOKEN :
 
 void DateTime() : {}{<DATE><TIME><AMPM>}
 
-SimpleNode Start():{} {
+ASTStart Start():{} {
     (LOOKAHEAD(3) FunctionDefinition())*
     (Element())+
     <EOF>
@@ -130,7 +130,7 @@ void Block():{} {
 
 // Expressions
 void Expression():{} {
-    VariableDefinitionExpression()
+    AssingmentExpression()
 }
 /**
 *     < INT: "int" >
@@ -143,13 +143,16 @@ void Expression():{} {
   |   < VOID : "void" >
 */
 
-
-void VariableDefinitionExpression():{} {
-    [LOOKAHEAD(Datatype() Identifier()) Datatype()] AssingmentExpression()
+void AssingmentExpression():{} {
+    VariableDefinitionExpression() ("=" LogicalExpression() { jjtThis.data.put("value", token.image); })*
 }
 
-void AssingmentExpression():{} {
-    Identifier() ("=" LogicalExpression())*
+void VariableDefinitionExpression():{} {
+    [
+        LOOKAHEAD(Datatype() Identifier())
+        Datatype() { jjtThis.data.put("type", token.image); }
+    ]
+    Identifier() { jjtThis.data.put("name", token.image); }
 }
 
 void LogicalExpression():{} {

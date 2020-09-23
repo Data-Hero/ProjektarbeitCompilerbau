@@ -3,6 +3,7 @@ package de.fhdo.fsc.project;
 import de.fhdo.fsc.project.DataType.ArrayType;
 import de.fhdo.fsc.project.DataType.TypeError;
 import de.fhdo.fsc.project.DataType.TypeI;
+import de.fhdo.fsc.project.DataType.Types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +14,21 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     private LinkedList<Object> stack = new LinkedList<>();
     private HashMap<String, TypeI> symbolTable = new HashMap<>(); // Variablenname -> Type
-    
+    private List<TypeI> types = new ArrayList<>();
+
+    public NewAwkVisitor() {
+        types.add(Types.intType);
+        types.add(Types.doubleType);
+        types.add(Types.charType);
+        types.add(Types.boolType);
+        types.add(Types.stringType);
+        types.add(Types.typeType);
+    }
+
     @Override
     public Object visit(SimpleNode node, Object data) {
         node.childrenAccept(this, data);
-        return symbolTable;
+        return null;
     }
 
     @Override
@@ -27,34 +38,52 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTStart node, Object data) {
+        node.childrenAccept(this, data);
         //System.out.println(data.toString());
-        return null;
+        return symbolTable;
     }
 
     @Override
     public Object visit(ASTElement node, Object data) {
+        node.childrenAccept(this, data);
         return null;
     }
 
     @Override
     public Object visit(ASTBlock node, Object data) {
+        node.childrenAccept(this, data);
         return null;
     }
 
     @Override
     public Object visit(ASTExpression node, Object data) {
+        node.childrenAccept(this, data);
         return null;
     }
 
     @Override
     public Object visit(ASTVariableDefinitionExpression node, Object data) {
+        node.childrenAccept(this, data);
+
+        String name = (String)node.data.get("name");
+        String type = (String)node.data.get("type");
+
+        TypeI typeI = this.findType(type);
+
+        if (typeI != null) {
+            symbolTable.put(name, typeI);
+        }
+
         return null;
     }
 
     @Override
     public Object visit(ASTAssingmentExpression node, Object data) {
         node.childrenAccept(this, data);
-        //System.out.println("AssignmentExpr: "+node.data.get("name"));
+
+        String value = (String)node.data.get("value");
+        System.out.println("AssignmentExpr: " + value);
+
         //Object a = pop();
         return null;
     }
@@ -268,6 +297,10 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     private boolean isExpression(TypeI t) {
         return !t.isArrayType() && !t.isNumericType();
+    }
+
+    private TypeI findType(String name) {
+        return this.types.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
     }
 
 }
