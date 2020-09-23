@@ -132,6 +132,17 @@ void Block():{} {
 void Expression():{} {
     VariableDefinitionExpression()
 }
+/**
+*     < INT: "int" >
+  |   < DOUBLE : "double">
+  |   < FLOAT : "float">
+  |   < CHAR : "char">
+  |   < BOOLEAN : "boolean">
+  |   < STRING : "string" >
+  |   < TYPE : "type">
+  |   < VOID : "void" >
+*/
+
 
 void VariableDefinitionExpression():{} {
     [LOOKAHEAD(Datatype() Identifier()) Datatype()] AssingmentExpression()
@@ -172,14 +183,14 @@ void PrefixExpression():{} {
 void UnaryExpression():{} {
     LOOKAHEAD(2) "(" LogicalExpression() ")"
     | LOOKAHEAD(2) FunctionCallExpression()
-    | IsDatatype()
-    | ToDatatype()
-    | LengthDatatype()
-    | <STRING_LITERAL>
-    | <CHARACTER_LITERAL>
-    | <TYPE_LITERAL>
-    | <INTEGER_LITERAL>
-    | <FLOATING_POINT_LITERAL>
+    | IsDatatype()                      { jjtThis.data.put("value", token.image); }
+    | ToDatatype()                      { jjtThis.data.put("value", token.image); }
+    | LengthDatatype()                  { jjtThis.data.put("value", token.image); }
+    | <STRING_LITERAL>                  { jjtThis.data.put("value", token.image); }
+    | <CHARACTER_LITERAL>               { jjtThis.data.put("value", token.image); }
+    | <TYPE_LITERAL>                    { jjtThis.data.put("value", token.image); }
+    | <INTEGER_LITERAL>                 { jjtThis.data.put("value", token.image); }
+    | <FLOATING_POINT_LITERAL>          { jjtThis.data.put("value", token.image); }
     | <NULL>
     | Identifier()
 }
@@ -199,6 +210,9 @@ void StringExpression():{} {
 
 void Identifier():{} {
     <IDENTIFIER>
+    {
+        jjtThis.data.put("name", token.image);
+    }
 }
 
 // Function

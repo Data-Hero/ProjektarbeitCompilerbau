@@ -16,6 +16,8 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     
     @Override
     public Object visit(SimpleNode node, Object data) {
+        System.out.println(data.toString());
+        System.out.println(node.data);
         node.childrenAccept(this, data);
         return symbolTable;
     }
@@ -27,6 +29,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTStart node, Object data) {
+        System.out.println(data.toString());
         return null;
     }
 
@@ -35,7 +38,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         return null;
     }
 
-    @Override
+
     public Object visit(ASTBlock node, Object data) {
         return null;
     }
@@ -53,7 +56,8 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     @Override
     public Object visit(ASTAssingmentExpression node, Object data) {
         node.childrenAccept(this, data);
-        Object a = pop();
+        System.out.println("AssignmentExpr"+node.data.get("name"));
+        //Object a = pop();
         return null;
     }
 
@@ -70,7 +74,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     @Override
     public Object visit(ASTAdditiveExpression node, Object data) {
         node.childrenAccept(this, data);
-        Object a = pop();
+        /*Object a = pop();
         Object b = pop();
         TypeI aType = symbolTable.get(a);
         TypeI bType = symbolTable.get(b);
@@ -82,7 +86,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
          * + Array + Array (Array concatenate)
          * - Expression + Expression (String concat)
          * - Expression + Array (concat if baseTyp = Expression, otherwise TypeError)
-         */
+
         if(aType.isNumericType() && symbolTable.get(b).isNumericType()) {// Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
             Double e = ((Double) a) + ((Double) b); //TODO Save only int or char if its only int or char
             stack.addFirst(e);                      //TODO do i have to save e into my symbolTable?
@@ -111,7 +115,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
             arrayAddition(a,b);
         } else {
             arrayAddition(b,a);
-        }
+        }*/
         return null;
     }
 
@@ -137,6 +141,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTUnaryExpression node, Object data) {
+        System.out.println("Unary: "+node.data.get("value"));
         return null;
     }
 
@@ -152,6 +157,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTIdentifier node, Object data) {
+        System.out.println("Identifier: "+node.data.get("name"));
         return null;
     }
 
