@@ -12,6 +12,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     private LinkedList<Object> stack = new LinkedList<>();
     private HashMap<String, TypeI> symbolTable = new HashMap<>(); // Variablenname -> Type
     private List<TypeI> types = new ArrayList<>();
+    public static final String SPECIAL_INVISIBLE_VARIABLE_SIGN = "!";
 
     public NewAwkVisitor() {
         types.add(Types.intType);
@@ -28,10 +29,10 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         return null;
     }
 
-    @Override
+    /*@Override
     public Object visit(ASTDateTime node, Object data) {
         return null;
-    }
+    }*/
 
     @Override
     public Object visit(ASTStart node, Object data) {
@@ -82,7 +83,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         System.out.println("AssignmentExpr: " + value);
 
         if (value.charAt(0) == '>') {
-            String typename = value.substring(1, value.length()-2);
+            String typename = value.substring(2, value.length()-3);
             types.add(new Type(typename));
         }
         //Object a = pop();
@@ -98,22 +99,22 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     public Object visit(ASTCompareExpression node, Object data) {
         return null;
     }
-
+    /**
+     * Cases (commutative):
+     * + Numeric + Numeric (add)
+     * + Numeric + Expression (String concatenate)
+     * + Numeric + Array (Array concatenate)
+     * + Array + Array (Array concatenate)
+     * - Expression + Expression (String concat)
+     * - Expression + Array (concat if baseTyp = Expression, otherwise TypeError)
+     **/
     @Override
     public Object visit(ASTAdditiveExpression node, Object data) {
         node.childrenAccept(this, data);
-        /*Object a = pop();
+        /*Object a = pop();  // see TODO in jjt
         Object b = pop();
         TypeI aType = symbolTable.get(a);
         TypeI bType = symbolTable.get(b);
-        /**
-         * Cases (commutative):
-         * + Numeric + Numeric (add)
-         * + Numeric + Expression (String concatenate)
-         * + Numeric + Array (Array concatenate)
-         * + Array + Array (Array concatenate)
-         * - Expression + Expression (String concat)
-         * - Expression + Array (concat if baseTyp = Expression, otherwise TypeError)
 
         if(aType.isNumericType() && symbolTable.get(b).isNumericType()) {// Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
             Double e = ((Double) a) + ((Double) b); //TODO Save only int or char if its only int or char
@@ -176,6 +177,21 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     @Override
     public Object visit(ASTValueExpression node, Object data) {
         System.out.println("ASTValueExpression: "+node.data.get("value"));
+
+        TypeI type = ((TypeI)node.data.get("type"));
+        String tname;
+        if(type != null)
+            tname = type.getName();
+        else
+            tname = "void";
+
+        System.out.println("ASTValueExpression Type: "+ tname);
+
+
+
+        stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + node.data.get("value"));
+        symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + node.data.get("value"),type);
+
         return null;
     }
 

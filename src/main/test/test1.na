@@ -8,11 +8,13 @@ void test() {
 }
 
 int x = 7;
+int w = 7;
+int x2 = x + 1;
+
 double y = 1.2;
 string z = "Hello " + "world!";
 int a = main();
 int b = main(1);
-
 x = 9;
 
 type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<;

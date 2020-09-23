@@ -6,6 +6,7 @@ options { STATIC = false; MULTI=true; VISITOR=true; NODE_EXTENDS="BaseNode";}
 PARSER_BEGIN(NewAwkParser)
 package de.fhdo.fsc.project;
 
+import de.fhdo.fsc.project.DataType.Types;
 import java.io.FileReader;
 
 public class NewAwkParser {
@@ -17,6 +18,7 @@ public class NewAwkParser {
             } catch (Exception e) { System.out.println(e); }
     }
 }
+
 PARSER_END(NewAwkParser)
 
 SKIP : {
@@ -106,7 +108,7 @@ TOKEN :
     < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
-void DateTime() : {}{<DATE><TIME><AMPM>}
+//void DateTime() : {}{<DATE><TIME><AMPM>}
 
 ASTStart Start():{} {
     (LOOKAHEAD(3) FunctionDefinition())*
@@ -163,6 +165,7 @@ void CompareExpression():{} {
     AdditiveExpression() [("==" | "!=" | "<=" | ">=" | "<" | ">") CompareExpression()]
 }
 
+// TODO do not execute if no 2 values, or flag that no 2 values exist
 void AdditiveExpression():{} {
     MultiplicativeExpression() [("+" | "-") AdditiveExpression()]
 }
@@ -193,13 +196,13 @@ void UnaryExpression():{} {
 }
 
 void ValueExpression():{} {
-    (<STRING_LITERAL>
-    | <CHARACTER_LITERAL>
-    | <TYPE_LITERAL>
-    | <INTEGER_LITERAL>
-    | <FLOATING_POINT_LITERAL>
-    | <NULL>
-    | Identifier()) { jjtThis.data.put("value", token.image); }
+    (<STRING_LITERAL>           { jjtThis.data.put("type", Types.stringType);  }
+    | <CHARACTER_LITERAL>       { jjtThis.data.put("type", Types.charType);  }
+    | <TYPE_LITERAL>            { jjtThis.data.put("type", Types.typeType);  }
+    | <INTEGER_LITERAL>         { jjtThis.data.put("type", Types.intType);  }
+    | <FLOATING_POINT_LITERAL>  { jjtThis.data.put("type", Types.doubleType);  }
+    | <NULL>                    { jjtThis.data.put("type", null);  }
+    | Identifier()) { jjtThis.data.put("value", token.image);  }
 }
 
 void FunctionCallExpression():{} {
