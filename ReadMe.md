@@ -24,7 +24,7 @@ Todo
 
 - ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)  Lexikalische Analyse (Scanner)
 - ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)  Syntax-Analyse (Parser)
-- Semantische Analyse
+- ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)  Semantische Analyse
 - Fehlerbehandlung
 - Codeerzeugung/Interpreter (Codegenerator)
 - zusätzliche Info:
