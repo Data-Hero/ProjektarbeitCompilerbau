@@ -183,16 +183,20 @@ void PrefixExpression():{} {
 void UnaryExpression():{} {
     LOOKAHEAD(2) "(" LogicalExpression() ")"
     | LOOKAHEAD(2) FunctionCallExpression()
-    | IsDatatype()                      { jjtThis.data.put("value", token.image); }
-    | ToDatatype()                      { jjtThis.data.put("value", token.image); }
-    | LengthDatatype()                  { jjtThis.data.put("value", token.image); }
-    | <STRING_LITERAL>                  { jjtThis.data.put("value", token.image); }
-    | <CHARACTER_LITERAL>               { jjtThis.data.put("value", token.image); }
-    | <TYPE_LITERAL>                    { jjtThis.data.put("value", token.image); }
-    | <INTEGER_LITERAL>                 { jjtThis.data.put("value", token.image); }
-    | <FLOATING_POINT_LITERAL>          { jjtThis.data.put("value", token.image); }
+    | IsDatatype()
+    | ToDatatype()
+    | LengthDatatype()
+    | ValueExpression()
+}
+
+void ValueExpression():{} {
+    (<STRING_LITERAL>
+    | <CHARACTER_LITERAL>
+    | <TYPE_LITERAL>
+    | <INTEGER_LITERAL>
+    | <FLOATING_POINT_LITERAL>
     | <NULL>
-    | Identifier()
+    | Identifier()) { jjtThis.data.put("value", token.image); }
 }
 
 void FunctionCallExpression():{} {

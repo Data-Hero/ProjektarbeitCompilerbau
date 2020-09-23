@@ -30,8 +30,8 @@ public class Main {
 
     private static void traverseNodes(SimpleNode node, NewAwkParserVisitor visitor) {
         for(int i=0;i<node.jjtGetNumChildren();i++) {
-            System.out.println(node.value);
-            System.out.println(node.getClass().getSimpleName());
+            //System.out.println(node.value);
+            //System.out.println(node.getClass().getSimpleName());
             SimpleNode simpleNode = (SimpleNode)node.jjtGetChild(i);
             simpleNode.jjtAccept(visitor, null);
             traverseNodes(simpleNode, visitor);

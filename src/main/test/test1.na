@@ -33,7 +33,7 @@ while (a == 2) {
 }
 
 foreach (test in test) {
-  test = length("zwei");
-  test = toDouble(5);
-  test = isBoolean(y);
+  test1 = length("zwei");
+  test2 = toDouble(5);
+  test3 = isBoolean(y);
 }

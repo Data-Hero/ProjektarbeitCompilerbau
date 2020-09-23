@@ -16,8 +16,6 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     
     @Override
     public Object visit(SimpleNode node, Object data) {
-        System.out.println(data.toString());
-        System.out.println(node.data);
         node.childrenAccept(this, data);
         return symbolTable;
     }
@@ -29,7 +27,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTStart node, Object data) {
-        System.out.println(data.toString());
+        //System.out.println(data.toString());
         return null;
     }
 
@@ -38,7 +36,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         return null;
     }
 
-
+    @Override
     public Object visit(ASTBlock node, Object data) {
         return null;
     }
@@ -56,7 +54,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     @Override
     public Object visit(ASTAssingmentExpression node, Object data) {
         node.childrenAccept(this, data);
-        System.out.println("AssignmentExpr"+node.data.get("name"));
+        //System.out.println("AssignmentExpr: "+node.data.get("name"));
         //Object a = pop();
         return null;
     }
@@ -141,7 +139,13 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTUnaryExpression node, Object data) {
-        System.out.println("Unary: "+node.data.get("value"));
+        //System.out.println("Unary: "+node.data.get("value"));
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTValueExpression node, Object data) {
+        System.out.println("ASTValueExpression: "+node.data.get("value"));
         return null;
     }
 
