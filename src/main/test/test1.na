@@ -9,7 +9,7 @@ void test() {
 
 int x = 7;
 double y = 1.2;
-string z = "Hello world!";
+string z = "Hello " + "world!";
 int a = main();
 int b = main(1);
 

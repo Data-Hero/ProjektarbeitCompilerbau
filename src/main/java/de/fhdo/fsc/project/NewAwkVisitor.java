@@ -1,9 +1,6 @@
 package de.fhdo.fsc.project;
 
-import de.fhdo.fsc.project.DataType.ArrayType;
-import de.fhdo.fsc.project.DataType.TypeError;
-import de.fhdo.fsc.project.DataType.TypeI;
-import de.fhdo.fsc.project.DataType.Types;
+import de.fhdo.fsc.project.DataType.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +81,10 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         String value = (String)node.data.get("value");
         System.out.println("AssignmentExpr: " + value);
 
+        if (value.charAt(0) == '>') {
+            String typename = value.substring(1, value.length()-2);
+            types.add(new Type(typename));
+        }
         //Object a = pop();
         return null;
     }
