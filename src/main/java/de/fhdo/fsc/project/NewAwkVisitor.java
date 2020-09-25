@@ -50,6 +50,9 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     @Override
     public Object visit(ASTBlock node, Object data) {
         node.childrenAccept(this, data);
+        String name = (String)node.data.get("name");
+        String type = (String)node.data.get("type");
+        System.out.println("Block: " + name);
         return null;
     }
 
@@ -111,14 +114,21 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     @Override
     public Object visit(ASTAdditiveExpression node, Object data) {
         node.childrenAccept(this, data);
-        /*Object a = pop();  // see TODO in jjt
+        String sign = (String)node.data.get("sign");
+        System.out.println(sign);
+        if (sign == null || !sign.equals("+"))
+            return null;
+        Object a = pop();  // see TODO in jjt
         Object b = pop();
         TypeI aType = symbolTable.get(a);
         TypeI bType = symbolTable.get(b);
-
-        if(aType.isNumericType() && symbolTable.get(b).isNumericType()) {// Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
-            Double e = ((Double) a) + ((Double) b); //TODO Save only int or char if its only int or char
-            stack.addFirst(e);                      //TODO do i have to save e into my symbolTable?
+        a = toValue(a.toString());
+        b = toValue(b.toString());
+        if(aType.isNumericType() && bType.isNumericType()) {                            // Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
+            Double e = Double.parseDouble((String)a) + Double.parseDouble((String)b);   //TODO Save only int or char if its only int or char
+            symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + e,
+                    getTypeWithLargerRank((NumericType) aType,(NumericType) bType));
+            stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + e);                                                          //TODO do i have to save e into my symbolTable?
         } else if (aType.isNumericType() && !bType.isArrayType()
                 || !aType.isArrayType() && bType.isNumericType()) {     // Numeric Type and non-array, non-numeric type
             String e = String.valueOf(a) + String.valueOf(b);
@@ -144,12 +154,45 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
             arrayAddition(a,b);
         } else {
             arrayAddition(b,a);
-        }*/
+        }
         return null;
     }
 
     @Override
     public Object visit(ASTMultiplicativeExpression node, Object data) {
+        node.childrenAccept(this, data);
+        String sign = (String)node.data.get("sign");
+        System.out.println(sign);
+        if (sign == null)
+            return null;
+        Object a = pop();  // just int and double
+        Object b = pop();
+        try {
+            Double doubleA = Double.valueOf(toValue(a.toString()));
+            Double doubleB = Double.valueOf(toValue(b.toString()));
+            Double result;
+
+            if (sign.equals("*"))
+                result = doubleA * doubleB;
+            else if (sign.equals("/"))
+                result = doubleA / doubleB;
+            else
+                throw new ArithmeticException();
+
+            if (result.doubleValue()==result.intValue()) {
+                Integer actualResult = result.intValue();
+                stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + actualResult);
+                symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + actualResult, Types.intType);
+            } else {
+                stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + result);
+                symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + result, Types.doubleType);
+            }
+        }catch (NumberFormatException e) {
+            e.printStackTrace();
+        }catch (ArithmeticException ae) {
+            ae.printStackTrace();
+        }
+
         return null;
     }
 
@@ -187,8 +230,6 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
         System.out.println("ASTValueExpression Type: "+ tname);
 
-
-
         stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + node.data.get("value"));
         symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + node.data.get("value"),type);
 
@@ -207,22 +248,30 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTIdentifier node, Object data) {
+        node.childrenAccept(this, data);
+
         System.out.println("Identifier: "+node.data.get("name"));
         return null;
     }
 
     @Override
     public Object visit(ASTFunctionReturnExpression node, Object data) {
+        node.childrenAccept(this, data);
         return null;
     }
 
     @Override
     public Object visit(ASTFunctionBodyDefinition node, Object data) {
+        node.childrenAccept(this, data);
+
         return null;
     }
 
     @Override
     public Object visit(ASTFunctionHeaderDefinition node, Object data) {
+        node.childrenAccept(this, data);
+        System.out.println("ReturnType: "+node.data.get("returnType"));
+        System.out.println("NumberOfParameters: "+node.data.get("counter"));
         return null;
     }
 
@@ -318,6 +367,19 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     private TypeI findType(String name) {
         return this.types.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    private String toValue(String input) {
+        String result = input;
+        if (result.charAt(0)=='!')
+            result = result.substring(1);
+        if (result.charAt(0)=='"' || result.charAt(0)=='>')
+            result = result.substring(1,result.length()-1);
+        return result;
+    }
+
+    private TypeI getTypeWithLargerRank(NumericType a, NumericType b) {
+        return a.getRank() >= b.getRank()?a:b;
     }
 
 }

@@ -8,4 +8,12 @@ public class NumericType extends Type{
         super(name);
         this.rank = rank;
     }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 }

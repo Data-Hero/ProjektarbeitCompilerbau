@@ -1,9 +1,9 @@
-int main(string[][] args) {
+int main(string[][] args, int y) {
     int x = 5;
     return x;
 }
 
-void test() {
+void test(int x) {
     string test = "Test";
 }
 

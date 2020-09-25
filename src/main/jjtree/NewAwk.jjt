@@ -167,7 +167,7 @@ void CompareExpression():{} {
 
 // TODO do not execute if no 2 values, or flag that no 2 values exist
 void AdditiveExpression():{} {
-    MultiplicativeExpression() [("+" | "-") AdditiveExpression()]
+    MultiplicativeExpression() [("+" | "-") { jjtThis.data.put("sign", token.image); } AdditiveExpression() ]
 }
 
 void MultiplicativeExpression():{} {
@@ -227,7 +227,7 @@ void Identifier():{} {
 
 // Function
 void FunctionReturnExpression():{} {
-    <RETURN> [LogicalExpression()] <EXPRESSION_TERMINATOR>
+    <RETURN> [LogicalExpression() ] <EXPRESSION_TERMINATOR>
 }
 
 void FunctionBodyDefinition():{} {
@@ -235,7 +235,15 @@ void FunctionBodyDefinition():{} {
 }
 
 void FunctionHeaderDefinition():{} {
-    ReturnDatatype() Identifier() "(" (LOOKAHEAD(2) Datatype() Identifier())? (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() Identifier())* ")"
+    //{ ArrayList<Object> parameterTypes = new ArrayList<Object>(); ArrayList<Object> parameterIdentifier = new ArrayList<Object>(); jjtThis.data.put("parameterTypes",parameterTypes); jjtThis.data.put("parameterIdentifier",parameterIdentifier)}
+    /*ReturnDatatype()  { jjtThis.data.put("returnType", token.image); }
+    Identifier() { ;jjtThis.data.put("identifier", token.beginLine); }
+    "(" (LOOKAHEAD(2)
+    Datatype() { jjtThis.data.put("counter",1); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
+    Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+jjtThis.data.get("counter"));} )?
+    (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
+    Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+jjtThis.data.get("counter")) })* ")"*/
+    ReturnDatatype() { jjtThis.data.put("returnType", token.image); } Identifier()  { ;jjtThis.data.put("identifier", token.beginLine); } "(" (LOOKAHEAD(2) Datatype() Identifier())? (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() Identifier())* ")"
 }
 
 void FunctionDefinition():{} {
