@@ -271,7 +271,13 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     public Object visit(ASTFunctionHeaderDefinition node, Object data) {
         node.childrenAccept(this, data);
         System.out.println("ReturnType: "+node.data.get("returnType"));
-        System.out.println("NumberOfParameters: "+node.data.get("counter"));
+        // if counter exists
+        System.out.println("NumberOfParameters: "+(int)node.data.get("counter"));
+
+        for (int i = 1; i < (int)node.data.get("counter"); i++) {
+            System.out.println("Identifier" + i + ": " + node.data.get("param" + i + "Identifier"));
+        }
+
         return null;
     }
 

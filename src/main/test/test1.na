@@ -7,6 +7,10 @@ void test(int x) {
     string test = "Test";
 }
 
+void test2() {
+    string test2 = "Test2";
+}
+
 int x = 7;
 int w = 7;
 int x2 = x + 1;
