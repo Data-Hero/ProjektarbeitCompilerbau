@@ -102,6 +102,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
     public Object visit(ASTCompareExpression node, Object data) {
         return null;
     }
+
     /**
      * Cases (commutative):
      * + Numeric + Numeric (add)
@@ -125,10 +126,10 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         a = toValue(a.toString());
         b = toValue(b.toString());
         if(aType.isNumericType() && bType.isNumericType()) {                            // Integer, Double, Character, Boolean, String, Array (Konkatenation und Entfernen von gleichen Elementen)
-            Double e = Double.parseDouble((String)a) + Double.parseDouble((String)b);   //TODO Save only int or char if its only int or char
+            Double e = Double.parseDouble((String)a) + Double.parseDouble((String)b);   // TODO Save only int or char if its only int or char
             symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + e,
                     getTypeWithLargerRank((NumericType) aType,(NumericType) bType));
-            stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + e);                                                          //TODO do i have to save e into my symbolTable?
+            stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + e);                     // TODO do i have to save e into my symbolTable?
         } else if (aType.isNumericType() && !bType.isArrayType()
                 || !aType.isArrayType() && bType.isNumericType()) {     // Numeric Type and non-array, non-numeric type
             String e = String.valueOf(a) + String.valueOf(b);
@@ -217,6 +218,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         return null;
     }
 
+
     @Override
     public Object visit(ASTValueExpression node, Object data) {
         System.out.println("ASTValueExpression: "+node.data.get("value"));
@@ -267,17 +269,45 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         return null;
     }
 
+    /**
+     * Identifier into the stack, Type consists of Name (Identifier), returnType and Parameter (Array of Types)
+     * @param node
+     * @param data
+     * @return
+     */
     @Override
     public Object visit(ASTFunctionHeaderDefinition node, Object data) {
         node.childrenAccept(this, data);
-        System.out.println("ReturnType: "+node.data.get("returnType"));
-        // if counter exists
-        System.out.println("NumberOfParameters: "+(int)node.data.get("counter"));
+        TypeI returnType = new Type((String) node.data.get("returnType"));
 
-        for (int i = 1; i < (int)node.data.get("counter"); i++) {
-            System.out.println("Identifier" + i + ": " + node.data.get("param" + i + "Identifier"));
+        // if counter (NumberOfParameters) doesnt exist return
+        if (node.data.get("counter") == null)
+            return null;
+        int numberOfParameters = (int)node.data.get("counter");
+        TypeI[] parameterType = new TypeI[numberOfParameters];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < numberOfParameters; i++) {
+            // TODO scheint immer null übergeben zu kriegen
+            if (node.data.get(sb.append("param")
+                    .append(i)
+                    .append("Type").toString()) == null) {
+                String s = (String)node.data.get(sb.append("param")
+                        .append(i)
+                        .append("Type").toString());
+                System.out.println(s);
+                continue;
+            }
+
+
+            parameterType[i] = new Type((String) node.data.get(sb.append("param")
+                                                                    .append(i)
+                                                                    .append("Type").toString()));
         }
-
+        String functionIdentifier = (String)node.data.get("identifier");
+        TypeI functionType = new FunctionType(functionIdentifier, returnType, parameterType);
+        System.out.println(functionType.toString());
+        stack.add(functionIdentifier);
+        symbolTable.put(functionIdentifier, functionType);
         return null;
     }
 
@@ -323,6 +353,11 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTIsDatatype node, Object data) {
+        node.childrenAccept(this, data);
+
+        Object value = node.data.get("value");
+        Boolean b = value instanceof Type;
+        stack.add(b);
         return null;
     }
 

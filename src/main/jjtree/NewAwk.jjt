@@ -236,7 +236,7 @@ void FunctionBodyDefinition():{} {
 
 void FunctionHeaderDefinition():{} {
     //{ ArrayList<Object> parameterTypes = new ArrayList<Object>(); ArrayList<Object> parameterIdentifier = new ArrayList<Object>(); jjtThis.data.put("parameterTypes",parameterTypes); jjtThis.data.put("parameterIdentifier",parameterIdentifier)}
-    ReturnDatatype()  { jjtThis.data.put("returnType", token.image); } Identifier() { ;jjtThis.data.put("identifier", token.beginLine); } "(" (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",1); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); } Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));} )? (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); } Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));})* ")"
+    ReturnDatatype()  { jjtThis.data.put("returnType", token.image); } Identifier() { ;jjtThis.data.put("identifier", token.image); } "(" (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); } Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));} )? (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); } Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));})* ")"
 }
 
 void FunctionDefinition():{} {
@@ -278,7 +278,7 @@ void SmartSwitchDefinition():{} {
 
 // Integrated Funtions
 void IsDatatype():{} {
-     <CHECKTYPE_FUNCTION> "(" UnaryExpression() ")"
+     <CHECKTYPE_FUNCTION> { jjtThis.data.put("function", token.image); } "(" UnaryExpression() { jjtThis.data.put("value", token.image); } ")"
 }
 
 void ToDatatype():{} {

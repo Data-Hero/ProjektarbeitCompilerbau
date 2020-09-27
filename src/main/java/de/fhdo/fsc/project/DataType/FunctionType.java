@@ -1,5 +1,7 @@
 package de.fhdo.fsc.project.DataType;
 
+import java.util.Arrays;
+
 public class FunctionType extends Type{
 
     private TypeI returnType;
@@ -25,5 +27,14 @@ public class FunctionType extends Type{
 
     public void setParameterList(TypeI[] parameterList) {
         this.parameterList = parameterList;
+    }
+
+    @Override
+    public String toString() {
+        return "FunctionType{" +
+                "returnType=" + returnType +
+                ", parameterList=" + Arrays.toString(parameterList) +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
