@@ -129,7 +129,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
             Double e = Double.parseDouble((String)a) + Double.parseDouble((String)b);   // TODO Save only int or char if its only int or char
             symbolTable.put(SPECIAL_INVISIBLE_VARIABLE_SIGN + e,
                     getTypeWithLargerRank((NumericType) aType,(NumericType) bType));
-            stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + e);                     // TODO do i have to save e into my symbolTable?
+            stack.addFirst(SPECIAL_INVISIBLE_VARIABLE_SIGN + e);
         } else if (aType.isNumericType() && !bType.isArrayType()
                 || !aType.isArrayType() && bType.isNumericType()) {     // Numeric Type and non-array, non-numeric type
             String e = String.valueOf(a) + String.valueOf(b);
@@ -145,6 +145,7 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
                 List<Object> newList = new ArrayList<>();
                 newList.addAll((List<Object>)a);
                 newList.addAll((List<Object>)b);
+                stack.addFirst(newList);                                                // Array name?
             } else {
                 throw new TypeError();
             }
@@ -240,6 +241,27 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
 
     @Override
     public Object visit(ASTFunctionCallExpression node, Object data) {
+        node.childrenAccept(this, data);
+        String identifier = (String) node.data.get("identifier");
+        FunctionType functionType = (FunctionType) symbolTable.get(identifier);
+
+        // if counter (NumberOfParameters) doesnt exist return
+        if (node.data.get("counter") == null)
+            return null;
+
+        int numberOfParameters = (int)node.data.get("counter");
+        Object[] parameters = new Object[numberOfParameters];
+        TypeI paramType;
+        for (int i = 0; i < numberOfParameters; i++) {
+            parameters[i] = stack.pop();                                // TODO they should be precomputed, how to read type?
+
+            // Type Check
+            paramType = functionType.getParameterList()[i];
+            /**if (!paramType.equals()) {
+
+            }**/
+        }
+
         return null;
     }
 

@@ -206,7 +206,9 @@ void ValueExpression():{} {
 }
 
 void FunctionCallExpression():{} {
-    Identifier() "(" [LogicalExpression() (<ENUM_SEPERATOR> LogicalExpression())*] ")"
+    Identifier() { jjtThis.data.put("identifier", token.image); } "("
+    [LogicalExpression()  { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Value", token.image); }
+    (<ENUM_SEPERATOR> LogicalExpression())* { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Value", token.image); }]  ")"
 }
 
 void StringExpression():{} {
@@ -235,8 +237,12 @@ void FunctionBodyDefinition():{} {
 }
 
 void FunctionHeaderDefinition():{} {
-    //{ ArrayList<Object> parameterTypes = new ArrayList<Object>(); ArrayList<Object> parameterIdentifier = new ArrayList<Object>(); jjtThis.data.put("parameterTypes",parameterTypes); jjtThis.data.put("parameterIdentifier",parameterIdentifier)}
-    ReturnDatatype()  { jjtThis.data.put("returnType", token.image); } Identifier() { ;jjtThis.data.put("identifier", token.image); } "(" (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); } Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));} )? (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); } Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));})* ")"
+    ReturnDatatype()  { jjtThis.data.put("returnType", token.image); }
+    Identifier() { jjtThis.data.put("identifier", token.image); } "("
+    (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
+    Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));} )?
+    (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
+    Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));})* ")"
 }
 
 void FunctionDefinition():{} {
