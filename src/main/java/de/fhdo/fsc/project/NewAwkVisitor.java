@@ -308,23 +308,16 @@ public class NewAwkVisitor implements NewAwkParserVisitor {
         int numberOfParameters = (int)node.data.get("counter");
         TypeI[] parameterType = new TypeI[numberOfParameters];
         StringBuilder sb = new StringBuilder();
-        System.out.println(numberOfParameters);
+        System.out.println(node.data.toString());
         for (int i = 0; i < numberOfParameters; i++) {
-            // TODO scheint immer null übergeben zu kriegen
             String s = (String)node.data.get(sb.append("param")
                     .append(i)
                     .append("Type").toString());
-            System.out.println(i+"Parametertype: " + s);
-            if (node.data.get(sb.append("param")
-                    .append(i)
-                    .append("Type").toString()) == null) {
-
+            if ( s == null) {
                 continue;
             }
-
-            parameterType[i] = new Type((String) node.data.get(sb.append("param")
-                                                                    .append(i)
-                                                                    .append("Type").toString()));
+            parameterType[i] = new Type(s);
+            sb.setLength(0);
         }
         String functionIdentifier = (String)node.data.get("identifier");
         TypeI functionType = new FunctionType(functionIdentifier, returnType, parameterType);

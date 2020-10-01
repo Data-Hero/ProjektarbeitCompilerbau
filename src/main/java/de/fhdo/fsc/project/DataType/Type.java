@@ -59,4 +59,10 @@ public class Type implements TypeI{
         return this.name.equals(t.getName());
     }
 
+    @Override
+    public String toString() {
+        return "Type{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
