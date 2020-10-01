@@ -239,9 +239,9 @@ void FunctionBodyDefinition():{} {
 void FunctionHeaderDefinition():{} {
     ReturnDatatype()  { jjtThis.data.put("returnType", token.image); }
     Identifier() { jjtThis.data.put("identifier", token.image); } "("
-    (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
+    (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); System.out.println(token.image);}
     Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));} )?
-    (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
+    (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image);System.out.println(token.image); }
     Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));})* ")"
 }
 

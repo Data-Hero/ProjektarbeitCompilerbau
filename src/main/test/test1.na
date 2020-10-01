@@ -7,7 +7,7 @@ void test(int x) {
     string test = "Test";
 }
 
-void test2() {
+void test2(double a, double b) {
     string test2 = "Test2";
 }
 
