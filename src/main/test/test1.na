@@ -5,10 +5,12 @@ int main(string[][] args, int y) {
 
 void test(int x) {
     string test = "Test";
+    return x;
 }
 
 void test2(double a, double b) {
     string test2 = "Test2";
+    return x;
 }
 
 int x = 7;

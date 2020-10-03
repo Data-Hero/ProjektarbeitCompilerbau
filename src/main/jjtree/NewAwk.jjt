@@ -1,22 +1,13 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
  */
-options { STATIC = false; MULTI=true; VISITOR=true; NODE_EXTENDS="BaseNode";}
+options { STATIC = false;}
 
 PARSER_BEGIN(NewAwkParser)
 package de.fhdo.fsc.project;
 
-import de.fhdo.fsc.project.DataType.Types;
-import java.io.FileReader;
-
 public class NewAwkParser {
-    public static void main(String[] args) {
-        try {
-                NewAwkParser parser = new NewAwkParser(new FileReader("./src/main/test/test1.na"));
-                SimpleNode node = parser.Start();
-                node.dump("");
-            } catch (Exception e) { System.out.println(e); }
-    }
+
 }
 
 PARSER_END(NewAwkParser)
@@ -59,15 +50,6 @@ TOKEN :
 |   < #DIGIT: ["0"-"9"]>
 }
 
-// Date
-TOKEN :
-{
-    < DATE: < TWO_DIGIT >"-"< TWO_DIGIT>"-"< TWO_DIGIT ><TWO_DIGIT>>
-|   < TWO_DIGIT: (["0"-"9"]) {2} >
-|   < AMPM: "am"|"pm" >
-|   < TIME: <TWO_DIGIT>":"<TWO_DIGIT> >
-}
-
 // Selector classes
 TOKEN :
 {
@@ -86,7 +68,8 @@ TOKEN :
 // Literals
 TOKEN :
 {
-    <INTEGER_LITERAL: <DECIMAL_LITERAL>>
+    "(" | ")" | "!" | "{" | "}" | "--" | "++" | "+" | "-" | "*" | "/" | "%"
+|   <INTEGER_LITERAL: <DECIMAL_LITERAL>>
 |   <#DECIMAL_LITERAL: ("+" | "-")? ["1"-"9"] (["0"-"9"])*>
 |   <FLOATING_POINT_LITERAL: ("+" | "-")? (["0"-"9"])+ "." (["0"-"9"])*>
 |   <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
@@ -108,159 +91,112 @@ TOKEN :
     < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
-//void DateTime() : {}{<DATE><TIME><AMPM>}
-
-ASTStart Start():{} {
+void compilationUnit():{} {
     (LOOKAHEAD(3) FunctionDefinition())*
-    (Element())+
+    (LOOKAHEAD(2) Statement() | Declaration())+
     <EOF>
-    { return jjtThis; }
 }
 
-// Base element
-void Element():{} {
-    Block()
-|   (Expression() <EXPRESSION_TERMINATOR>)
+void Statement():{} {
+    WhileStatement()
+|   ForeachStatement()
+|   IfStatement()
+|   Expression() <EXPRESSION_TERMINATOR>
 }
 
-// Block elements
-void Block():{} {
-    WhileLoopDefinition()
-|   ForeachLoopDefinition()
-|   IfDefinition()
+void Declaration():{} {
+    Datatype() Identifier() [ "=" Expression() ] ";"
 }
 
-// Expressions
 void Expression():{} {
-    AssingmentExpression()
-}
-/**
-*     < INT: "int" >
-  |   < DOUBLE : "double">
-  |   < FLOAT : "float">
-  |   < CHAR : "char">
-  |   < BOOLEAN : "boolean">
-  |   < STRING : "string" >
-  |   < TYPE : "type">
-  |   < VOID : "void" >
-*/
-
-void AssingmentExpression():{} {
-    VariableDefinitionExpression() ("=" LogicalExpression() { jjtThis.data.put("value", token.image); })*
-}
-
-void VariableDefinitionExpression():{} {
-    [
-        LOOKAHEAD(Datatype() Identifier())
-        Datatype() { jjtThis.data.put("type", token.image); }
-    ]
-    Identifier() { jjtThis.data.put("name", token.image); }
+    LOOKAHEAD(2) <IDENTIFIER> "=" Expression() | LogicalExpression()
 }
 
 void LogicalExpression():{} {
-    CompareExpression() [("&&" | "||") LogicalExpression()]
+    CompareExpression() [("&&" | "||") CompareExpression()]
 }
 
 void CompareExpression():{} {
-    AdditiveExpression() [("==" | "!=" | "<=" | ">=" | "<" | ">") CompareExpression()]
+    AdditiveExpression() [("==" | "!=" | "<=" | ">=" | "<" | ">") AdditiveExpression()]
 }
 
-// TODO do not execute if no 2 values, or flag that no 2 values exist
+// ToDo: do not execute if no 2 values, or flag that no 2 values exist
 void AdditiveExpression():{} {
-    MultiplicativeExpression() [("+" | "-") { jjtThis.data.put("sign", token.image); } AdditiveExpression() ]
+    MultiplicativeExpression() [("+" | "-") AdditiveExpression() ]
 }
 
 void MultiplicativeExpression():{} {
-    PrefixExpression() [("*" | "/") MultiplicativeExpression()]
-}
-
-void PowerExpression():{} {
-    PrefixExpression() [("**" | "//") PowerExpression() ]
-}
-
-void ModuloExpression():{} {
-    PrefixExpression() ["%" PowerExpression() ]
+    PrefixExpression() [("*" | "/" | "%") MultiplicativeExpression()]
 }
 
 void PrefixExpression():{} {
-    ["!"] UnaryExpression() [SmartSwitchDefinition()] // ToDo: Move SmartSwitchDefinition() to a better position?
+    ["!"] UnaryExpression() [SmartSwitch()] // ToDo: Move SmartSwitch() to a better position?
 }
 
 void UnaryExpression():{} {
-    LOOKAHEAD(2) "(" LogicalExpression() ")"
+    LOOKAHEAD(2) "(" Expression() ")"
     | LOOKAHEAD(2) FunctionCallExpression()
+    | Atom()
+}
+
+void Atom():{} {
+    Identifier() ["++"|"--"]
+    | ("++"|"--") Identifier()
+    | <STRING_LITERAL>
+    | <CHARACTER_LITERAL>
+    | <TYPE_LITERAL>
+    | <INTEGER_LITERAL>
+    | <FLOATING_POINT_LITERAL>
     | IsDatatype()
     | ToDatatype()
     | LengthDatatype()
-    | ValueExpression()
-}
-
-void ValueExpression():{} {
-    (<STRING_LITERAL>           { jjtThis.data.put("type", Types.stringType);  }
-    | <CHARACTER_LITERAL>       { jjtThis.data.put("type", Types.charType);  }
-    | <TYPE_LITERAL>            { jjtThis.data.put("type", Types.typeType);  }
-    | <INTEGER_LITERAL>         { jjtThis.data.put("type", Types.intType);  }
-    | <FLOATING_POINT_LITERAL>  { jjtThis.data.put("type", Types.doubleType);  }
-    | <NULL>                    { jjtThis.data.put("type", null);  }
-    | Identifier()) { jjtThis.data.put("value", token.image);  }
 }
 
 void FunctionCallExpression():{} {
-    Identifier() { jjtThis.data.put("identifier", token.image); } "("
-    [LogicalExpression()  { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Value", token.image); }
-    (<ENUM_SEPERATOR> LogicalExpression())* { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Value", token.image); }]  ")"
-}
-
-void StringExpression():{} {
-    <STRING_LITERAL>
-    | Identifier()
-    | <CHARACTER_LITERAL>
-    | <INTEGER_LITERAL>
-    | <FLOATING_POINT_LITERAL>
-    | <NULL>
+    Identifier() "(" [LogicalExpression() (<ENUM_SEPERATOR> LogicalExpression())*] ")"
 }
 
 void Identifier():{} {
     <IDENTIFIER>
-    {
-        jjtThis.data.put("name", token.image);
-    }
 }
 
 // Function
-void FunctionReturnExpression():{} {
-    <RETURN> [LogicalExpression() ] <EXPRESSION_TERMINATOR>
+void FunctionReturnStatement():{} {
+    <RETURN> [LogicalExpression()] ";"
 }
 
-void FunctionBodyDefinition():{} {
-    "{" (Element())* (FunctionReturnExpression())? "}"
+void FunctionBody():{} {
+    "{" (Statement() | Declaration())* (FunctionReturnStatement())? "}"
 }
 
-void FunctionHeaderDefinition():{} {
-    ReturnDatatype()  { jjtThis.data.put("returnType", token.image); }
-    Identifier() { jjtThis.data.put("identifier", token.image); } "("
-    (LOOKAHEAD(2) Datatype() { jjtThis.data.put("counter",0); jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); System.out.println(token.image);}
-    Identifier() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));} )?
-    (LOOKAHEAD(3)<ENUM_SEPERATOR> Datatype() { jjtThis.data.put("param" + jjtThis.data.get("counter") + "Type", token.image); }
-    Identifier() { jjtThis.data.put("identifier" + jjtThis.data.get("counter") + "Identifier", token.image); jjtThis.data.put("counter",1+(int)jjtThis.data.get("counter"));})* ")"
+void FunctionHeader():{} {
+    ReturnDatatype()
+    Identifier()
+
+    "("
+    (LOOKAHEAD(2) Datatype()
+    Identifier() )?
+    (LOOKAHEAD(3) "," Datatype()
+    Identifier())*
+    ")"
 }
 
 void FunctionDefinition():{} {
-    FunctionHeaderDefinition() FunctionBodyDefinition()
+    FunctionHeader() FunctionBody()
 }
 
-void ForeachLoopDefinition():{} {
-    <FOREACH> "(" Identifier() <IN> UnaryExpression() ")" FunctionBodyDefinition()
+void ForeachStatement():{} {
+    "foreach" "(" Identifier() <IN> Expression() ")" FunctionBody()
 }
 
-void WhileLoopDefinition():{} {
-    <WHILE> "(" LogicalExpression() ")" FunctionBodyDefinition()
+void WhileStatement():{} {
+    "while" "(" LogicalExpression() ")" FunctionBody()
 }
 
-void IfDefinition():{} {
-    <IF> "(" LogicalExpression()  ")" FunctionBodyDefinition()
-    (LOOKAHEAD(2) <ELSE> <IF> "(" LogicalExpression() ")" FunctionBodyDefinition())*
-    (<ELSE> FunctionBodyDefinition())?
+void IfStatement():{} {
+    "if" "(" LogicalExpression()  ")" FunctionBody()
+    (LOOKAHEAD(2) "else" "if" "(" LogicalExpression() ")" FunctionBody())*
+    ("else" FunctionBody())?
 }
 
 // Smart Switch
@@ -269,30 +205,29 @@ void SmartSwitchSelektor():{} {
 }
 
 
-void SmartSwitchConditionDefinition():{} {
+void SmartSwitchCondition():{} {
     ("!" ":" SmartSwitchSelektor() ":") | (":" SmartSwitchSelektor() ":") // 2 functions or OR seem like the only options. What about >>["!"] ":" SmartSwitchSelektor() ":"<< ?
 }
 
-void SmartSwitchCaseDefinition():{} {
-    SmartSwitchConditionDefinition() FunctionBodyDefinition()
+void SmartSwitchCase():{} {
+    SmartSwitchCondition() FunctionBody()
 }
 
-void SmartSwitchDefinition():{} {
-    <SMARTSWITCH> "{" SmartSwitchCaseDefinition() "}"
+void SmartSwitch():{} {
+    <SMARTSWITCH> "{" SmartSwitchCase() "}"
 }
-
 
 // Integrated Funtions
 void IsDatatype():{} {
-     <CHECKTYPE_FUNCTION> { jjtThis.data.put("function", token.image); } "(" UnaryExpression() { jjtThis.data.put("value", token.image); } ")"
+     <CHECKTYPE_FUNCTION> "(" Expression() ")"
 }
 
 void ToDatatype():{} {
-    <CONTERT_FUNCTION> "(" UnaryExpression() ")"
+    <CONTERT_FUNCTION> "(" Expression() ")"
 }
 
 void LengthDatatype():{} {
-    <LENGTH_FUNCTION> "(" UnaryExpression() ")"
+    <LENGTH_FUNCTION> "(" Expression() ")"
 }
 
 // Datatype
@@ -306,5 +241,5 @@ void Datatype():{} {
 }
 
 void ReturnDatatype():{} {
-    Datatype() | <VOID>
+    Datatype() | "void"
 }
