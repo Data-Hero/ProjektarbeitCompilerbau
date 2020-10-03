@@ -229,7 +229,7 @@ void LengthDatatype():{} {
 
 // Datatype
 void BasicDatatype():{} {
-    <INT> | <CHAR> | <BOOLEAN> | <STRING> | <IDENTIFIER>
+    <DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <IDENTIFIER>
 }
 
 
