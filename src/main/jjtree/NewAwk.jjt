@@ -24,7 +24,7 @@ SKIP : {
 TOKEN :
 {
     < INT: "int" >
-|   < FLOAT : "float">
+|   < DOUBLE : "double">
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
 |   < STRING : "string" >
