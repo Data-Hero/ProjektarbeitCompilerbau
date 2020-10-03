@@ -20,19 +20,21 @@ SKIP : {
 |   < "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") > // Skip single line comments
 }
 
-// Keywords
+// Types
 TOKEN :
 {
     < INT: "int" >
-|   < DOUBLE : "double">
 |   < FLOAT : "float">
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
 |   < STRING : "string" >
-|   < TYPE : "type">
 |   < VOID : "void" >
-|   < NULL: "null">
-|   < SMARTSWITCH : "@">
+}
+
+// Keywords
+TOKEN :
+{
+    < SMARTSWITCH : "@">
 |   < RETURN: "return">
 |   < ENUM_SEPERATOR: ",">
 |   < EXPRESSION_TERMINATOR: ";">
@@ -41,13 +43,6 @@ TOKEN :
 |   < WHILE: "while">
 |   < FOREACH: "foreach">
 |   < IN: "in">
-}
-
-// Datatypes
-TOKEN :
-{
-    < #LETTER: ["A"-"Z","_","a"-"z"]>
-|   < #DIGIT: ["0"-"9"]>
 }
 
 // Selector classes
@@ -88,7 +83,9 @@ TOKEN :
 // Identifier
 TOKEN :
 {
-    < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+    < #LETTER: ["A"-"Z","_","a"-"z"]>
+|   < #DIGIT: ["0"-"9"]>
+|   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
 void compilationUnit():{} {
@@ -232,7 +229,7 @@ void LengthDatatype():{} {
 
 // Datatype
 void BasicDatatype():{} {
-    <INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING> | <TYPE> | <IDENTIFIER>
+    <INT> | <CHAR> | <BOOLEAN> | <STRING> | <IDENTIFIER>
 }
 
 
