@@ -23,12 +23,9 @@ int a = main();
 int b = main(1);
 x = 9;
 
-type Whatever = >(AM|am|aM|Am|PM|pm|pM|Pm)<;
-Whatever c = "AM";
-
-int x = test@{
-    :punct: { return x; }
-};
+//int x = test@{
+//    :punct: { return x; }
+//};
 
 while (a == 2) {
     if (a == 2) {

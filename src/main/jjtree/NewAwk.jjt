@@ -6,6 +6,12 @@ options { STATIC = false;}
 PARSER_BEGIN(NewAwkParser)
 package de.fhdo.fsc.project;
 
+import de.fhdo.fsc.project.ast.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewAwkParser {
 
 }
@@ -28,7 +34,16 @@ TOKEN :
 |   < CHAR : "char">
 |   < BOOLEAN : "boolean">
 |   < STRING : "string" >
+|   < ARRAY : (<INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>) ("[]")* >
 |   < VOID : "void" >
+}
+
+// Operators
+TOKEN : {
+    <SUM_OPERATOR: "+" | "-">
+|   <PROD_OPERATOR: "*" | "/" | "%">
+|   <BIN_COMPARE_OPERATOR: ">=" | ">" | "<=" | "<" | "==" | "!=">
+|   <BIN_GATE_OPERATOR: "||" | "&&">
 }
 
 // Keywords
@@ -48,35 +63,36 @@ TOKEN :
 // Selector classes
 TOKEN :
 {
-    < PUNCT: "punct" >
-|   < GRAPH: "graph"> // Letters, numbers and punctuation
-|   < LOWER: "lower"> // Lowercase Letters
-|   < ALPHA: "alpha"> // Letters
-|   < ALNUM: "alnum"> // Alphanumerics
-|   < PRINT: "print"> // Letters, numb ers, punctuation and whitespace
-|   < CNTRL: "cntrl"> // Control characters
-|   < SPACE: "space"> // Space characters
-|   < BLANK: "blank"> // Space and tab
-|   < DIGITS: "digit">// Digits
+    < SMART_SWITCH_SELECTOR: "punct"
+|   "graph" // Letters, numbers and punctuation
+|   "lower" // Lowercase Letters
+|   "alpha" // Letters
+|   "alnum" // Alphanumerics
+|   "print" // Letters, numb ers, punctuation and whitespace
+|   "cntrl" // Control characters
+|   "space" // Space characters
+|   "blank" // Space and tab
+|   "digit" >// Digits
 }
 
 // Literals
 TOKEN :
 {
-    "(" | ")" | "!" | "{" | "}" | "--" | "++" | "+" | "-" | "*" | "/" | "%"
+    "(" | ")" | "!" | "{" | "}" | "--" | "++" | "+" | "-" | "*" | "/" | "%" | ":"
 |   <INTEGER_LITERAL: <DECIMAL_LITERAL>>
 |   <#DECIMAL_LITERAL: ("+" | "-")? ["1"-"9"] (["0"-"9"])*>
 |   <FLOATING_POINT_LITERAL: ("+" | "-")? (["0"-"9"])+ "." (["0"-"9"])*>
 |   <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
 |   <STRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ( ["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
 |   <TYPE_LITERAL: ">" ( ~["<",">","\\","\n","\r"] | "\\" ( [">", "<", "n","t","b","r","f","\\"] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "<">
+|   <BOOLEAN_LITERAL: "true" | "false">
 }
 
 // Built-in Functions
 TOKEN :
 {
-    < CONTERT_FUNCTION: ( "toBoolean" | "toCharacter" | "toDouble" | "toInteger" | "toString" )>
-|   < CHECKTYPE_FUNCTION: ( "isBoolean" | "isCharacter" | "isDouble" | "isInteger" | "isString" )>
+    < CONTERT_FUNCTION: ( "convert" )>
+|   < CHECKTYPE_FUNCTION: ( "isType" )>
 |   < LENGTH_FUNCTION: ( "length" )>
 }
 
@@ -88,155 +104,243 @@ TOKEN :
 |   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
-void compilationUnit():{} {
-    (LOOKAHEAD(3) FunctionDefinition())*
-    (LOOKAHEAD(2) Statement() | Declaration())+
+ASTProgram compilationUnit():{
+    ASTBlock result = new ASTBlock();
+    ASTProgram program = new ASTProgram(result);
+    ASTNode node;
+    ASTFunction function;
+    boolean first = true;
+} {
+    (LOOKAHEAD(3) function = Function() { program.addFunction(function); } )*
+    (LOOKAHEAD(2) (node = Statement() | node = Declaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); } )+
     <EOF>
+    { return program; }
 }
 
-void Statement():{} {
-    WhileStatement()
-|   ForeachStatement()
-|   IfStatement()
-|   Expression() <EXPRESSION_TERMINATOR>
+ASTStatement Statement():{
+    ASTStatement result;
+    ASTExpression expression = null;
+    Token end = null;
+} {
+    (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
+    { return result; }
 }
 
-void Declaration():{} {
-    Datatype() Identifier() [ "=" Expression() ] ";"
+ASTDeclaration Declaration():{
+    Token type, id, end;
+    ASTNode result = null;
+} {
+    type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";" { return new ASTDeclaration(type, id, result, end); }
 }
 
-void Expression():{} {
-    LOOKAHEAD(2) <IDENTIFIER> "=" Expression() | LogicalExpression()
+ASTBlock Block():{
+    ASTBlock result = new ASTBlock();
+    ASTNode node;
+    Token start, end;
+} {
+    start = "{" ((node = Statement() | node = Declaration() )  { result.add(node); } )* end = "}"
+    { result.setToken(start, end); return result; }
 }
 
-void LogicalExpression():{} {
-    CompareExpression() [("&&" | "||") CompareExpression()]
+ASTBlock FunctionBlock():{
+    ASTBlock result = new ASTBlock();
+    ASTNode node;
+    Token start, end;
+} {
+    start = "{" ((node = Statement() | node = Declaration()) { result.add(node); } )* (node = ReturnStatement() { result.add(node); } )? end = "}"
+    { result.setToken(start, end); return result; }
 }
 
-void CompareExpression():{} {
-    AdditiveExpression() [("==" | "!=" | "<=" | ">=" | "<" | ">") AdditiveExpression()]
+ASTExpression Expression():{
+    Token id;
+    ASTExpression result, expr;
+} {
+    (LOOKAHEAD(2) id = Identifier() "=" expr = Expression() { result = new ASTAssigment(id, expr); }
+    | result = LogicalExpression())
+    { return result; }
 }
 
-// ToDo: do not execute if no 2 values, or flag that no 2 values exist
-void AdditiveExpression():{} {
-    MultiplicativeExpression() [("+" | "-") AdditiveExpression() ]
+ASTExpression LogicalExpression():{
+    Token operator;
+    ASTExpression left, right;
+} {
+    left = CompareExpression() [ operator = <BIN_GATE_OPERATOR> right = CompareExpression() { left = new ASTLogical(operator, left, right); } ] { return left; }
 }
 
-void MultiplicativeExpression():{} {
-    PrefixExpression() [("*" | "/" | "%") MultiplicativeExpression()]
+ASTExpression CompareExpression():{
+    Token operator;
+    ASTExpression left, right;
+} {
+    left = AdditiveExpression() [operator = <BIN_COMPARE_OPERATOR> right = AdditiveExpression() { left = new ASTCompare(operator, left, right); } ] { return left; }
 }
 
-void PrefixExpression():{} {
-    ["!"] UnaryExpression() [SmartSwitch()] // ToDo: Move SmartSwitch() to a better position?
+ASTExpression AdditiveExpression():{
+    Token operator;
+    ASTExpression left, right;
+} {
+    left = MultiplicativeExpression() [operator = <SUM_OPERATOR> right = AdditiveExpression() { left = new ASTArithmeticOperation(operator, left, right); } ] { return left; }
 }
 
-void UnaryExpression():{} {
-    LOOKAHEAD(2) "(" Expression() ")"
-    | LOOKAHEAD(2) FunctionCallExpression()
-    | Atom()
+ASTExpression MultiplicativeExpression():{
+    Token operator;
+    ASTExpression left, right;
+} {
+    left = UnaryExpression() [operator = <PROD_OPERATOR> right = MultiplicativeExpression() { left = new ASTArithmeticOperation(operator, left, right); } ] { return left; }
 }
 
-void Atom():{} {
-    Identifier() ["++"|"--"]
-    | ("++"|"--") Identifier()
-    | <STRING_LITERAL>
-    | <CHARACTER_LITERAL>
-    | <TYPE_LITERAL>
-    | <INTEGER_LITERAL>
-    | <FLOATING_POINT_LITERAL>
-    | IsDatatype()
-    | ToDatatype()
-    | LengthDatatype()
+/*
+void PrefixExpression():{
+    Token operator;
+    ASTExpression left, right;
+ } {
+    ["!"] left = UnaryExpression()
+    // [SmartSwitch()] // ToDo: Move SmartSwitch() to a better position?
+}
+*/
+
+ASTExpression UnaryExpression():{
+    Token operator;
+    ASTExpression result;
+ } {
+    ((operator = <SUM_OPERATOR> | operator = "!" ) result = UnaryExpression() { result = new ASTUnaryOperation(operator, result); } | result = Atom())
+    { return result; }
 }
 
-void FunctionCallExpression():{} {
-    Identifier() "(" [LogicalExpression() (<ENUM_SEPERATOR> LogicalExpression())*] ")"
+ASTExpression Atom():{
+    ASTExpression result;
+    Token id;
+    Token increment = null;
+} {
+    (LOOKAHEAD(2) result = FunctionCall()
+|   id = Identifier() [increment="++"|increment="--"] { result = new ASTPostOperation(id, increment); }
+|   (increment = "++"| increment = "--") id = Identifier()  { result = new ASTPreOperation(increment, id); }
+|   id = <INTEGER_LITERAL> { result = new ASTLiteral(id); }
+|   id = <FLOATING_POINT_LITERAL> { result = new ASTLiteral(id); }
+|   id = <CHARACTER_LITERAL> { result = new ASTLiteral(id); }
+|   id = <STRING_LITERAL> { result = new ASTLiteral(id); }
+|   id = <BOOLEAN_LITERAL> { result = new ASTLiteral(id); }
+|   "(" result = Expression() ")"
+|   result = IsType()
+|   result = Convert()
+|   result = Length())
+//|   result = Expression() SmartSwitch() // ToDo: Fix left recusion
+{ return result; }
 }
 
-void Identifier():{} {
-    <IDENTIFIER>
+ASTFunctionCall FunctionCall():{
+    Token id, end;
+    ASTExpression expression;
+    List<ASTExpression> parameter = new ArrayList();
+} {
+    (id = Identifier() "(" [expression = LogicalExpression() { parameter.add(expression); } (<ENUM_SEPERATOR> expression = LogicalExpression() { parameter.add(expression); } )*] end = ")" )
+    { return new ASTFunctionCall(id, parameter, end); }
+}
+
+Token Identifier():{} {
+    <IDENTIFIER> { return token; }
 }
 
 // Function
-void FunctionReturnStatement():{} {
-    <RETURN> [LogicalExpression()] ";"
+ASTReturnStatement ReturnStatement():{
+    Token start, end;
+    ASTExpression expression = null;
+} {
+    start = "return" [expression = LogicalExpression()] end = ";"
+    { return new ASTReturnStatement(start, expression, end); }
 }
 
-void FunctionBody():{} {
-    "{" (Statement() | Declaration())* (FunctionReturnStatement())? "}"
-}
-
-void FunctionHeader():{} {
-    ReturnDatatype()
-    Identifier()
+ASTFunction Function():{
+   Token functionId, returnType, paramId, paramType, end;
+   ASTBlock block;
+   Map parameter = new HashMap<Token, Token>();
+} {
+    returnType = ReturnDatatype() functionId = Identifier()
 
     "("
-    (LOOKAHEAD(2) Datatype()
-    Identifier() )?
-    (LOOKAHEAD(3) "," Datatype()
-    Identifier())*
+    (LOOKAHEAD(2) (paramType = Datatype() paramId = Identifier()) { parameter.put(paramId, paramType); } )?
+    (LOOKAHEAD(3) "," (paramType = Datatype() paramId = Identifier()) { parameter.put(paramId, paramType); })*
     ")"
+
+    block = FunctionBlock()
+
+    { return new ASTFunction(returnType, functionId, parameter, block); }
 }
 
-void FunctionDefinition():{} {
-    FunctionHeader() FunctionBody()
+ASTForeachStatement ForeachStatement():{
+    Token id;
+    ASTExpression expression;
+    ASTStatement statement;
+    Token start;
+} {
+    start = "foreach" "(" id = Identifier() <IN> expression = Expression() ")" statement = Statement() { return new ASTForeachStatement(start, id, expression, statement); }
 }
 
-void ForeachStatement():{} {
-    "foreach" "(" Identifier() <IN> Expression() ")" FunctionBody()
+ASTWhileStatement WhileStatement():{
+    ASTExpression expression;
+    ASTStatement statement;
+    Token start;
+} {
+    start = "while" "(" expression = LogicalExpression() ")" statement = Statement() { return new ASTWhileStatement(start, expression, statement); }
 }
 
-void WhileStatement():{} {
-    "while" "(" LogicalExpression() ")" FunctionBody()
-}
-
-void IfStatement():{} {
-    "if" "(" LogicalExpression()  ")" FunctionBody()
-    (LOOKAHEAD(2) "else" "if" "(" LogicalExpression() ")" FunctionBody())*
-    ("else" FunctionBody())?
+ASTIfStatement IfStatement():{
+    ASTExpression expression;
+    ASTStatement statement;
+    Token start;
+    ASTIfStatement elseIfStatement = null;
+    ASTStatement elseStatement = null;
+} {
+    (start = "if" "(" expression =  LogicalExpression()  ")" statement = Statement()
+    (LOOKAHEAD(2) "else" elseIfStatement = IfStatement() | "else" elseStatement = Statement()))
+    { return new ASTIfStatement(start, expression, statement, elseIfStatement, elseStatement); }
 }
 
 // Smart Switch
-void SmartSwitchSelektor():{} {
-    <PUNCT> | <GRAPH> | <LOWER> | <ALPHA> | <ALNUM> | <PRINT> | <CNTRL> | <SPACE> | <BLANK> | <DIGITS>
-}
-
-
-void SmartSwitchCondition():{} {
-    ("!" ":" SmartSwitchSelektor() ":") | (":" SmartSwitchSelektor() ":") // 2 functions or OR seem like the only options. What about >>["!"] ":" SmartSwitchSelektor() ":"<< ?
-}
-
-void SmartSwitchCase():{} {
-    SmartSwitchCondition() FunctionBody()
-}
-
-void SmartSwitch():{} {
-    <SMARTSWITCH> "{" SmartSwitchCase() "}"
+ASTSmartSwitch SmartSwitch():{
+    Map<String, ASTBlock> cases = new HashMap();
+    ASTBlock block;
+    Token negate = null;
+    Token selector, start, end;
+} {
+    start = <SMARTSWITCH> "{"
+    (( (negate = "!")? ":" selector = <SMART_SWITCH_SELECTOR> ":" block = FunctionBlock())+) { cases.put((((negate != null) ? negate.image : "") + selector.image), block); }
+    end = "}"
+    { return new ASTSmartSwitch(start, cases, end); }
 }
 
 // Integrated Funtions
-void IsDatatype():{} {
-     <CHECKTYPE_FUNCTION> "(" Expression() ")"
+ASTExpression IsType():{
+    Token start, end, type;
+    ASTExpression expression;
+} {
+     start = "isType" "(" type = Datatype() "," expression = Expression() end = ")"
+     { return new ASTIsType(start, end, type, expression); }
 }
 
-void ToDatatype():{} {
-    <CONTERT_FUNCTION> "(" Expression() ")"
+ASTExpression Convert():{
+    Token start, end, type;
+    ASTExpression expression;
+} {
+     start = "convert" "(" type = Datatype() "," expression = Expression() end = ")"
+     { return new ASTConvert(start, end, type, expression); }
 }
 
-void LengthDatatype():{} {
-    <LENGTH_FUNCTION> "(" Expression() ")"
+ASTExpression Length():{
+    Token start, end;
+    ASTExpression expression;
+} {
+    (start = "length" "(" expression = Expression() end = ")")
+    { return new ASTLength(start, end, expression); }
 }
 
 // Datatype
-void BasicDatatype():{} {
-    <DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <IDENTIFIER>
+Token Datatype():{} {
+    (<DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <ARRAY>) { return token; }
 }
 
-
-void Datatype():{} {
-    BasicDatatype() ("[]")*
-}
-
-void ReturnDatatype():{} {
-    Datatype() | "void"
+Token ReturnDatatype():{
+    Token type;
+} {
+    (type = Datatype() | type = "void")
+    { return type; }
 }
