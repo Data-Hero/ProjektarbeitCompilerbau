@@ -1,8 +1,12 @@
 package de.fhdo.fsc.project.ast;
 
 import de.fhdo.fsc.project.Token;
+import de.fhdo.fsc.project.errors.CompilerError;
+import de.fhdo.fsc.project.type.SymbolTable;
 
-public class ASTNode {
+import java.util.LinkedList;
+
+public abstract class ASTNode {
     protected Token start;
     protected Token end;
 
@@ -38,4 +42,6 @@ public class ASTNode {
         this.start = start;
         this.end = end;
     }
+
+    public abstract void semanticAnalysis(LinkedList<CompilerError> errors, SymbolTable symbolTable);
 }

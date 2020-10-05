@@ -7,10 +7,7 @@ PARSER_BEGIN(NewAwkParser)
 package de.fhdo.fsc.project;
 
 import de.fhdo.fsc.project.ast.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NewAwkParser {
 
@@ -32,7 +29,7 @@ TOKEN :
     < INT: "int" >
 |   < DOUBLE : "double">
 |   < CHAR : "char">
-|   < BOOLEAN : "boolean">
+|   < BOOLEAN : "bool">
 |   < STRING : "string" >
 |   < ARRAY : (<INT> | <DOUBLE> | <CHAR> | <BOOLEAN> | <STRING>) ("[]")* >
 |   < VOID : "void" >
@@ -108,11 +105,10 @@ ASTProgram compilationUnit():{
     ASTBlock result = new ASTBlock();
     ASTProgram program = new ASTProgram(result);
     ASTNode node;
-    ASTFunction function;
     boolean first = true;
 } {
-    (LOOKAHEAD(3) function = Function() { program.addFunction(function); } )*
-    (LOOKAHEAD(2) (node = Statement() | node = Declaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); } )+
+    (LOOKAHEAD(3) node = FunctionDeclaration() { result.add(node); } )*
+    (LOOKAHEAD(2) (node = Statement() | node = VariableDeclaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); } )+
     <EOF>
     { return program; }
 }
@@ -126,11 +122,12 @@ ASTStatement Statement():{
     { return result; }
 }
 
-ASTDeclaration Declaration():{
+ASTVariableDeclaration VariableDeclaration():{
     Token type, id, end;
-    ASTNode result = null;
+    ASTExpression result = null;
 } {
-    type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";" { return new ASTDeclaration(type, id, result, end); }
+    type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
+    { return new ASTVariableDeclaration(type, id, result, end); }
 }
 
 ASTBlock Block():{
@@ -138,7 +135,7 @@ ASTBlock Block():{
     ASTNode node;
     Token start, end;
 } {
-    start = "{" ((node = Statement() | node = Declaration() )  { result.add(node); } )* end = "}"
+    start = "{" ((node = Statement() | node = VariableDeclaration() )  { result.add(node); } )* end = "}"
     { result.setToken(start, end); return result; }
 }
 
@@ -147,7 +144,7 @@ ASTBlock FunctionBlock():{
     ASTNode node;
     Token start, end;
 } {
-    start = "{" ((node = Statement() | node = Declaration()) { result.add(node); } )* (node = ReturnStatement() { result.add(node); } )? end = "}"
+    start = "{" ((node = Statement() | node = VariableDeclaration()) { result.add(node); } )* (node = ReturnStatement() { result.add(node); } )? end = "}"
     { result.setToken(start, end); return result; }
 }
 
@@ -187,16 +184,6 @@ ASTExpression MultiplicativeExpression():{
 } {
     left = UnaryExpression() [operator = <PROD_OPERATOR> right = MultiplicativeExpression() { left = new ASTArithmeticOperation(operator, left, right); } ] { return left; }
 }
-
-/*
-void PrefixExpression():{
-    Token operator;
-    ASTExpression left, right;
- } {
-    ["!"] left = UnaryExpression()
-    // [SmartSwitch()] // ToDo: Move SmartSwitch() to a better position?
-}
-*/
 
 ASTExpression UnaryExpression():{
     Token operator;
@@ -249,21 +236,18 @@ ASTReturnStatement ReturnStatement():{
     { return new ASTReturnStatement(start, expression, end); }
 }
 
-ASTFunction Function():{
+ASTFunctionDeclaration FunctionDeclaration():{
    Token functionId, returnType, paramId, paramType, end;
    ASTBlock block;
-   Map parameter = new HashMap<Token, Token>();
+   LinkedList<ASTParameterDeclaration> parameter = new LinkedList();
 } {
     returnType = ReturnDatatype() functionId = Identifier()
-
     "("
-    (LOOKAHEAD(2) (paramType = Datatype() paramId = Identifier()) { parameter.put(paramId, paramType); } )?
-    (LOOKAHEAD(3) "," (paramType = Datatype() paramId = Identifier()) { parameter.put(paramId, paramType); })*
+    (LOOKAHEAD(2) (paramType = Datatype() paramId = Identifier()) { parameter.add(new ASTParameterDeclaration(paramType, paramId)); } )?
+    (LOOKAHEAD(3) "," (paramType = Datatype() paramId = Identifier()) { parameter.add(new ASTParameterDeclaration(paramType, paramId)); })*
     ")"
-
     block = FunctionBlock()
-
-    { return new ASTFunction(returnType, functionId, parameter, block); }
+    { return new ASTFunctionDeclaration(returnType, functionId, parameter, block); }
 }
 
 ASTForeachStatement ForeachStatement():{

@@ -1,16 +1,17 @@
 package de.fhdo.fsc.project.ast;
 
 import de.fhdo.fsc.project.Token;
+import de.fhdo.fsc.project.type.Type;
 
-public class ASTDeclaration extends ASTNode {
-    private Token variable;
-    private Token type;
-    private ASTNode initializer;
+public abstract class ASTDeclaration extends ASTNode {
+    protected Token id;
+    protected Token type;
 
-    public ASTDeclaration(Token type, Token ident, ASTNode init, Token end) {
+    public ASTDeclaration(Token type, Token id, Token end) {
         super(type, end);
-        initializer = init;
+        this.id = id;
         this.type = type;
-        this.variable = ident;
     }
+
+    public abstract Type getType();
 }

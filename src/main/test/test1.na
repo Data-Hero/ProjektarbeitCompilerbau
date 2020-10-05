@@ -1,44 +1,55 @@
-int main(string[][] args, int y) {
-    int x = 5;
-    return x;
+string concat(string a, string b) {
+    string c = a + b;
+    return c;
 }
 
-void test(int x) {
-    string test = "Test";
-    return x;
-}
-
-void test2(double a, double b) {
-    string test2 = "Test2";
-    return x;
+int plusOne(int x) {
+    int y = x + 1;
+    return y;
 }
 
 int x = 7;
-int w = 7;
-int x2 = x + 1;
+x = x + 1;
+
+string[] array = "test";
 
 double y = 1.2;
 string z = "Hello " + "world!";
-int a = main();
-int b = main(1);
-x = 9;
+
+
+// Array test
+string[][] arr1;
+string[] arr2 = "arr2";
+arr1 = arr1 + arr2;
+
+int b = plusOne(1);
+int c;
+c = 6;
 
 //int x = test@{
 //    :punct: { return x; }
 //};
 
-while (a == 2) {
-    if (a == 2) {
-        test = test;
-    } else if (a == 3) {
-        test = 5;
+// 1a comment test
+
+
+string test = "test";
+c = 1;
+while (c < 5) {
+    if (c == 2) {
+        test = test + c;
+    } else if (c == 3) {
+        test = test + c;
     } else {
-        test = 5;
+        test = test + c;
     }
+
+    c = c + 1;
 }
 
-foreach (test in test) {
-  test1 = length("zwei");
-  test2 = toDouble(5);
-  test3 = isBoolean(y);
+string[] arr;
+foreach (i in arr) {
+  int t1 = length("zwei");
+  double t2 = convert(double, 5);
+  bool t3 = isType(bool, y);
 }

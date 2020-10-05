@@ -2,9 +2,9 @@ package de.fhdo.fsc.project.ast;
 
 import de.fhdo.fsc.project.Token;
 
-public class ASTBinaryOperation extends ASTExpression {
-    private ASTExpression left, right;
-    private Token op;
+public abstract class ASTBinaryOperation extends ASTExpression {
+    protected ASTExpression left, right;
+    protected Token op;
 
     public ASTBinaryOperation(Token op, ASTExpression left, ASTExpression right) {
         super(left.getStart(), right.getEnd());
