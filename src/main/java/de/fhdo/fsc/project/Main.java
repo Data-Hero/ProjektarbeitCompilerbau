@@ -35,6 +35,7 @@ public class Main {
                 for (CompilerError error : errors) {
                     System.out.println(i++ + ".  " + error);
                 }
+
             } else System.out.println("source code checked: OK");
 
 
