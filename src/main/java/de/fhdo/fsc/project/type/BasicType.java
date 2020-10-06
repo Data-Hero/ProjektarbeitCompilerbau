@@ -81,4 +81,8 @@ public class BasicType extends Type {
     public int getRank() {
         return rank;
     }
+
+    public boolean equals(BasicType t) {
+        return this.name.equals(t.name) && this.rank == t.rank;
+    }
 }

@@ -1,8 +1,8 @@
 package de.fhdo.fsc.project.type;
 
 public class ArrayType extends Type {
-    private BasicType type;
-    private int dimensions;
+    public BasicType type;
+    public int dimensions;
 
     public ArrayType(BasicType type, int dimensions) {
         this.type = type;
@@ -28,12 +28,12 @@ public class ArrayType extends Type {
         return type;
     }
 
-    public int getDimensions() {
-        return dimensions;
-    }
-
     public static Type getCommonType(ArrayType a, ArrayType b) {
         return new ArrayType(BasicType.getCommonType(a.type, b.type), Math.max(a.dimensions, b.dimensions));
+    }
+
+    public boolean equals(ArrayType t) {
+        return (this.dimensions == t.dimensions) && this.type.equals(t.type);
     }
 
     @Override

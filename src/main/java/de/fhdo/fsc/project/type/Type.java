@@ -36,7 +36,7 @@ public abstract class Type {
     public static boolean implicit(Type a, Type b) {
         if (a instanceof BasicType && b instanceof BasicType) {
             return BasicType.implicit((BasicType) a, (BasicType) b);
-        } else if (a instanceof BasicType && b instanceof ArrayType && ((ArrayType) b).getDimensions() == 1) {
+        } else if (a instanceof BasicType && b instanceof ArrayType && ((ArrayType) b).dimensions == 1) {
             return BasicType.implicit((BasicType) a, ((ArrayType) b).getBasicType());
         } else if (a instanceof ArrayType && b instanceof ArrayType) {
             return ArrayType.implicit((ArrayType) a, (ArrayType) b);
@@ -57,5 +57,15 @@ public abstract class Type {
         }
 
         return BasicType.errorType;
+    }
+
+    public boolean equals(Type t) {
+        if (this instanceof BasicType && t instanceof BasicType) {
+            return ((BasicType) this).equals((BasicType) t);
+        } else if (this instanceof ArrayType && t instanceof ArrayType) {
+            return ((ArrayType) this).equals((ArrayType) t);
+        } else {
+            return false;
+        }
     }
 }
