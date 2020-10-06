@@ -7,6 +7,7 @@ public class BasicType extends Type {
     public static final String DOUBLE_NAME = "double";
     public static final String STRING_NAME = "string";
     public static final String CHARACTER_NAME = "char";
+    public static final String VOID_NAME = "void";
 
     public static final Integer ERROR_RANK = -3;
     public static final Integer BOOLEAN_RANK = -2;
@@ -14,6 +15,7 @@ public class BasicType extends Type {
     public static final Integer INTEGER_RANK = 0;
     public static final Integer DOUBLE_RANK = 1;
     public static final Integer STRING_RANK = 2;
+    public static final Integer VOID_RANK = 3;
 
     public static BasicType errorType = new BasicType(ERROR_NAME, ERROR_RANK);
     public static BasicType boolType = new BasicType(BOOLEAN_NAME, BOOLEAN_RANK); // implicit use
@@ -21,6 +23,7 @@ public class BasicType extends Type {
     public static BasicType intType = new BasicType(INTEGER_NAME, INTEGER_RANK);
     public static BasicType doubleType = new BasicType(DOUBLE_NAME, DOUBLE_RANK);
     public static BasicType stringType = new BasicType(STRING_NAME, STRING_RANK);
+    public static BasicType voidType = new BasicType(VOID_NAME, VOID_RANK);
 
 
     private final String name;

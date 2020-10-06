@@ -91,6 +91,9 @@ TOKEN :
     < CONTERT_FUNCTION: ( "convert" )>
 |   < CHECKTYPE_FUNCTION: ( "isType" )>
 |   < LENGTH_FUNCTION: ( "length" )>
+|   < READ_FUNCTION: ( "read" )>
+|   < WRITE_FUNCTION: ( "write" )>
+
 }
 
 // Identifier
@@ -209,7 +212,9 @@ ASTExpression Atom():{
 |   "(" result = Expression() ")"
 |   result = IsType()
 |   result = Convert()
-|   result = Length())
+|   result = Length()
+|   result = read()
+|   result = write())
 //|   result = Expression() SmartSwitch() // ToDo: Fix left recusion
 { return result; }
 }
@@ -316,6 +321,23 @@ ASTExpression Length():{
     (start = "length" "(" expression = Expression() end = ")")
     { return new ASTLength(start, end, expression); }
 }
+
+ASTExpression read():{
+    Token start, end;
+    ASTExpression expression;
+} {
+    (start = "read" "(" expression = Expression() end = ")")
+    { return new ASTRead(start, end, expression); }
+}
+
+ASTExpression write():{
+    Token start, end;
+    ASTExpression pathExpression, sourceExpression;
+} {
+    (start = "write" "(" pathExpression = Expression() "," sourceExpression = Expression() end = ")")
+    { return new ASTWrite(start, end, pathExpression, sourceExpression); }
+}
+
 
 // Datatype
 Token Datatype():{} {

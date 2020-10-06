@@ -8,8 +8,8 @@ int plusOne(int x) {
     return y;
 }
 
-int x = 7;
-x = x + 1;
+int x = 5;
+x = x + 5;
 
 string[] array = "test";
 
@@ -34,6 +34,11 @@ c = 6;
 
 
 string test = "test";
+
+read("abc.txt");
+
+string input = read(test);
+
 c = 1;
 while (c < 5) {
     if (c == 2) {
@@ -53,3 +58,5 @@ foreach (i in arr) {
   double t2 = convert(double, 5);
   bool t3 = isType(bool, y);
 }
+
+write("output.txt",input);
