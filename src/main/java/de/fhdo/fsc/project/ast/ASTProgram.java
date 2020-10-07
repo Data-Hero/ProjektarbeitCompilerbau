@@ -38,4 +38,9 @@ public class ASTProgram extends ASTNode {
 
         block.semanticAnalysis(errors, innerSymbolTable);
     }
+
+    @Override
+    public void run(LinkedList<CompilerError> errors) {
+        block.run(errors);
+    }
 }

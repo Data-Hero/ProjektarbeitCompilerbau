@@ -2,6 +2,7 @@
   <configuration default="false" name="Run" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="de.fhdo.fsc.project.Main" />
     <module name="project" />
+    <option name="PROGRAM_PARAMETERS" value="./src/main/test/test1.na" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

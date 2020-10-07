@@ -85,16 +85,16 @@ public class BooleanValue extends BasicValue {
         return 1;
     }
 
-    @Override
-    public Value upgrade(BasicType t) {
-        return this;
-    }
-
     public Boolean getValue() {
         return value;
     }
 
     public static BooleanValue not(BooleanValue v) {
         return new BooleanValue(!v.getValue());
+    }
+
+    public BooleanValue copy(BooleanValue v) {
+        this.value = v.value;
+        return this;
     }
 }

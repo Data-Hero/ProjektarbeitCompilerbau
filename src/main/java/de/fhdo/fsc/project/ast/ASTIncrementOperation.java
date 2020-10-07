@@ -9,8 +9,9 @@ import de.fhdo.fsc.project.type.Type;
 
 import java.util.LinkedList;
 
-public class ASTIncrementOperation extends ASTExpression {
+public abstract class ASTIncrementOperation extends ASTExpression {
     Token operation, identifier;
+    ASTDeclaration declaration;
 
     public ASTIncrementOperation(Token operation, Token identifier, boolean pre) {
         super(pre ? operation : identifier, pre ? identifier : operation);
@@ -21,22 +22,13 @@ public class ASTIncrementOperation extends ASTExpression {
     @Override
     protected Type computeType(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
         Type type;
-        ASTDeclaration decl = symbolTable.find(identifier.image);
+        declaration = symbolTable.find(identifier.image);
 
-        if (decl == null) {
+        if (declaration == null) {
             errors.add(new SemanticError("unknown identifier " + identifier, identifier, identifier));
             return BasicType.errorType;
-        } else if (decl instanceof ASTVariableDeclaration) {
-            ASTVariableDeclaration declaration;
-            declaration = (ASTVariableDeclaration) decl;
-            type = declaration.getType();
-        } else if (decl instanceof ASTParameterDeclaration) {
-            ASTParameterDeclaration declaration;
-            declaration = (ASTParameterDeclaration) decl;
-            type = declaration.getType();
         } else {
-            errors.add(new SemanticError("wrong type " + identifier, identifier, identifier));
-            return BasicType.errorType;
+            type = declaration.getType();
         }
 
         if (type instanceof BasicType) {

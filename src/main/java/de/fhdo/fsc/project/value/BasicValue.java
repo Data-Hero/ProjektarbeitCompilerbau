@@ -8,7 +8,51 @@ public abstract class BasicValue extends Value {
         super(type);
     }
 
-    public abstract Value upgrade(BasicType t);
+    public static Value upgrade(BasicValue v, BasicType t) {
+        Value result = v;
+
+        switch (v.type.toString()) {
+            case BasicType.BOOLEAN_NAME:
+                BooleanValue booleanValue = (BooleanValue) v;
+                result = booleanValue;
+                break;
+            case BasicType.INTEGER_NAME:
+                IntegerValue integerValue = (IntegerValue) v;
+                switch (t.toString()) {
+                    case BasicType.DOUBLE_NAME:
+                        result = new DoubleValue(integerValue.value.doubleValue());
+                        break;
+                    case BasicType.STRING_NAME:
+                        result = new StringValue(integerValue.toString());
+                        break;
+                }
+                break;
+            case BasicType.DOUBLE_NAME:
+                DoubleValue doubleValue = (DoubleValue) v;
+                if (BasicType.STRING_NAME.equals(t.toString())) {
+                    result = new StringValue(doubleValue.toString());
+                }
+                break;
+            case BasicType.CHARACTER_NAME:
+                CharacterValue characterValue = (CharacterValue) v;
+                switch (t.toString()) {
+                    case BasicType.INTEGER_NAME:
+                        result = new IntegerValue((int) characterValue.value);
+                        break;
+                    case BasicType.DOUBLE_NAME:
+                        result = new DoubleValue((double) characterValue.value);
+                        break;
+                    case BasicType.STRING_NAME:
+                        result = new StringValue(characterValue.value.toString());
+                        break;
+                }
+                break;
+            case BasicType.STRING_NAME:
+                result = v;
+        }
+
+        return result;
+    }
 
     public static Value sign(String operation, Value value) {
         Value result = Value.create(value.type);
@@ -131,4 +175,6 @@ public abstract class BasicValue extends Value {
         assert result != null;
         return result;
     }
+
+
 }
