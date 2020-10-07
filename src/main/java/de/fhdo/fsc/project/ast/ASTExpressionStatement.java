@@ -23,4 +23,9 @@ public class ASTExpressionStatement extends ASTStatement {
             errors.add(new SemanticError("an expression is only a valid statement if it is an inc, dec or assignment", getStart(), getEnd()));
         }
     }
+
+    @Override
+    public void run(LinkedList<CompilerError> errors) {
+        expression.getValue(errors);
+    }
 }

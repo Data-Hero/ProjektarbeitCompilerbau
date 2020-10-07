@@ -6,6 +6,9 @@ import de.fhdo.fsc.project.errors.SemanticError;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.BasicValue;
+import de.fhdo.fsc.project.value.BooleanValue;
+import de.fhdo.fsc.project.value.Value;
 
 import java.util.LinkedList;
 
@@ -53,5 +56,18 @@ public class ASTUnaryOperation extends ASTExpression {
     @Override
     public boolean isStatement() {
         return false;
+    }
+
+    @Override
+    public Value getValue(LinkedList<CompilerError> errors) {
+        Value result;
+
+        if (operation.image.equals("!")) {
+            result = BooleanValue.not((BooleanValue) expression.getValue(errors));
+        } else {
+            result = BasicValue.sign(operation.image, expression.getValue(errors));
+        }
+
+        return upgradeValue(result);
     }
 }

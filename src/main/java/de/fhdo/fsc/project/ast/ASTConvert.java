@@ -4,6 +4,7 @@ import de.fhdo.fsc.project.Token;
 import de.fhdo.fsc.project.errors.CompilerError;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.Value;
 
 import java.util.LinkedList;
 
@@ -25,5 +26,11 @@ public class ASTConvert extends ASTExpression {
     @Override
     public boolean isStatement() {
         return false;
+    }
+
+    @Override
+    public Value getValue(LinkedList<CompilerError> errors) {
+        Type type = Type.resolve(this.type.image);
+        return expression.getValue(errors).upgrade(type);
     }
 }

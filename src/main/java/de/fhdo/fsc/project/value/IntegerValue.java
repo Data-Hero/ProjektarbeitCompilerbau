@@ -49,18 +49,12 @@ public class IntegerValue extends BasicValue {
         return result;
     }
 
-    @Override
-    public Value upgrade(BasicType t) {
-        if (t == BasicType.stringType) {
-            return toStringValue();
-        } else if (t == BasicType.doubleType) {
-            return new DoubleValue(this.value.doubleValue());
-        }
-
-        return this;
-    }
-
     public Integer getValue() {
         return value;
+    }
+
+    public IntegerValue copy(IntegerValue v) {
+        this.value = v.value;
+        return this;
     }
 }

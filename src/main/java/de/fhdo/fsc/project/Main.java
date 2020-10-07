@@ -16,7 +16,7 @@ public class Main {
 
         try {
             NewAwkParser parser = new NewAwkParser(new BufferedInputStream(
-                    new FileInputStream("./src/main/test/test1.na")
+                    new FileInputStream(args[0])
             ));
 
             try {
@@ -29,6 +29,15 @@ public class Main {
                 root.semanticAnalysis(errors, null);
             }
 
+            if (errors.size() == 0) {
+                System.out.println("source code checked: OK");
+            }
+
+            if (errors.size() == 0) {
+                System.out.println("starting ...");
+                root.run(errors);
+            }
+
             if (errors.size() > 0) {
                 int i = 1;
                 System.out.println("errors found:");
@@ -36,7 +45,9 @@ public class Main {
                     System.out.println(i++ + ".  " + error);
                 }
 
-            } else System.out.println("source code checked: OK");
+            } else {
+                System.out.println("run code: OK");
+            }
 
 
         } catch (IOException ex) {

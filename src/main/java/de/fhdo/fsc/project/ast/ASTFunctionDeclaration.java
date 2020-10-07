@@ -6,12 +6,14 @@ import de.fhdo.fsc.project.errors.SemanticError;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.Value;
 
 import java.util.LinkedList;
 
 public class ASTFunctionDeclaration extends ASTDeclaration {
     private LinkedList<ASTParameterDeclaration> parameterList;
     private ASTBlock block;
+    private ASTExpression returnExpression;
 
     private Type cachedType;
 
@@ -40,6 +42,17 @@ public class ASTFunctionDeclaration extends ASTDeclaration {
         }
 
         block.semanticAnalysis(errors, functionSymbolTable);
+
+        Type blockReturnType = block.getReturnType();
+        if (!block.cachedType.equals(blockReturnType)) {
+            SemanticError error = new SemanticError("Return type " + block.cachedType + " does not match function type " + block.getReturnType(), getStart(), getEnd());
+            errors.add(error);
+        }
+    }
+
+    @Override
+    public void run(LinkedList<CompilerError> errors) {
+        block.run(errors);
     }
 
     @Override
@@ -49,5 +62,9 @@ public class ASTFunctionDeclaration extends ASTDeclaration {
 
     public LinkedList<ASTParameterDeclaration> getParameterList() {
         return parameterList;
+    }
+
+    public Value getValue(LinkedList<CompilerError> errors) {
+        return block.getReturn().getValue(errors);
     }
 }

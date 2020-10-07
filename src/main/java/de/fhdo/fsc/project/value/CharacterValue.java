@@ -50,20 +50,12 @@ public class CharacterValue extends BasicValue {
         return result;
     }
 
-    @Override
-    public Value upgrade(BasicType t) {
-        if (t == BasicType.stringType) {
-            return toStringValue();
-        } else if (t == BasicType.doubleType) {
-            return new DoubleValue((double) this.value);
-        } else if (t == BasicType.intType) {
-            return new IntegerValue((int) this.value);
-        }
-
-        return this;
-    }
-
     public Character getValue() {
         return value;
+    }
+
+    public CharacterValue copy(CharacterValue v) {
+        this.value = v.value;
+        return this;
     }
 }

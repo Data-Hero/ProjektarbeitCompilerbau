@@ -6,6 +6,7 @@ import de.fhdo.fsc.project.errors.SemanticError;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.Value;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -74,5 +75,13 @@ public class ASTFunctionCall extends ASTExpression {
         return true; // ToDo: Check if correct
     }
 
+    @Override
+    public Value getValue(LinkedList<CompilerError> errors) {
+        for (int i = 0; i < parameters.size(); i++) {
+            declaration.getParameterList().get(i).bind(parameters.get(i).getValue(errors));
+        }
 
+        declaration.run(errors);
+        return declaration.getValue(errors);
+    }
 }

@@ -4,6 +4,7 @@ import de.fhdo.fsc.project.Token;
 import de.fhdo.fsc.project.errors.CompilerError;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.Value;
 
 import java.util.LinkedList;
 
@@ -36,4 +37,18 @@ public abstract class ASTExpression extends ASTNode {
     }
 
     public abstract boolean isStatement();
+
+    public abstract Value getValue(LinkedList<CompilerError> errors);
+
+    public void run(LinkedList<CompilerError> errors) {
+        // Nothing to do here
+    }
+
+    public Value upgradeValue(Value value) {
+        if (castTo != null) {
+            return value.upgrade(castTo);
+        } else {
+            return value;
+        }
+    }
 }

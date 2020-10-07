@@ -36,13 +36,12 @@ public class StringValue extends BasicValue {
         return result;
     }
 
-    @Override
-    public Value upgrade(BasicType t) {
-        // Nothing is upgradable to String
-        return this;
-    }
-
     public String getValue() {
         return value;
+    }
+
+    public StringValue copy(StringValue v) {
+        this.value = v.value;
+        return this;
     }
 }

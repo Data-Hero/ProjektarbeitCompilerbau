@@ -23,18 +23,18 @@ public abstract class Value {
 
             switch (rType.getName()) {
                 case BasicType.STRING_NAME:
-                    return StringValue.operation(rType, operation, leftValue, rightValue);
+                    return StringValue.operation(rType, operation, (StringValue) leftValue, (StringValue) rightValue);
                 case BasicType.CHARACTER_NAME:
-                    return CharacterValue.operation(rType, operation, leftValue, rightValue);
+                    return CharacterValue.operation(rType, operation, (CharacterValue) leftValue, (CharacterValue) rightValue);
                 case BasicType.INTEGER_NAME:
-                    return IntegerValue.operation(rType, operation, leftValue, rightValue);
+                    return IntegerValue.operation(rType, operation, (IntegerValue) leftValue, (IntegerValue) rightValue);
                 case BasicType.DOUBLE_NAME:
-                    return DoubleValue.operation(rType, operation, leftValue, rightValue);
+                    return DoubleValue.operation(rType, operation, (DoubleValue) leftValue, (DoubleValue) rightValue);
                 case BasicType.BOOLEAN_NAME:
                     return BooleanValue.operation(rType, operation, leftValue, rightValue);
             }
         } else if (returnType instanceof ArrayType) {
-            return ArrayValue.operation((ArrayType) returnType, operation, leftValue, rightValue);
+            return ArrayValue.operation((ArrayType) returnType, operation, (ArrayValue) leftValue, (ArrayValue) rightValue);
         }
 
         return null; // ToDo: Throw exception or leftValue?
@@ -43,9 +43,9 @@ public abstract class Value {
     public Value upgrade(Type t) {
         // ToDo: Check if the correct upgrade function will be called
         if (t instanceof BasicType) {
-            return this.upgrade((BasicType) t);
+            return BasicValue.upgrade((BasicValue) this, (BasicType) t);
         } else if (t instanceof ArrayType) {
-            return this.upgrade((ArrayType) t);
+            return ArrayValue.upgrade((ArrayValue) this, (ArrayType) t);
         } else {
             return null;
         }
@@ -85,4 +85,31 @@ public abstract class Value {
     }
 
     public abstract int length();
+
+    public Value copy(Value v) {
+        if (this.type instanceof BasicType) {
+            BasicType type = (BasicType) this.type;
+
+            if (this.type != v.type) {
+                System.out.println("Value.java: Types does not match " + this.type + ", " + v.type);
+            }
+
+            switch (type.getName()) {
+                case BasicType.STRING_NAME:
+                    return ((StringValue) this).copy((StringValue) v);
+                case BasicType.CHARACTER_NAME:
+                    return ((CharacterValue) this).copy((CharacterValue) v);
+                case BasicType.INTEGER_NAME:
+                    return ((IntegerValue) this).copy((IntegerValue) v);
+                case BasicType.DOUBLE_NAME:
+                    return ((DoubleValue) this).copy((DoubleValue) v);
+                case BasicType.BOOLEAN_NAME:
+                    return ((BooleanValue) this).copy((BooleanValue) v);
+            }
+        } else if (this.type instanceof ArrayType) {
+            return ((ArrayValue) this).copy((ArrayValue) v);
+        }
+
+        return this;
+    }
 }

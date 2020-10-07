@@ -50,16 +50,12 @@ public class DoubleValue extends BasicValue {
         return result;
     }
 
-    @Override
-    public Value upgrade(BasicType t) {
-        if (t == BasicType.stringType) {
-            return toStringValue();
-        }
-
-        return this;
-    }
-
     public Double getValue() {
         return value;
+    }
+
+    public DoubleValue copy(DoubleValue v) {
+        this.value = v.value;
+        return this;
     }
 }

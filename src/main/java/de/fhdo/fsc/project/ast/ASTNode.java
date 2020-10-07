@@ -44,4 +44,6 @@ public abstract class ASTNode {
     }
 
     public abstract void semanticAnalysis(LinkedList<CompilerError> errors, SymbolTable symbolTable);
+
+    public abstract void run(LinkedList<CompilerError> errors);
 }
