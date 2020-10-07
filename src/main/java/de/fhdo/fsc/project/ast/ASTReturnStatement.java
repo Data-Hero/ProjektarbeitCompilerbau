@@ -7,7 +7,7 @@ import de.fhdo.fsc.project.type.SymbolTable;
 import java.util.LinkedList;
 
 public class ASTReturnStatement extends ASTStatement {
-    private ASTExpression expression;
+    ASTExpression expression;
 
     public ASTReturnStatement(Token start, ASTExpression expression, Token end){
         super(start, end);
@@ -17,5 +17,10 @@ public class ASTReturnStatement extends ASTStatement {
     @Override
     public void semanticAnalysis(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
         expression.semanticAnalysis(errors, symbolTable);
+    }
+
+    @Override
+    public void run(LinkedList<CompilerError> errors) {
+        this.expression.run(errors);
     }
 }

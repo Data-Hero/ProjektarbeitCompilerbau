@@ -1,8 +1,8 @@
 package de.fhdo.fsc.project.value;
 
+import de.fhdo.fsc.project.errors.RuntimeError;
 import de.fhdo.fsc.project.type.ArrayType;
 import de.fhdo.fsc.project.type.BasicType;
-import de.fhdo.fsc.project.type.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,8 @@ public class ArrayValue extends Value {
         return value.size();
     }
 
-    public static Value operation(Type returnType, String operation, ArrayValue leftValue, ArrayValue rightValue) {
-        ArrayType rType = (ArrayType) returnType;
-        ArrayValue result = new ArrayValue(rType.getBasicType(), rType.dimensions);
+    public static Value operation(ArrayType returnType, String operation, ArrayValue leftValue, ArrayValue rightValue) {
+        ArrayValue result = new ArrayValue(returnType.getBasicType(), returnType.dimensions);
 
         switch (operation) {
             case "+":
@@ -48,7 +47,29 @@ public class ArrayValue extends Value {
         return result;
     }
 
-    public Value upgrade(ArrayType t) {
+    public static Value upgrade(ArrayValue v, ArrayType t) {
+        return v;
+    }
+
+    public Value get(int i) throws RuntimeError {
+        if (i >= value.size()) {
+            throw new RuntimeError("Index " + i + " out of bound " + value.size());
+        }
+
+        return value.get(i);
+    }
+
+    public Value set(int i, Value v) throws RuntimeError {
+        if (i >= value.size()) {
+            throw new RuntimeError("Index " + i + " out of bound " + value.size());
+        }
+
+        return value.set(i, v);
+    }
+
+    public ArrayValue copy(ArrayValue v) {
+        this.value = v.value;
+        this.type = v.type;
         return this;
     }
 }

@@ -121,7 +121,7 @@ ASTStatement Statement():{
     ASTExpression expression = null;
     Token end = null;
 } {
-    (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
+    (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | result = WriteStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
     { return result; }
 }
 
@@ -213,8 +213,7 @@ ASTExpression Atom():{
 |   result = IsType()
 |   result = Convert()
 |   result = Length()
-|   result = read()
-|   result = write())
+|   result = Read())
 //|   result = Expression() SmartSwitch() // ToDo: Fix left recusion
 { return result; }
 }
@@ -259,9 +258,9 @@ ASTForeachStatement ForeachStatement():{
     Token id;
     ASTExpression expression;
     ASTStatement statement;
-    Token start;
+    Token start, type;
 } {
-    start = "foreach" "(" id = Identifier() <IN> expression = Expression() ")" statement = Statement() { return new ASTForeachStatement(start, id, expression, statement); }
+    start = "foreach" "(" type = Datatype() id = Identifier() <IN> expression = Expression() ")" statement = Statement() { return new ASTForeachStatement(start, id, expression, statement, type); }
 }
 
 ASTWhileStatement WhileStatement():{
@@ -280,7 +279,7 @@ ASTIfStatement IfStatement():{
     ASTStatement elseStatement = null;
 } {
     (start = "if" "(" expression =  LogicalExpression()  ")" statement = Statement()
-    (LOOKAHEAD(2) "else" elseIfStatement = IfStatement() | "else" elseStatement = Statement()))
+    ("else" (elseIfStatement = IfStatement() | elseStatement = Statement()))? )
     { return new ASTIfStatement(start, expression, statement, elseIfStatement, elseStatement); }
 }
 
@@ -322,7 +321,7 @@ ASTExpression Length():{
     { return new ASTLength(start, end, expression); }
 }
 
-ASTExpression read():{
+ASTExpression Read():{
     Token start, end;
     ASTExpression expression;
 } {
@@ -330,12 +329,13 @@ ASTExpression read():{
     { return new ASTRead(start, end, expression); }
 }
 
-ASTExpression write():{
+ASTWriteStatement WriteStatement():{
     Token start, end;
-    ASTExpression pathExpression, sourceExpression;
+    ASTExpression pathExpression = null;
+    ASTExpression sourceExpression;
 } {
-    (start = "write" "(" pathExpression = Expression() "," sourceExpression = Expression() end = ")")
-    { return new ASTWrite(start, end, pathExpression, sourceExpression); }
+    (start = "write" "(" sourceExpression = Expression() ("," pathExpression = Expression())* ")" end = ";")
+    { return new ASTWriteStatement(start, end, pathExpression, sourceExpression); }
 }
 
 

@@ -15,13 +15,15 @@ public class ArrayType extends Type {
     }
 
     public static boolean implicit(ArrayType a, ArrayType b) {
-        if (a.dimensions == b.dimensions) {
-            return BasicType.implicit(a.type, b.type);
-        } else if (a.dimensions + 1 == b.dimensions) {
-            return BasicType.implicit(a.type, b.type);
-        } else {
-            return false;
+        if (a.type == b.type) {
+            if (a.dimensions == b.dimensions) {
+                return true;
+            } else if (a.dimensions + 1 == b.dimensions) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     public BasicType getBasicType() {

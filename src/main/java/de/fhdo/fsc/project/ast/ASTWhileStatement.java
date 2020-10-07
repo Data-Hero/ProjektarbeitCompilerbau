@@ -6,6 +6,7 @@ import de.fhdo.fsc.project.errors.SemanticError;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.BooleanValue;
 
 import java.util.LinkedList;
 
@@ -30,5 +31,18 @@ public class ASTWhileStatement extends ASTStatement {
         }
 
         statement.semanticAnalysis(errors, symbolTable);
+    }
+
+    @Override
+    public void run(LinkedList<CompilerError> errors) {
+        BooleanValue value;
+
+        do {
+            value = (BooleanValue) expression.getValue(errors);
+
+            if (value.getValue()) {
+                statement.run(errors);
+            }
+        } while (value.getValue());
     }
 }

@@ -1,7 +1,11 @@
 package de.fhdo.fsc.project.ast;
 
 import de.fhdo.fsc.project.Token;
+import de.fhdo.fsc.project.errors.CompilerError;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.Value;
+
+import java.util.LinkedList;
 
 public abstract class ASTDeclaration extends ASTNode {
     protected Token id;
@@ -14,4 +18,6 @@ public abstract class ASTDeclaration extends ASTNode {
     }
 
     public abstract Type getType();
+
+    public abstract Value getValue(LinkedList<CompilerError> errors);
 }

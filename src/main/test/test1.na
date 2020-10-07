@@ -1,5 +1,6 @@
 string concat(string a, string b) {
-    string c = a + b;
+    string c;
+    c = a + b;
     return c;
 }
 
@@ -8,10 +9,13 @@ int plusOne(int x) {
     return y;
 }
 
+if (true) {
+    string fileContent = read("./src/main/test/input.txt");
+    write(fileContent);
+}
+
 int x = 5;
 x = x + 5;
-
-string[] array = "test";
 
 double y = 1.2;
 string z = "Hello " + "world!";
@@ -19,7 +23,8 @@ string z = "Hello " + "world!";
 
 // Array test
 string[][] arr1;
-string[] arr2 = "arr2";
+//string[] arr2 = "arr2";
+string[] arr2;
 arr1 = arr1 + arr2;
 
 int b = plusOne(1);
@@ -43,20 +48,23 @@ c = 1;
 while (c < 5) {
     if (c == 2) {
         test = test + c;
+        write("c == 2");
     } else if (c == 3) {
         test = test + c;
+        write("c == 3");
     } else {
         test = test + c;
+        write("test = test + c;");
     }
+
+    write("while");
 
     c = c + 1;
 }
 
 string[] arr;
-foreach (i in arr) {
+foreach (string i in arr) {
   int t1 = length("zwei");
   double t2 = convert(double, 5);
   bool t3 = isType(bool, y);
 }
-
-write("output.txt",input);
