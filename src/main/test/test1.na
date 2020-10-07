@@ -12,6 +12,7 @@ int plusOne(int x) {
 if (true) {
     string path = "./src/main/test/input.txt";
     string fileContent = read(path);
+    //fileContent = fileContent + 5; // ToDo: Fix implicit conversion
     write(fileContent, "./src/main/test/out.txt");
 }
 
