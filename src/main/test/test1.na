@@ -10,8 +10,9 @@ int plusOne(int x) {
 }
 
 if (true) {
-    string fileContent = read("./src/main/test/input.txt");
-    write(fileContent);
+    string path = "./src/main/test/input.txt";
+    string fileContent = read(path);
+    write(fileContent, "./src/main/test/out.txt");
 }
 
 int x = 5;
@@ -38,7 +39,7 @@ c = 6;
 // 1a comment test
 
 
-string test = "test";
+string test = "test.txt";
 
 read("abc.txt");
 
