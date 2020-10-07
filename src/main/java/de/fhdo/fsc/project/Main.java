@@ -14,6 +14,11 @@ public class Main {
         LinkedList<CompilerError> errors = new LinkedList<>();
         ASTNode root = null;
 
+        if (args.length < 1) {
+            System.out.println("Missing source file");
+            return;
+        }
+
         try {
             NewAwkParser parser = new NewAwkParser(new BufferedInputStream(
                     new FileInputStream(args[0])
