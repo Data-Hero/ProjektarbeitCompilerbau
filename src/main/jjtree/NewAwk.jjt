@@ -75,7 +75,7 @@ TOKEN :
 // Literals
 TOKEN :
 {
-    "(" | ")" | "!" | "{" | "}" | "--" | "++" | "+" | "-" | "*" | "/" | "%" | ":"
+    "(" | ")" | "!" | "{" | "}" | "--" | "++" | "+" | "-" | "*" | "/" | "%" | ":" | "[" | "]"
 |   <INTEGER_LITERAL: <DECIMAL_LITERAL>>
 |   <#DECIMAL_LITERAL: ("+" | "-")? ["1"-"9"] (["0"-"9"])*>
 |   <FLOATING_POINT_LITERAL: ("+" | "-")? (["0"-"9"])+ "." (["0"-"9"])*>
@@ -151,6 +151,16 @@ ASTBlock FunctionBlock():{
     { result.setToken(start, end); return result; }
 }
 
+
+ASTExpression ArrayExpression():{
+    Token id;
+    ASTExpression expr;
+    List<ASTExpression> elements = new LinkedList<ASTExpression>();
+} {
+    (LOOKAHEAD(2) expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )*)
+    { return new ASTArrayExpression(elements); }
+}
+
 ASTExpression Expression():{
     Token id;
     ASTExpression result, expr;
@@ -159,6 +169,7 @@ ASTExpression Expression():{
     | result = LogicalExpression())
     { return result; }
 }
+
 
 ASTExpression LogicalExpression():{
     Token operator;
@@ -210,6 +221,7 @@ ASTExpression Atom():{
 |   id = <STRING_LITERAL> { result = new ASTLiteral(id); }
 |   id = <BOOLEAN_LITERAL> { result = new ASTLiteral(id); }
 |   "(" result = Expression() ")"
+|   "[" result = ArrayExpression() "]"
 |   result = IsType()
 |   result = Convert()
 |   result = Length()
