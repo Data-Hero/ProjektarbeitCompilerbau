@@ -8,9 +8,14 @@ package de.fhdo.fsc.project;
 
 import de.fhdo.fsc.project.ast.*;
 import java.util.*;
+import de.fhdo.fsc.project.errors.*;
 
 public class NewAwkParser {
+    private LinkedList<CompilerError> errors = new LinkedList();
 
+    public LinkedList<CompilerError> getErrors() {
+        return this.errors;
+    }
 }
 
 PARSER_END(NewAwkParser)
@@ -49,12 +54,14 @@ TOKEN :
     < SMARTSWITCH : "@">
 |   < RETURN: "return">
 |   < ENUM_SEPERATOR: ",">
-|   < EXPRESSION_TERMINATOR: ";">
+|   < SEMICOLON: ";">
 |   < IF: "if">
 |   < ELSE: "else">
 |   < WHILE: "while">
 |   < FOREACH: "foreach">
 |   < IN: "in">
+|   < OPEN_BLOCK: "{">
+|   < CLOSE_BLOCK: "}">
 }
 
 // Selector classes
@@ -75,7 +82,7 @@ TOKEN :
 // Literals
 TOKEN :
 {
-    "(" | ")" | "!" | "{" | "}" | "--" | "++" | "+" | "-" | "*" | "/" | "%" | ":" | "[" | "]"
+    "(" | ")" | "!" | "--" | "++" | "+" | "-" | "*" | "/" | "%" | ":" | "[" | "]"
 |   <INTEGER_LITERAL: <DECIMAL_LITERAL>>
 |   <#DECIMAL_LITERAL: ("+" | "-")? ["1"-"9"] (["0"-"9"])*>
 |   <FLOATING_POINT_LITERAL: ("+" | "-")? (["0"-"9"])+ "." (["0"-"9"])*>
@@ -104,25 +111,50 @@ TOKEN :
 |   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 }
 
+JAVACODE
+void errorSkipTo(int kind) {
+  Token t;
+  do {
+    t = getNextToken();
+  } while (t.kind != kind && t.kind != EOF);
+}
+
 ASTProgram compilationUnit():{
     ASTBlock result = new ASTBlock();
     ASTProgram program = new ASTProgram(result);
-    ASTNode node;
+    ASTNode node = null;
     boolean first = true;
 } {
-    (LOOKAHEAD(3) node = FunctionDeclaration() { result.add(node); } )*
-    (LOOKAHEAD(2) (node = Statement() | node = VariableDeclaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); } )+
-    <EOF>
+    try {
+        (LOOKAHEAD(3) node = FunctionDeclaration() { result.add(node); } )*
+        (LOOKAHEAD(2) (node = Statement() | node = VariableDeclaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); } )+
+        <EOF>
+    } catch (ParseException e) {
+        errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
+        errorSkipTo(EOF);
+    }
     { return program; }
+
 }
 
 ASTStatement Statement():{
-    ASTStatement result;
+    ASTStatement result = null;
     ASTExpression expression = null;
     Token end = null;
 } {
-    (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | result = WriteStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
-    { return result; }
+    try {
+        (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | result = WriteStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
+        { return result; }
+    } catch (ParseException e) {
+        if (result != null) {
+            errors.add(new SyntaxError(e.getMessage(), result.getStart(), result.getEnd()));
+            errorSkipTo(CLOSE_BLOCK);
+        } else {
+            errors.add(new SyntaxError(e.getMessage()));
+            errorSkipTo(SEMICOLON);
+        }
+    }
+    { return new ASTNoneStatement(); }
 }
 
 ASTVariableDeclaration VariableDeclaration():{
@@ -135,11 +167,17 @@ ASTVariableDeclaration VariableDeclaration():{
 
 ASTBlock Block():{
     ASTBlock result = new ASTBlock();
-    ASTNode node;
+    ASTNode node = null;
     Token start, end;
 } {
-    start = "{" ((node = Statement() | node = VariableDeclaration() )  { result.add(node); } )* end = "}"
-    { result.setToken(start, end); return result; }
+    try {
+        start = "{" ((node = Statement() | node = VariableDeclaration() )  { result.add(node); } )* end = "}"
+        { result.setToken(start, end); }
+    } catch (ParseException e) {
+        errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
+        errorSkipTo(CLOSE_BLOCK);
+    }
+    { return result; }
 }
 
 ASTBlock FunctionBlock():{

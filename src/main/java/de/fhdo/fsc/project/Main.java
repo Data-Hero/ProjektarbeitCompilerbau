@@ -26,6 +26,7 @@ public class Main {
 
             try {
                 root = parser.compilationUnit();
+                errors = parser.getErrors();
             } catch (ParseException e) {
                 errors.add(new SyntaxError(e.toString(), null, null));
             }
