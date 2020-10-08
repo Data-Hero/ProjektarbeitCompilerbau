@@ -261,8 +261,8 @@ ASTExpression Atom():{
 |   result = IsType()
 |   result = Convert()
 |   result = Length()
-|   result = Read())
-//|   result = Expression() SmartSwitch() // ToDo: Fix left recusion
+|   result = Read()
+|   result = SmartSwitch())
 { return result; }
 }
 
@@ -333,15 +333,15 @@ ASTIfStatement IfStatement():{
 
 // Smart Switch
 ASTSmartSwitch SmartSwitch():{
-    Map<String, ASTBlock> cases = new HashMap();
+    LinkedHashMap<ASTExpression, ASTBlock> cases = new LinkedHashMap();
     ASTBlock block;
-    Token negate = null;
-    Token selector, start, end;
+    ASTExpression expression, selector;
+    Token start, end;
 } {
-    start = <SMARTSWITCH> "{"
-    (( (negate = "!")? ":" selector = <SMART_SWITCH_SELECTOR> ":" block = FunctionBlock())+) { cases.put((((negate != null) ? negate.image : "") + selector.image), block); }
+    start = "@"  expression = Expression() "{"
+    ( selector = Expression() block = FunctionBlock() { cases.put(selector, block); } )+
     end = "}"
-    { return new ASTSmartSwitch(start, cases, end); }
+    { return new ASTSmartSwitch(start, end, expression, cases); }
 }
 
 // Integrated Funtions

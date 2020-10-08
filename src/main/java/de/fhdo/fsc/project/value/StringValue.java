@@ -4,7 +4,7 @@ import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.Type;
 
 public class StringValue extends BasicValue {
-    String value;
+    public String value;
 
     public StringValue(String value) {
         this();
