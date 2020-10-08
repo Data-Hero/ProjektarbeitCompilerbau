@@ -85,7 +85,8 @@ TOKEN :
 |   < LENGTH_FUNCTION: ( "length" )>
 |   < READ_FUNCTION: ( "read" )>
 |   < WRITE_FUNCTION: ( "write" )>
-
+|   < GET_FUMCTION: ( "get" )>
+|   < SET_FUMCTION: ( "set" )>
 }
 
 // Identifier
@@ -128,7 +129,9 @@ ASTStatement Statement():{
     Token end = null;
 } {
     try {
-        (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | result = WriteStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
+        (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement()
+        | result = WriteStatement() | result = Set() | expression = Expression() end = ";"
+        { result = new ASTExpressionStatement(expression, end); })
         { return result; }
     } catch (ParseException e) {
         if (result != null) {
@@ -146,7 +149,9 @@ ASTVariableDeclaration VariableDeclaration():{
     Token type, id, end;
     ASTExpression result = null;
 } {
-    type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
+    LOOKAHEAD(5)type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
+    { return new ASTVariableDeclaration(type, id, result, end); } |
+    type = Datatype() id = Identifier() [ "=" Expression() result = SmartSwitch() ] end = ";"
     { return new ASTVariableDeclaration(type, id, result, end); }
 }
 
@@ -173,6 +178,7 @@ ASTBlock FunctionBlock():{
     start = "{" ((node = Statement() | node = VariableDeclaration()) { result.add(node); } )* (node = ReturnStatement() { result.add(node); } )? end = "}"
     { result.setToken(start, end); return result; }
 }
+
 
 ASTExpression ArrayExpression():{
     Token id, start, end;
@@ -247,6 +253,7 @@ ASTExpression Atom():{
 |   result = Convert()
 |   result = Length()
 |   result = Read()
+|   result = Get()
 |   result = SmartSwitch())
 { return result; }
 }
@@ -358,7 +365,7 @@ ASTExpression Read():{
     Token start, end;
     ASTExpression expression;
 } {
-    (start = "read" "(" expression = Expression() end = ")")
+    start = "read" "(" expression = Expression() end = ")"
     { return new ASTRead(start, end, expression); }
 }
 
@@ -369,6 +376,24 @@ ASTWriteStatement WriteStatement():{
 } {
     (start = "write" "(" sourceExpression = Expression() ("," pathExpression = Expression())* ")" end = ";")
     { return new ASTWriteStatement(start, end, pathExpression, sourceExpression); }
+}
+
+
+ASTExpression Get():{
+    Token start, end;
+    ASTExpression arrayExpression, indexExpression;
+} {
+    start = "get" "(" arrayExpression = Expression() "," indexExpression = Expression() end = ")"
+    { return new ASTGetExpression(start, end, arrayExpression, indexExpression); }
+}
+
+
+ASTSetStatement Set():{
+    Token start, end;
+    ASTExpression arrayExpression, indexExpression, elementExpression;
+} {
+    start = "set" "(" arrayExpression = Expression() "," indexExpression = Expression() "," elementExpression = Expression()  ")" end = ";"
+    { return new ASTSetStatement(start, end, arrayExpression, indexExpression, elementExpression); }
 }
 
 

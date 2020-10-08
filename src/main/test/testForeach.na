@@ -1,0 +1,12 @@
+int[] c;
+
+c = c + 2;
+c = c + 18;
+c = c + 2;
+c = c + 18;
+
+int b = 2;
+foreach(int a in c) {
+      b = b + a;
+      write(b, "./src/main/test/out2.txt");
+}
