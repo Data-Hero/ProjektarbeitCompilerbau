@@ -189,14 +189,14 @@ ASTBlock FunctionBlock():{
     { result.setToken(start, end); return result; }
 }
 
-
 ASTExpression ArrayExpression():{
     Token id, start, end;
     ASTExpression expr;
     List<ASTExpression> elements = new LinkedList();
 } {
     start = "[" (expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )* )? end = "]"
-    { return new ASTArrayExpression(elements,  start, end); }}
+    { return new ASTArrayExpression(elements,  start, end); }
+}
 
 ASTExpression Expression():{
     Token id;
@@ -206,7 +206,6 @@ ASTExpression Expression():{
     | result = LogicalExpression())
     { return result; }
 }
-
 
 ASTExpression LogicalExpression():{
     Token operator;
