@@ -12,7 +12,7 @@ import java.util.LinkedList;
 
 public class ASTVariableDeclaration extends ASTDeclaration {
     private ASTExpression initializer;
-    private ASTAssigment init;
+    private ASTAssignment init;
 
     public ASTVariableDeclaration(Token type, Token identifier, ASTExpression init, Token end) {
         super(type, identifier, end);
@@ -33,7 +33,7 @@ public class ASTVariableDeclaration extends ASTDeclaration {
         }
 
         if (initializer != null) {
-            init = new ASTAssigment(id, initializer);
+            init = new ASTAssignment(id, initializer);
             init.semanticAnalysis(errors, symbolTable);
         }
     }

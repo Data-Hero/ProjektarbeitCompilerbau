@@ -196,14 +196,13 @@ ASTExpression ArrayExpression():{
     List<ASTExpression> elements = new LinkedList<ASTExpression>();
 } {
     (LOOKAHEAD(2) expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )*)
-    { return new ASTArrayExpression(elements); }
-}
+    { return new ASTArrayExpression(elements); }}
 
 ASTExpression Expression():{
     Token id;
     ASTExpression result, expr;
 } {
-    (LOOKAHEAD(2) id = Identifier() "=" expr = Expression() { result = new ASTAssigment(id, expr); }
+    (LOOKAHEAD(2) id = Identifier() "=" expr = Expression() { result = new ASTAssignment(id, expr); }
     | result = LogicalExpression())
     { return result; }
 }

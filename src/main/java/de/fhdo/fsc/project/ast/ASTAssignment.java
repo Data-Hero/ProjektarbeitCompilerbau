@@ -10,11 +10,11 @@ import de.fhdo.fsc.project.value.Value;
 
 import java.util.LinkedList;
 
-public class ASTAssigment extends ASTExpression {
+public class ASTAssignment extends ASTExpression {
     private Token identifier;
     private ASTExpression expression;
 
-    public ASTAssigment(Token ident, ASTExpression expression) {
+    public ASTAssignment(Token ident, ASTExpression expression) {
         super(ident, expression.getEnd());
         identifier = ident;
         this.expression = expression;

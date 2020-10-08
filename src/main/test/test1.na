@@ -12,7 +12,6 @@ int plusOne(int x) {
 if (true) {
     string path = "./src/main/test/input.txt";
     string fileContent = read(path);
-    //fileContent = fileContent + 5; // ToDo: Fix implicit conversion
     write(fileContent, "./src/main/test/out.txt");
 }
 
@@ -25,7 +24,8 @@ string z = "Hello " + "world!";
 
 // Array test
 string[][] arr1;
-string[] arr2 = "arr2";
+//string[] arr2 = "arr2";
+int[] arr2 ;
 arr1 = arr1 + arr2;
 
 int b = plusOne(1);
