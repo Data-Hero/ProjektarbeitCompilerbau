@@ -191,12 +191,12 @@ ASTBlock FunctionBlock():{
 
 
 ASTExpression ArrayExpression():{
-    Token id;
+    Token id, start, end;
     ASTExpression expr;
-    List<ASTExpression> elements = new LinkedList<ASTExpression>();
+    List<ASTExpression> elements = new LinkedList();
 } {
-    (LOOKAHEAD(2) expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )*)
-    { return new ASTArrayExpression(elements); }}
+    start = "[" (expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )* )? end = "]"
+    { return new ASTArrayExpression(elements,  start, end); }}
 
 ASTExpression Expression():{
     Token id;
@@ -258,7 +258,7 @@ ASTExpression Atom():{
 |   id = <STRING_LITERAL> { result = new ASTLiteral(id); }
 |   id = <BOOLEAN_LITERAL> { result = new ASTLiteral(id); }
 |   "(" result = Expression() ")"
-|   "[" result = ArrayExpression() "]"
+|   result = ArrayExpression()
 |   result = IsType()
 |   result = Convert()
 |   result = Length()
