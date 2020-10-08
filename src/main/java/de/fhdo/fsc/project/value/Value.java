@@ -34,7 +34,7 @@ public abstract class Value {
                     return BooleanValue.operation(rType, operation, leftValue, rightValue);
             }
         } else if (returnType instanceof ArrayType) {
-            return ArrayValue.operation((ArrayType) returnType, operation, (ArrayValue) leftValue, (ArrayValue) rightValue);
+            return ArrayValue.operation((ArrayType) returnType, operation, (ArrayValue) leftValue, rightValue);
         }
 
         return null; // ToDo: Throw exception or leftValue?

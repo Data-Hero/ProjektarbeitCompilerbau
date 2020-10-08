@@ -33,15 +33,11 @@ public class ASTWriteStatement extends ASTStatement {
         }
 
         sourceExpression.semanticAnalysis(errors, symbolTable);
-
-        if (sourceExpression.getType(errors, symbolTable) != BasicType.stringType) {
-            errors.add(new SemanticError("Source must be a string", getStart(), getEnd()));
-        }
     }
 
     @Override
     public void run(LinkedList<CompilerError> errors) {
-        String valueString = ((StringValue) sourceExpression.getValue(errors)).getValue();
+        String valueString = sourceExpression.getValue(errors).toStringValue().getValue();
 
         if (pathExpression == null) {
             System.out.println(valueString);

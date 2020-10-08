@@ -44,4 +44,9 @@ public class StringValue extends BasicValue {
         this.value = v.value;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "\"" + value + "\"";
+    }
 }

@@ -30,18 +30,36 @@ public class ArrayValue extends Value {
         return value.size();
     }
 
-    public static Value operation(ArrayType returnType, String operation, ArrayValue leftValue, ArrayValue rightValue) {
+    public static Value operation(ArrayType returnType, String operation, ArrayValue leftValue, Value rightValue) {
         ArrayValue result = new ArrayValue(returnType.getBasicType(), returnType.dimensions);
 
-        switch (operation) {
-            case "+":
-                result.value.addAll(leftValue.value);
-                result.value.addAll(rightValue.value);
-                break;
-            case "-":
-                result.value.addAll(leftValue.value);
-                result.value.removeAll(rightValue.value);
-                break;
+        if (rightValue instanceof ArrayValue) {
+            ArrayValue rValue = (ArrayValue) rightValue;
+            switch (operation) {
+                case "+":
+                    result.value.addAll(leftValue.value);
+                    result.value.addAll(rValue.value);
+                    break;
+                case "-":
+                    result.value.addAll(leftValue.value);
+                    result.value.removeAll(rValue.value);
+                    break;
+            }
+        } else {
+            switch (operation) {
+                case "+":
+                    result.value.addAll(leftValue.value);
+                    ArrayValue addValue = new ArrayValue((BasicType) rightValue.type, 1);
+                    addValue.value.add(rightValue);
+                    result.value.addAll(addValue.value);
+                    break;
+                case "-":
+                    result.value.addAll(leftValue.value);
+                    ArrayValue removeValue = new ArrayValue((BasicType) rightValue.type, 1);
+                    removeValue.value.add(rightValue);
+                    result.value.removeAll(removeValue.value);
+                    break;
+            }
         }
 
         return result;
