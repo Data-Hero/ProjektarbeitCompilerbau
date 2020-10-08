@@ -1,0 +1,8 @@
+// Tests for SmartSwitch Operator
+string input = "A,B,C,D,E";
+
+string result = x@{
+    :,:      {  return ":";    },
+    :ALPHA:  {  return this;    }
+}
+write(result, "./src/main/test/out.txt");

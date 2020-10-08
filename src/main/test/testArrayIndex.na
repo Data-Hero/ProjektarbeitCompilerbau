@@ -3,14 +3,10 @@ int[] c;
 c = c + 2;
 c = c + 18;
 c = c + 2;
-c = c + 2;
+c = c + 18;
 
-write(c);
-
+int b = 2;
 foreach(int a in c) {
-    bool type = isType(int,a);
-    write(type);
-//    int aa = a;
-//    int b = 100 + aa;
-//    write(b);
+      int b = b + a;
+      write(b, "./src/main/test/out2.txt");
 }
