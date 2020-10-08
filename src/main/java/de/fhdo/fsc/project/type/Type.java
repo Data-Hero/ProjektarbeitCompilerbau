@@ -15,6 +15,8 @@ public abstract class Type {
                 return BasicType.charType;
             case BasicType.STRING_NAME:
                 return BasicType.stringType;
+            case BasicType.VOID_NAME:
+                return BasicType.voidType;
         }
 
         if (name.matches(".+\\[\\]$")) {

@@ -48,6 +48,10 @@ public class ASTBlock extends ASTStatement {
 
             node.semanticAnalysis(errors, innerSymbolTable);
         }
+
+        if (cachedType == null) {
+            cachedType = BasicType.voidType;
+        }
     }
 
     private ASTExpression returnExpression;

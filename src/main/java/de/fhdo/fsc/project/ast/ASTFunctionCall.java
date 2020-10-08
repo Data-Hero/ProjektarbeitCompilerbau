@@ -15,6 +15,7 @@ import java.util.List;
 public class ASTFunctionCall extends ASTExpression {
     private List<ASTExpression> parameters;
     private Token identifier;
+    private Type cachedType;
 
     public ASTFunctionCall(Token identifier, List<ASTExpression> parameters, Token end) {
         super(identifier, end);
@@ -67,12 +68,14 @@ public class ASTFunctionCall extends ASTExpression {
             }
         }
 
+        this.cachedType = type;
+
         return type;
     }
 
     @Override
     public boolean isStatement() {
-        return true; // ToDo: Check if correct
+        return this.cachedType == BasicType.voidType;
     }
 
     @Override

@@ -65,6 +65,10 @@ public class ASTFunctionDeclaration extends ASTDeclaration {
     }
 
     public Value getValue(LinkedList<CompilerError> errors) {
-        return block.getReturn().getValue(errors);
+        if (cachedType != BasicType.voidType) {
+            return block.getReturn().getValue(errors);
+        }
+
+        return null;
     }
 }

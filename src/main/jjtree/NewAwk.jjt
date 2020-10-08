@@ -64,21 +64,6 @@ TOKEN :
 |   < CLOSE_BLOCK: "}">
 }
 
-// Selector classes
-TOKEN :
-{
-    < SMART_SWITCH_SELECTOR: "punct"
-|   "graph" // Letters, numbers and punctuation
-|   "lower" // Lowercase Letters
-|   "alpha" // Letters
-|   "alnum" // Alphanumerics
-|   "print" // Letters, numb ers, punctuation and whitespace
-|   "cntrl" // Control characters
-|   "space" // Space characters
-|   "blank" // Space and tab
-|   "digit" >// Digits
-}
-
 // Literals
 TOKEN :
 {
@@ -293,7 +278,7 @@ ASTFunctionDeclaration FunctionDeclaration():{
    ASTBlock block;
    LinkedList<ASTParameterDeclaration> parameter = new LinkedList();
 } {
-    returnType = ReturnDatatype() functionId = Identifier()
+    returnType = Datatype() functionId = Identifier()
     "("
     (LOOKAHEAD(2) (paramType = Datatype() paramId = Identifier()) { parameter.add(new ASTParameterDeclaration(paramType, paramId)); } )?
     (LOOKAHEAD(3) "," (paramType = Datatype() paramId = Identifier()) { parameter.add(new ASTParameterDeclaration(paramType, paramId)); })*
@@ -389,12 +374,5 @@ ASTWriteStatement WriteStatement():{
 
 // Datatype
 Token Datatype():{} {
-    (<DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <ARRAY>) { return token; }
-}
-
-Token ReturnDatatype():{
-    Token type;
-} {
-    (type = Datatype() | type = "void")
-    { return type; }
+    (<DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <ARRAY> | <VOID>) { return token; }
 }

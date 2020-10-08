@@ -9,6 +9,10 @@ int plusOne(int x) {
     return y;
 }
 
+void print(string s) {
+    write(s);
+}
+
 if (true) {
     string path = "./src/main/test/input.txt";
     string fileContent = read(path);
@@ -43,6 +47,8 @@ string p = @"test"{
 };
 
 write("SMARTSWITCH: " + p);
+
+print("TEST!!!!!");
 
 // 1a comment test
 
