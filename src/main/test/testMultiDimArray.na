@@ -1,0 +1,10 @@
+// Array test
+string[][] a1;
+
+string[] a11;
+a11 = a11 + "a" + "b";
+string[] a12;
+a12 = a12 + "c" + "d";
+a1 = a1 + a11 + a12;
+
+write(a1);
