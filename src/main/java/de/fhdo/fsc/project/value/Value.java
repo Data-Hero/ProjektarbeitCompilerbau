@@ -107,7 +107,7 @@ public abstract class Value {
                     return ((BooleanValue) this).copy((BooleanValue) v);
             }
         } else if (this.type instanceof ArrayType) {
-            return ((ArrayValue) this).copy((ArrayValue) v);
+            return ((ArrayValue) this).copy(v);
         }
 
         return this;

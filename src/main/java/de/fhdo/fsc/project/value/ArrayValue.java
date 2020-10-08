@@ -48,6 +48,12 @@ public class ArrayValue extends Value {
     }
 
     public static Value upgrade(ArrayValue v, ArrayType t) {
+        if (t.dimensions > ((ArrayType) v.type).dimensions) {
+            ((ArrayType) v.type).dimensions = t.dimensions;
+            v.value = new ArrayList<>(v.value);
+            return v;
+        }
+
         return v;
     }
 
@@ -67,9 +73,18 @@ public class ArrayValue extends Value {
         return value.set(i, v);
     }
 
-    public ArrayValue copy(ArrayValue v) {
-        this.value = v.value;
-        this.type = v.type;
+    public ArrayValue copy(Value v) {
+        if (v instanceof ArrayValue) {
+            ArrayValue value = (ArrayValue) v;
+            this.value = value.value;
+            this.type = value.type;
+        } else if (v instanceof BasicValue) {
+            BasicValue value = (BasicValue) v;
+            this.value = new ArrayList<>();
+            this.value.add(value);
+            this.type = new ArrayType((BasicType) value.type, 1);
+        }
+
         return this;
     }
 }
