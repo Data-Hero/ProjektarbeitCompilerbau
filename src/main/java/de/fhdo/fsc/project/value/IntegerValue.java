@@ -57,4 +57,9 @@ public class IntegerValue extends BasicValue {
         this.value = v.value;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

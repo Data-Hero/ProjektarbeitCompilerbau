@@ -58,4 +58,9 @@ public class CharacterValue extends BasicValue {
         this.value = v.value;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "'" + value.toString() + "'";
+    }
 }
