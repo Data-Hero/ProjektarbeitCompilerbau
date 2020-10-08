@@ -31,28 +31,40 @@ public class ASTForeachStatement extends ASTStatement {
     public void semanticAnalysis(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
         expression.semanticAnalysis(errors, symbolTable);
 
-        Type expressionType = expression.getType(errors, symbolTable);
+        Type eType = expression.getType(errors, symbolTable);
+        ArrayType expressionType;
 
-        if (!expressionType.isArray()) {
+        if (!eType.isArray()) {
             errors.add(new SemanticError("for each expression must be of type array", expression.getStart(), expression.getEnd()));
+            return;
         }
+
+        expressionType = (ArrayType) eType;
 
         try {
             item = new ASTParameterDeclaration(itemType, id);
             symbolTable.add(id.image, item);
-            Type itemType = Type.resolve(this.itemType.image);
-            int expressionDimensions = ((ArrayType) expressionType).dimensions;
+            Type iType = Type.resolve(this.itemType.image);
+            int expressionDimensions = expressionType.dimensions;
 
-            if (itemType instanceof ArrayType) {
-                int itemDimensions = ((ArrayType) itemType).dimensions;
-
-
+            if (iType instanceof ArrayType) {
+                ArrayType itemType = (ArrayType) iType;
+                int itemDimensions = itemType.dimensions;
                 if (itemDimensions + 1 != expressionDimensions) {
                     throw new SemanticError("Dimensions does not match for for loop. Item " + itemDimensions + ", Array " + expressionDimensions);
                 }
-            } else if (itemType instanceof BasicType) {
+
+                if (itemType.getBasicType() != expressionType.getBasicType()) {
+                    throw new SemanticError("Types does not match for for loop");
+                }
+            } else if (iType instanceof BasicType) {
+                BasicType itemType = (BasicType) iType;
                 if (expressionDimensions != 1) {
                     throw new SemanticError("Dimensions does not match for for loop. Item 0 , Array " + expressionDimensions);
+                }
+
+                if (itemType != expressionType.getBasicType()) {
+                    throw new SemanticError("Types does not match for for loop");
                 }
             }
         } catch (SemanticError error) {
