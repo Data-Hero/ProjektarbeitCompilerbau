@@ -1,0 +1,16 @@
+int[] c;
+
+c = c + 2;
+c = c + 18;
+c = c + 2;
+c = c + 2;
+
+write(c);
+
+foreach(int a in c) {
+    bool type = isType(int,a);
+    write(type);
+//    int aa = a;
+//    int b = 100 + aa;
+//    write(b);
+}
