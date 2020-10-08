@@ -3,6 +3,8 @@ package de.fhdo.fsc.project.ast;
 import de.fhdo.fsc.project.Token;
 import de.fhdo.fsc.project.errors.CompilerError;
 import de.fhdo.fsc.project.errors.RuntimeError;
+import de.fhdo.fsc.project.errors.SemanticError;
+import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.value.StringValue;
 
@@ -18,16 +20,23 @@ public class ASTWriteStatement extends ASTStatement {
         super(start, end);
         this.pathExpression = pathExpression;
         this.sourceExpression = sourceExpression;
-
     }
 
     @Override
     public void semanticAnalysis(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
         if (pathExpression != null) {
             pathExpression.semanticAnalysis(errors, symbolTable);
+
+            if (pathExpression.getType(errors, symbolTable) != BasicType.stringType) {
+                errors.add(new SemanticError("Path must be a string", getStart(), getEnd()));
+            }
         }
 
         sourceExpression.semanticAnalysis(errors, symbolTable);
+
+        if (sourceExpression.getType(errors, symbolTable) != BasicType.stringType) {
+            errors.add(new SemanticError("Source must be a string", getStart(), getEnd()));
+        }
     }
 
     @Override
