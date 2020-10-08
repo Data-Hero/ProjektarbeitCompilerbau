@@ -19,7 +19,7 @@ public class BasicType extends Type {
 
     public static BasicType errorType = new BasicType(ERROR_NAME, ERROR_RANK);
     public static BasicType boolType = new BasicType(BOOLEAN_NAME, BOOLEAN_RANK); // implicit use
-    public static BasicType charType = new BasicType(CHARACTER_NAME, CHARACTER_RANK); // ToDo: Check position
+    public static BasicType charType = new BasicType(CHARACTER_NAME, CHARACTER_RANK);
     public static BasicType intType = new BasicType(INTEGER_NAME, INTEGER_RANK);
     public static BasicType doubleType = new BasicType(DOUBLE_NAME, DOUBLE_RANK);
     public static BasicType stringType = new BasicType(STRING_NAME, STRING_RANK);

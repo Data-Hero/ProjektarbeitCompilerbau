@@ -41,7 +41,6 @@ public abstract class Value {
     }
 
     public Value upgrade(Type t) {
-        // ToDo: Check if the correct upgrade function will be called
         if (t instanceof BasicType) {
             return BasicValue.upgrade((BasicValue) this, (BasicType) t);
         } else if (t instanceof ArrayType) {

@@ -28,7 +28,7 @@ public class ASTIsType extends ASTExpression {
 
     @Override
     public boolean isStatement() {
-        return false; // ToDo: Check if correct
+        return false;
     }
 
     @Override
