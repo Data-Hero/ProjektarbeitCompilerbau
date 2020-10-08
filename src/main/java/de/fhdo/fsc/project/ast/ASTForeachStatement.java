@@ -43,7 +43,7 @@ public class ASTForeachStatement extends ASTStatement {
 
         try {
             item = new ASTParameterDeclaration(itemType, id);
-            symbolTable.add(id.image, item);
+            item.semanticAnalysis(errors, symbolTable);
             Type iType = Type.resolve(this.itemType.image);
             int expressionDimensions = expressionType.dimensions;
 
