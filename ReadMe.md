@@ -59,6 +59,7 @@ Todo
 - boolean
 - string
 - Arrays: string[], int[], int[][], etc.
+- void (Als Rückgabewert)
 
 ## Eingebaute Funktionen
 
@@ -201,6 +202,10 @@ List eine Datei ein und gibt deren Inhalt zurück.
 
 ### Besonderes Verhalten
 
+#### Reihenfolge der Elemente
+Funktionsdefinitionen müssen immer als erstes geschrieben werden!
+Erst darauf folgen die Statements.
+
 #### Initialisieren eines Arrays
 `string[] = ["a", "b", "c"]`
 `string[][] = [["a", "b", "c"], ["test"]]`
@@ -216,3 +221,27 @@ Bei der Subtraktion von Arrays werden die überschneidenden Elemente aus dem ers
 #### Addition von Strings und anderen Datentypen
 Bei der Addition von Strings und anderen Datentypen, werden die anderen Datentypen implizit zu Strings konvertiert.
 `"Hallo" + 5 == "Hallo5"`
+
+### Weiteres
+
+#### Foreach
+##### Syntax
+``
+string[] arr = ["1", "2", "3"];
+foreach (string e in arr) {
+    write(e);
+}
+``
+
+#### Funktionen
+##### Syntax
+``
+int plusOne(int x) {
+    int y = x + 1;
+    return y;
+}
+.
+.
+.
+int x = plusOne(1); // == 2
+``
