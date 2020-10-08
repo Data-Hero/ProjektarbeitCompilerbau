@@ -166,8 +166,7 @@ ASTBlock Block():{
     } catch (ParseException e) {
         errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
         errorSkipTo(CLOSE_BLOCK);
-    }
-    { return result; }
+    } { return result; }
 }
 
 ASTBlock FunctionBlock():{

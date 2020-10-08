@@ -7,6 +7,6 @@ c = c + 36;
 
 int b = 2;
 write(c);
-set(c,3,30);
+set(c,3,45);
 write(c);
-write(get(c,3));
+write(get(c,3), "./src/main/test/out3.txt");
