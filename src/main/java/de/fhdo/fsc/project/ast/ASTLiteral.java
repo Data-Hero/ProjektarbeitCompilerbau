@@ -31,11 +31,9 @@ public class ASTLiteral extends ASTExpression {
                 return BasicType.charType;
             case NewAwkParserConstants.STRING_LITERAL:
                 return BasicType.stringType;
-            //case NewAwkParserConstants.ARRAY:     // ToDo: Fix array type
-            //    return Type.arrayType;
         }
 
-        return null; // ToDo: Add error on default: ?
+        return null;
     }
 
     @Override
@@ -62,13 +60,9 @@ public class ASTLiteral extends ASTExpression {
             case NewAwkParserConstants.CHARACTER_LITERAL:
                 value = new CharacterValue(literal.image.charAt(1));
                 break;
-                // ToDo: Fix literals
             case NewAwkParserConstants.STRING_LITERAL:
                 value = new StringValue(literal.image.substring(1, literal.image.length() - 1));
                 break;
-            //case NewAwkParserConstants.ARRAY:     // ToDo: Fix array type
-            //    return Type.arrayType;
-            //    break;
         }
 
         if (value != null) {

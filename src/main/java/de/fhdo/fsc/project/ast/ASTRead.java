@@ -38,7 +38,7 @@ public class ASTRead extends ASTExpression {
 
     @Override
     public boolean isStatement() {
-        return true; // ToDo: Check if correct
+        return false;
     }
 
     @Override

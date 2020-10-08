@@ -64,21 +64,6 @@ TOKEN :
 |   < CLOSE_BLOCK: "}">
 }
 
-// Selector classes
-TOKEN :
-{
-    < SMART_SWITCH_SELECTOR: "punct"
-|   "graph" // Letters, numbers and punctuation
-|   "lower" // Lowercase Letters
-|   "alpha" // Letters
-|   "alnum" // Alphanumerics
-|   "print" // Letters, numb ers, punctuation and whitespace
-|   "cntrl" // Control characters
-|   "space" // Space characters
-|   "blank" // Space and tab
-|   "digit" >// Digits
-}
-
 // Literals
 TOKEN :
 {
@@ -100,7 +85,8 @@ TOKEN :
 |   < LENGTH_FUNCTION: ( "length" )>
 |   < READ_FUNCTION: ( "read" )>
 |   < WRITE_FUNCTION: ( "write" )>
-
+|   < GET_FUMCTION: ( "get" )>
+|   < SET_FUMCTION: ( "set" )>
 }
 
 // Identifier
@@ -143,7 +129,9 @@ ASTStatement Statement():{
     Token end = null;
 } {
     try {
-        (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement() | result = WriteStatement() | (expression = Expression() end = ";") { result = new ASTExpressionStatement(expression, end); })
+        (result = Block() | result = WhileStatement() | result = ForeachStatement() | result = IfStatement()
+        | result = WriteStatement() | result = Set() | expression = Expression() end = ";"
+        { result = new ASTExpressionStatement(expression, end); })
         { return result; }
     } catch (ParseException e) {
         if (result != null) {
@@ -161,7 +149,9 @@ ASTVariableDeclaration VariableDeclaration():{
     Token type, id, end;
     ASTExpression result = null;
 } {
-    type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
+    LOOKAHEAD(5)type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
+    { return new ASTVariableDeclaration(type, id, result, end); } |
+    type = Datatype() id = Identifier() [ "=" Expression() result = SmartSwitch() ] end = ";"
     { return new ASTVariableDeclaration(type, id, result, end); }
 }
 
@@ -176,8 +166,7 @@ ASTBlock Block():{
     } catch (ParseException e) {
         errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
         errorSkipTo(CLOSE_BLOCK);
-    }
-    { return result; }
+    } { return result; }
 }
 
 ASTBlock FunctionBlock():{
@@ -191,12 +180,13 @@ ASTBlock FunctionBlock():{
 
 
 ASTExpression ArrayExpression():{
-    Token id;
+    Token id, start, end;
     ASTExpression expr;
-    List<ASTExpression> elements = new LinkedList<ASTExpression>();
+    List<ASTExpression> elements = new LinkedList();
 } {
-    (LOOKAHEAD(2) expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )*)
-    { return new ASTArrayExpression(elements); }}
+    start = "[" (expr = Expression() { elements.add(expr); } ("," expr = Expression() { elements.add(expr); } )* )? end = "]"
+    { return new ASTArrayExpression(elements,  start, end); }
+}
 
 ASTExpression Expression():{
     Token id;
@@ -206,7 +196,6 @@ ASTExpression Expression():{
     | result = LogicalExpression())
     { return result; }
 }
-
 
 ASTExpression LogicalExpression():{
     Token operator;
@@ -258,12 +247,13 @@ ASTExpression Atom():{
 |   id = <STRING_LITERAL> { result = new ASTLiteral(id); }
 |   id = <BOOLEAN_LITERAL> { result = new ASTLiteral(id); }
 |   "(" result = Expression() ")"
-|   "[" result = ArrayExpression() "]"
+|   result = ArrayExpression()
 |   result = IsType()
 |   result = Convert()
 |   result = Length()
-|   result = Read())
-//|   result = Expression() SmartSwitch() // ToDo: Fix left recusion
+|   result = Read()
+|   result = Get()
+|   result = SmartSwitch())
 { return result; }
 }
 
@@ -294,7 +284,7 @@ ASTFunctionDeclaration FunctionDeclaration():{
    ASTBlock block;
    LinkedList<ASTParameterDeclaration> parameter = new LinkedList();
 } {
-    returnType = ReturnDatatype() functionId = Identifier()
+    returnType = Datatype() functionId = Identifier()
     "("
     (LOOKAHEAD(2) (paramType = Datatype() paramId = Identifier()) { parameter.add(new ASTParameterDeclaration(paramType, paramId)); } )?
     (LOOKAHEAD(3) "," (paramType = Datatype() paramId = Identifier()) { parameter.add(new ASTParameterDeclaration(paramType, paramId)); })*
@@ -334,15 +324,15 @@ ASTIfStatement IfStatement():{
 
 // Smart Switch
 ASTSmartSwitch SmartSwitch():{
-    Map<String, ASTBlock> cases = new HashMap();
+    LinkedHashMap<ASTExpression, ASTBlock> cases = new LinkedHashMap();
     ASTBlock block;
-    Token negate = null;
-    Token selector, start, end;
+    ASTExpression expression, selector;
+    Token start, end;
 } {
-    start = <SMARTSWITCH> "{"
-    (( (negate = "!")? ":" selector = <SMART_SWITCH_SELECTOR> ":" block = FunctionBlock())+) { cases.put((((negate != null) ? negate.image : "") + selector.image), block); }
+    start = "@"  expression = Expression() "{"
+    ( selector = Expression() block = FunctionBlock() { cases.put(selector, block); } )+
     end = "}"
-    { return new ASTSmartSwitch(start, cases, end); }
+    { return new ASTSmartSwitch(start, end, expression, cases); }
 }
 
 // Integrated Funtions
@@ -374,7 +364,7 @@ ASTExpression Read():{
     Token start, end;
     ASTExpression expression;
 } {
-    (start = "read" "(" expression = Expression() end = ")")
+    start = "read" "(" expression = Expression() end = ")"
     { return new ASTRead(start, end, expression); }
 }
 
@@ -388,14 +378,25 @@ ASTWriteStatement WriteStatement():{
 }
 
 
-// Datatype
-Token Datatype():{} {
-    (<DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <ARRAY>) { return token; }
+ASTExpression Get():{
+    Token start, end;
+    ASTExpression arrayExpression, indexExpression;
+} {
+    start = "get" "(" arrayExpression = Expression() "," indexExpression = Expression() end = ")"
+    { return new ASTGetExpression(start, end, arrayExpression, indexExpression); }
 }
 
-Token ReturnDatatype():{
-    Token type;
+
+ASTSetStatement Set():{
+    Token start, end;
+    ASTExpression arrayExpression, indexExpression, elementExpression;
 } {
-    (type = Datatype() | type = "void")
-    { return type; }
+    start = "set" "(" arrayExpression = Expression() "," indexExpression = Expression() "," elementExpression = Expression()  ")" end = ";"
+    { return new ASTSetStatement(start, end, arrayExpression, indexExpression, elementExpression); }
+}
+
+
+// Datatype
+Token Datatype():{} {
+    (<DOUBLE> | <INT> | <CHAR> | <BOOLEAN> | <STRING> | <ARRAY> | <VOID>) { return token; }
 }

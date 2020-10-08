@@ -2,11 +2,11 @@ int[] c;
 
 c = c + 2;
 c = c + 18;
-c = c + 2;
-c = c + 18;
+c = c + 4;
+c = c + 36;
 
 int b = 2;
-foreach(int a in c) {
-      int b = b + a;
-      write(b, "./src/main/test/out2.txt");
-}
+write(c);
+set(c,3,45);
+write(c);
+write(get(c,3), "./src/main/test/out3.txt");

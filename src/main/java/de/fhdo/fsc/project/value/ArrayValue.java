@@ -105,4 +105,13 @@ public class ArrayValue extends Value {
 
         return this;
     }
+
+    public void add(Value v) {
+        value.add(v);
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

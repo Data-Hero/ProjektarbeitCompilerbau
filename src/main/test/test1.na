@@ -9,9 +9,14 @@ int plusOne(int x) {
     return y;
 }
 
+void print(string s) {
+    write(s);
+}
+
 if (true) {
     string path = "./src/main/test/input.txt";
     string fileContent = read(path);
+    //fileContent = fileContent + 5; // ToDo: Fix implicit conversion
     write(fileContent, "./src/main/test/out.txt");
 }
 
@@ -23,18 +28,27 @@ string z = "Hello " + "world!";
 
 
 // Array test
-string[][] arr1;
-//string[] arr2 = "arr2";
-int[] arr2 ;
-arr1 = arr1 + arr2;
+string[][] arr1 = [["arr11", "arr22"]];
+string[] arr2 = ["arr", "arr2"];
+arr2 = arr2 + "test";
+write(arr1);
+write(arr2);
 
 int b = plusOne(1);
 int c;
 c = 6;
 
-//int x = test@{
-//    :punct: { return x; }
-//};
+string p = @"test"{
+    "[t].*" { return "h"; }
+    "[t].*" { return "a"; }
+    "[t].*" { return "n"; }
+    "![t].*" { return "z"; }
+    "[t].*" { return "s"; }
+};
+
+write("SMARTSWITCH: " + p);
+
+print("TEST!!!!!");
 
 // 1a comment test
 
@@ -64,8 +78,13 @@ while (c < 5) {
 }
 
 string[] arr;
+arr = arr + "a";
+arr = arr + "b";
+arr = arr + "c";
+arr = arr + "d";
 foreach (string i in arr) {
-  int t1 = length("zwei");
-  double t2 = convert(double, 5);
-  bool t3 = isType(bool, y);
+    write(i);
+    int t1 = length("zwei");
+    double t2 = convert(double, 5);
+    bool t3 = isType(bool, y);
 }

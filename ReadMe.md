@@ -58,12 +58,15 @@ Todo
 - char
 - boolean
 - string
-- types (Custom type)
+- Arrays: string[], int[], int[][], etc.
+- void (Als Rückgabewert)
 
 ## Eingebaute Funktionen
 
-### isDatatype
-`boolean isDatatype(x, datatype)`
+
+
+### isType
+`boolean isType(x, DATATYPE)`
 
 #### Beschreibung
 Gibt zurück, ob der angegebene Wert dem angegebenen Datentypen entspricht.
@@ -76,13 +79,15 @@ Gibt zurück, ob der angegebene Wert dem angegebenen Datentypen entspricht.
 `true` falls der Wert dem Datentypen entspricht und `false` falls dies nicht der Fall ist.
 
 #### Beispiele
-- `isDatatype("test", string) == true`
-- `isDatatype(1, string) == false`
-- `isDatatype("1", int) == false`
-- `isDatatype(1, int) == true`
+- `isType(string, "test") == true`
+- `isType(string, 1) == false`
+- `isType(int, "1") == false`
+- `isType(int, 1) == true`
 
-### toDatatype
-`datatype toDatatype(x, datatype)`
+
+
+### convert
+`DATATYPE convert(DATATYPE, VALUE)`
 
 #### Beschreibung
 Konvertiert den gegebenen Wert in den angegebenen Datentypen.
@@ -92,12 +97,11 @@ Konvertiert den gegebenen Wert in den angegebenen Datentypen.
 - `datatype`: Datentyp zu welchem der angegebene Wert konvertiert wird
 
 #### Rückgabewert
-Falls die Konvertierung möglich ist, wird der Wert mit dem entsprechenden Datentypen zurück gegeben.
-Falls die Konvertierung fehl schlägt wird `NULL` zurückgegeben.
+Der Wert wird im angegebenen Datentypen zurückgegeben.
 
 #### Beispiele
-- `toDatatype("1", int) == 1`
-- `toDatatype(1, String) == "1"`
+- `convert(int, "1") == 1`
+- `convert(string, 1) == "1"`
 
 ### length
 `int length(x)`
@@ -125,29 +129,122 @@ Gibt die Länge des Wertes zurück.
 - `length(5) == 1`
 - `length([a, b, c]) == 3`
 
+
+
 ### Smart Switch
-`@{  }`
+`String @String{  }`
 
 #### Beschreibung
-???
+Baut eine Zeichenkette auf Basis von regulären Ausdrücken zusammen.
+Die einzelnen Blöcke werden nur aufgerufen, wenn die gesamte Zeichenkette mit dem Ausdruck übereinstimmt.
+Die Rückgabewerte werden dabei konkatiniert.
+
+Bei den regulären Ausdrücken gibt es eine Besonderheit: Das Ausrufezeichen "!" muss mittels des Backslashes "\" escaped werden.
+Ein einfaches Ausrufezeichen "!" am Anfang eines regulären Ausdrucks kann genutzt werden, um den gesamten Ausdruck zu negieren.
 
 #### Parameter
-???
+
 
 #### Rückgabewert
-???
+String
 
 #### Beispiel
 ```
-string test = "a.b.c.d";
-string[] x = test@{
-    :punct: { return this; }
+string p = @"test"{
+    "[t].*" { return "h"; }
+    "[t].*" { return "a"; }
+    "[t].*" { return "n"; }
+    "![t].*" { return "z"; }
+    "[t].*" { return "s"; }
 };
 
-// x = [".", ".", "."]
+// p == "hans"
 ```
 
+
+
+### write
+`void write(str [, path])`
+
+#### Beschreibung
+Schreibt den String in die Konsolenausgabe oder optional in die angegebene Datei.
+Bei der angabe eines Dateipfades wird keine Konsolenausgabe geschrieben.
+
+#### Parameter
+- `str`: Zu schreibender String
+- `path`: (Optional) Pfad der Datei, in welche geschrieben werden soll
+
+#### Rückgabewert
+
+
+#### Beispiele
+- `write("test");`
+- `write("test", "path/to/file");`
+
+
+
+
+### read
+`string read(path)`
+
+#### Beschreibung
+List eine Datei ein und gibt deren Inhalt zurück.
+
+#### Parameter
+- `path`: Pfad der Datei, in welche gelesen werden soll
+
+#### Rückgabewert
+
+
+#### Beispiele
+- `string str = read("path/to/file");`
+
+
+### get
+`value get(ArrayType array, int index)`
+
+#### Beschreibung
+Holt das Element an Position index aus dem Array arrray.
+
+#### Parameter
+- `array`: Array, in welche gesucht werden soll
+- `index`: Index (von 0 an), an dessen Position im Array gesucht werden soll
+
+#### Rückgabewert
+- `value`: Ein Element aus dem Array, der Typ hängt vom Array ab und ist entweder ein BasisTyp oder ein Array mit um 1 verringerter Dimension.
+
+
+#### Beispiele
+- `string str = get(array,5);`
+
+### set
+`value set(ArrayType array, int index, value element)`
+
+#### Beschreibung
+Setzt das Element element an Position index aus dem Array arrray.
+
+#### Parameter
+- `array`: Array, in welche gesucht werden soll
+- `index`: Index (von 0 an), an dessen Position im Array gesucht werden soll
+- `element`: Element welches an Position index im Array array gesetzt werden soll
+
+#### Rückgabewert
+
+#### Beispiele
+- `set(array,5, "hallo");`
+
+
+---
+
 ### Besonderes Verhalten
+
+#### Reihenfolge der Elemente
+Funktionsdefinitionen müssen immer als erstes geschrieben werden!
+Erst darauf folgen die Statements.
+
+#### Initialisieren eines Arrays
+`string[] = ["a", "b", "c"]`
+`string[][] = [["a", "b", "c"], ["test"]]`
 
 #### Addition von Arrays
 Bei der Addition von zwei Arrays werden die Arrays mengenmäßig vereinigt. 
@@ -160,3 +257,27 @@ Bei der Subtraktion von Arrays werden die überschneidenden Elemente aus dem ers
 #### Addition von Strings und anderen Datentypen
 Bei der Addition von Strings und anderen Datentypen, werden die anderen Datentypen implizit zu Strings konvertiert.
 `"Hallo" + 5 == "Hallo5"`
+
+### Weiteres
+
+#### Foreach
+##### Syntax
+``
+string[] arr = ["1", "2", "3"];
+foreach (string e in arr) {
+    write(e);
+}
+``
+
+#### Funktionen
+##### Syntax
+``
+int plusOne(int x) {
+    int y = x + 1;
+    return y;
+}
+.
+.
+.
+int x = plusOne(1); // == 2
+``
