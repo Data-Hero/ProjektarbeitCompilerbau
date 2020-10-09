@@ -15,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
         LinkedList<CompilerError> errors = new LinkedList<>();
         ASTProgram root = null;
+        int exitCode = 0;
 
         if (args.length < 1) {
             System.out.println("Missing source file");
@@ -46,11 +47,6 @@ public class Main {
             }
 
             if (errors.size() == 0) {
-                System.out.println("source code checked: OK");
-            }
-
-            if (errors.size() == 0) {
-                System.out.println("starting ...");
                 root.run(errors);
             }
 
@@ -61,11 +57,10 @@ public class Main {
                     System.out.println(i++ + ".  " + error);
                 }
 
-            } else {
-                System.out.println("run code: OK");
+                exitCode = 1;
             }
 
-
+            System.exit(exitCode);
         } catch (IOException ex) {
             System.out.println(ex);
         }
