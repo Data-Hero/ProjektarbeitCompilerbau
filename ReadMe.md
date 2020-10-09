@@ -143,7 +143,7 @@ Bei den regulären Ausdrücken gibt es eine Besonderheit: Das Ausrufezeichen "!"
 Ein einfaches Ausrufezeichen "!" am Anfang eines regulären Ausdrucks kann genutzt werden, um den gesamten Ausdruck zu negieren.
 
 #### Parameter
--
+
 
 #### Rückgabewert
 String
@@ -175,11 +175,12 @@ Bei der angabe eines Dateipfades wird keine Konsolenausgabe geschrieben.
 - `path`: (Optional) Pfad der Datei, in welche geschrieben werden soll
 
 #### Rückgabewert
--
+
 
 #### Beispiele
 - `write("test");`
 - `write("test", "path/to/file");`
+
 
 
 
@@ -193,12 +194,47 @@ List eine Datei ein und gibt deren Inhalt zurück.
 - `path`: Pfad der Datei, in welche gelesen werden soll
 
 #### Rückgabewert
--
+
 
 #### Beispiele
 - `string str = read("path/to/file");`
 
 
+### get
+`value get(ArrayType array, int index)`
+
+#### Beschreibung
+Holt das Element an Position index aus dem Array arrray.
+
+#### Parameter
+- `array`: Array, in welche gesucht werden soll
+- `index`: Index (von 0 an), an dessen Position im Array gesucht werden soll
+
+#### Rückgabewert
+- `value`: Ein Element aus dem Array, der Typ hängt vom Array ab und ist entweder ein BasisTyp oder ein Array mit um 1 verringerter Dimension.
+
+
+#### Beispiele
+- `string str = get(array,5);`
+
+### set
+`value set(ArrayType array, int index, value element)`
+
+#### Beschreibung
+Setzt das Element element an Position index aus dem Array arrray.
+
+#### Parameter
+- `array`: Array, in welche gesucht werden soll
+- `index`: Index (von 0 an), an dessen Position im Array gesucht werden soll
+- `element`: Element welches an Position index im Array array gesetzt werden soll
+
+#### Rückgabewert
+
+#### Beispiele
+- `set(array,5, "hallo");`
+
+
+---
 
 ### Besonderes Verhalten
 

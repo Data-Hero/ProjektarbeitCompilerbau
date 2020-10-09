@@ -9,6 +9,11 @@ public class ArrayType extends Type {
         this.dimensions = dimensions;
     }
 
+    public ArrayType(ArrayType at) {
+        this.type = at.type;
+        this.dimensions = at.dimensions;
+    }
+
     @Override
     public boolean isArray() {
         return true;

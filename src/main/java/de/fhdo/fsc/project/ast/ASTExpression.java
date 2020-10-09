@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 public abstract class ASTExpression extends ASTNode {
     private Type castTo;
+    private Type cachedType = null;
 
     public ASTExpression(Token start, Token end) {
         super(start, end);
@@ -24,7 +25,6 @@ public abstract class ASTExpression extends ASTNode {
         castTo = t;
     }
 
-    private Type cachedType = null;
 
     protected abstract Type computeType(LinkedList<CompilerError> errors, SymbolTable symbolTable);
 
