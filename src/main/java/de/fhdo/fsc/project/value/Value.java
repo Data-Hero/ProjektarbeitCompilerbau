@@ -42,7 +42,7 @@ public abstract class Value {
 
     public Value upgrade(Type t) {
         if (t instanceof BasicType) {
-            return BasicValue.upgrade((BasicValue) this, (BasicType) t);
+            return BasicValue.upgrade(this, (BasicType) t);
         } else if (t instanceof ArrayType) {
             return ArrayValue.upgrade(this, (ArrayType) t);
         } else {

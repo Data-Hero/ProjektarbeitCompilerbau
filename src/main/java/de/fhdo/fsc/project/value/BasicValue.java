@@ -8,7 +8,7 @@ public abstract class BasicValue extends Value {
         super(type);
     }
 
-    public static Value upgrade(BasicValue v, BasicType t) {
+    public static Value upgrade(Value v, BasicType t) {
         Value result = v;
 
         switch (v.type.toString()) {
@@ -49,6 +49,10 @@ public abstract class BasicValue extends Value {
                 break;
             case BasicType.STRING_NAME:
                 result = v;
+        }
+
+        if (v.type.isArray() && t == BasicType.stringType) {
+            result = v.toStringValue();
         }
 
         return result;
