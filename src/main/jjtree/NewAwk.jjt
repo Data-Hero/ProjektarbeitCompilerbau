@@ -98,27 +98,42 @@ TOKEN :
 }
 
 JAVACODE
-void errorSkipTo(int kind) {
+void errorSkipTo(int... kinds) {
   Token t;
+  boolean contains = false;
   do {
     t = getNextToken();
-  } while (t.kind != kind && t.kind != EOF);
+
+    for (int kind : kinds) {
+        contains = t.kind == kind;
+
+        if (contains) {
+            break;
+        }
+    }
+  } while (!contains && t.kind != EOF);
 }
 
-ASTProgram compilationUnit():{
+ASTProgram Program():{
     ASTBlock result = new ASTBlock();
     ASTProgram program = new ASTProgram(result);
     ASTNode node = null;
     boolean first = true;
 } {
-    try {
-        (LOOKAHEAD(3) node = FunctionDeclaration() { result.add(node); } )*
-        (LOOKAHEAD(2) (node = Statement() | node = VariableDeclaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); } )+
-        <EOF>
+    ( LOOKAHEAD(3) try {
+        node = FunctionDeclaration() { result.add(node); }
     } catch (ParseException e) {
         errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
-        errorSkipTo(EOF);
-    }
+        errorSkipTo(SEMICOLON, CLOSE_BLOCK);
+    } )*
+
+    ( LOOKAHEAD(2) try {
+        (node = Statement() | node = VariableDeclaration()) { if (first) result.setToken(node.getStart(), node.getEnd()); else result.setEnd(node.getEnd()); result.add(node); }
+    } catch (ParseException e) {
+        errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
+        errorSkipTo(SEMICOLON, CLOSE_BLOCK);
+    } )+
+    <EOF>
     { return program; }
 
 }
@@ -149,7 +164,7 @@ ASTVariableDeclaration VariableDeclaration():{
     Token type, id, end;
     ASTExpression result = null;
 } {
-    LOOKAHEAD(5)type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
+    LOOKAHEAD(5) type = Datatype() id = Identifier() [ "=" result = Expression() ] end = ";"
     { return new ASTVariableDeclaration(type, id, result, end); } |
     type = Datatype() id = Identifier() [ "=" Expression() result = SmartSwitch() ] end = ";"
     { return new ASTVariableDeclaration(type, id, result, end); }
@@ -160,13 +175,13 @@ ASTBlock Block():{
     ASTNode node = null;
     Token start, end;
 } {
-    try {
-        start = "{" ((node = Statement() | node = VariableDeclaration() )  { result.add(node); } )* end = "}"
-        { result.setToken(start, end); }
+    start = "{" ( try {
+        (node = Statement() | node = VariableDeclaration() ) { result.add(node); }
     } catch (ParseException e) {
-        errors.add(new SyntaxError(e.getMessage(), node.getStart(), node.getEnd()));
-        errorSkipTo(CLOSE_BLOCK);
-    } { return result; }
+        errors.add(new SyntaxError(e.getMessage(), result.getStart(), result.getEnd()));
+        errorSkipTo(SEMICOLON, CLOSE_BLOCK);
+    } )* end = "}"
+    { result.setToken(start, end); return result; }
 }
 
 ASTBlock FunctionBlock():{
@@ -174,7 +189,21 @@ ASTBlock FunctionBlock():{
     ASTNode node;
     Token start, end;
 } {
-    start = "{" ((node = Statement() | node = VariableDeclaration()) { result.add(node); } )* (node = ReturnStatement() { result.add(node); } )? end = "}"
+    start = "{" ( try {
+        (node = Statement() | node = VariableDeclaration() ) { result.add(node); }
+    } catch (ParseException e) {
+        errors.add(new SyntaxError(e.getMessage(), result.getStart(), result.getEnd()));
+        errorSkipTo(SEMICOLON, CLOSE_BLOCK);
+    } )*
+
+    ( try {
+        node = ReturnStatement() { result.add(node); }
+    } catch (ParseException e) {
+        errors.add(new SyntaxError(e.getMessage(), result.getStart(), result.getEnd()));
+        errorSkipTo(SEMICOLON, CLOSE_BLOCK);
+    } )?
+
+    end = "}"
     { result.setToken(start, end); return result; }
 }
 
