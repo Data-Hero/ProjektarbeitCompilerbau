@@ -130,35 +130,50 @@ Gibt die Länge des Wertes zurück.
 
 
 ### Smart Switch
-`String @String{  }`
+`String[] @String{  }`
 
 #### Beschreibung
-Baut eine Zeichenkette auf Basis von regulären Ausdrücken zusammen.
-Die einzelnen Blöcke werden nur aufgerufen, wenn die gesamte Zeichenkette mit dem Ausdruck übereinstimmt.
-Die Rückgabewerte werden dabei konkatiniert.
+Baut einen Array aus Zeichenketten auf Basis von regulären Ausdrücken zusammen.
+Dabei können mehrere Fälle abgedeckt werden.
+Bei einem einzelnen Fall ist das zurückgegebene Array eindimensional.
+Bei mehr als einem Fall ist das Array zweidimensional.
+Pro Fall wird somit ein Array erzeugt.
 
-Bei den regulären Ausdrücken gibt es eine Besonderheit: Das Ausrufezeichen "!" muss mittels des Backslashes "\" escaped werden.
+Zu jedem Fall wird ein Funktionsblock definiert.
+Dieser muss eine Zeichenkette zurückgeben.
+Innerhalb des Blockes kann auf die Variable "this" zugegriffen werden, welche den übereinstimmenden Teil der ursprünglichen Zeichenkette enthält.
+In den Arrays gespeichert werden die Rückgabewerte der Funktionsblöcke.
+
+Bei den regulären Ausdrücken gibt es Besonderheiten:
+Das Ausrufezeichen "!" muss mittels des Backslashes "\" escaped werden.
 Ein einfaches Ausrufezeichen "!" am Anfang eines regulären Ausdrucks kann genutzt werden, um den gesamten Ausdruck zu negieren.
+Zudem werden die regulären Ausdrücke aus Java verwendet.
+Diese wurden allerdings um die POSIX Character Classes erweitert.
 
 #### Parameter
-
+--
 
 #### Rückgabewert
 String
 
 #### Beispiel
 ```
-string p = @"test"{
-    "[t].*" { return "h"; }
-    "[t].*" { return "a"; }
-    "[t].*" { return "n"; }
-    "![t].*" { return "z"; }
-    "[t].*" { return "s"; }
+string[] p = @"test"{
+    ":alnum:" { return this; }
 };
 
-// p == "hans"
+// p == ["t", "e", "s", "t"]
 ```
+```
+string[][] p = @"hello world!"{
+    ":alnum:" { return this; }
+    ":space:" { return "space"; }
+    ":punct:" { return "."; }
+    "[l]" { return "L"; }
+};
 
+// p == ["h", "e", "l", "l", "o", "w", "o", "r", "l", "d"], ["space"], ["."], ["L", "L", "L"]
+```
 
 
 ### write
