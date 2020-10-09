@@ -16,7 +16,7 @@ void print(string s) {
 if (true) {
     string path = "./src/main/test/input.txt";
     string fileContent = read(path);
-    //fileContent = fileContent + 5; // ToDo: Fix implicit conversion
+    fileContent = fileContent + 5;
     write(fileContent, "./src/main/test/out.txt");
 }
 
@@ -54,8 +54,6 @@ print("TEST!!!!!");
 
 
 string test = "test.txt";
-
-read("abc.txt");
 
 string input = read(test);
 
