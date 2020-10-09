@@ -64,7 +64,6 @@ public class ASTGetExpression extends ASTExpression {
         return false;
     }
 
-    // TODO it does not work
     @Override
     public Value getValue(LinkedList<CompilerError> errors) {
         Integer indexValue = ((IntegerValue)indexExpression.getValue(errors)).getValue();

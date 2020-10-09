@@ -20,7 +20,7 @@ if (true) {
     write(fileContent, "./src/main/test/out.txt");
 }
 
-int x = 5;
+int x = 0;
 x = x + 5;
 
 double y = 1.2;
