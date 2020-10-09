@@ -2,20 +2,14 @@ package de.fhdo.fsc.project.ast;
 
 import de.fhdo.fsc.project.Token;
 import de.fhdo.fsc.project.errors.CompilerError;
-import de.fhdo.fsc.project.errors.RuntimeError;
 import de.fhdo.fsc.project.errors.SemanticError;
 import de.fhdo.fsc.project.type.ArrayType;
-import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
 import de.fhdo.fsc.project.value.ArrayValue;
 import de.fhdo.fsc.project.value.IntegerValue;
-import de.fhdo.fsc.project.value.StringValue;
 import de.fhdo.fsc.project.value.Value;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
 
 public class ASTGetExpression extends ASTExpression {
@@ -78,7 +72,8 @@ public class ASTGetExpression extends ASTExpression {
                 errors.add(error);
             }
         }
-        return null;
+
+        return Value.create(getType(null, null));
     }
 
 
