@@ -76,9 +76,9 @@ public class ASTArrayExpression extends ASTExpression {
                 value.add(e.getValue(errors));
             }
 
-            return value;
+            return upgradeValue(value);
         } else {
-            return new ArrayValue(arrayType.getBasicType(), arrayType.dimensions);
+            return upgradeValue(new ArrayValue(arrayType.getBasicType(), arrayType.dimensions));
         }
     }
 

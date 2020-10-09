@@ -65,11 +65,20 @@ public class ArrayValue extends Value {
         return result;
     }
 
-    public static Value upgrade(ArrayValue v, ArrayType t) {
-        if (t.dimensions > ((ArrayType) v.type).dimensions) {
-            ((ArrayType) v.type).dimensions = t.dimensions;
-            v.value = new ArrayList<>(v.value);
-            return v;
+    public static Value upgrade(Value v, ArrayType t) {
+        if (v.type instanceof ArrayType) {
+            ArrayValue value = (ArrayValue) v;
+
+            if (t.dimensions > ((ArrayType) v.type).dimensions) {
+                ((ArrayType) v.type).dimensions = t.dimensions;
+                value.value = new ArrayList<>(value.value);
+                return v;
+            }
+        } else {
+            BasicValue value = (BasicValue) v;
+            List<Value> list = new ArrayList<>();
+            list.add(value);
+            return new ArrayValue(list, (BasicType) value.type, 1);
         }
 
         return v;

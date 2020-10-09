@@ -44,7 +44,7 @@ public abstract class Value {
         if (t instanceof BasicType) {
             return BasicValue.upgrade((BasicValue) this, (BasicType) t);
         } else if (t instanceof ArrayType) {
-            return ArrayValue.upgrade((ArrayValue) this, (ArrayType) t);
+            return ArrayValue.upgrade(this, (ArrayType) t);
         } else {
             return null;
         }

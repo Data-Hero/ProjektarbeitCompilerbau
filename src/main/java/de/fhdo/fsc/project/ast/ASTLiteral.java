@@ -73,6 +73,6 @@ public class ASTLiteral extends ASTExpression {
             System.out.println("Value is null");
         }
 
-        return value;
+        return upgradeValue(value);
     }
 }

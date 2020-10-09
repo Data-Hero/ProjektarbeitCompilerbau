@@ -196,7 +196,7 @@ ASTExpression LogicalExpression():{
     Token operator;
     ASTExpression left, right;
 } {
-    left = CompareExpression() [ operator = <BIN_GATE_OPERATOR> right = CompareExpression() { left = new ASTLogical(operator, left, right); } ] { return left; }
+    left = CompareExpression() ( operator = <BIN_GATE_OPERATOR> right = CompareExpression() { left = new ASTLogical(operator, left, right); } )* { return left; }
 }
 
 ASTExpression CompareExpression():{
@@ -210,14 +210,14 @@ ASTExpression AdditiveExpression():{
     Token operator;
     ASTExpression left, right;
 } {
-    left = MultiplicativeExpression() [operator = <SUM_OPERATOR> right = AdditiveExpression() { left = new ASTArithmeticOperation(operator, left, right); } ] { return left; }
+    left = MultiplicativeExpression() (operator = <SUM_OPERATOR> right = AdditiveExpression() { left = new ASTArithmeticOperation(operator, left, right); } )* { return left; }
 }
 
 ASTExpression MultiplicativeExpression():{
     Token operator;
     ASTExpression left, right;
 } {
-    left = UnaryExpression() [operator = <PROD_OPERATOR> right = MultiplicativeExpression() { left = new ASTArithmeticOperation(operator, left, right); } ] { return left; }
+    left = UnaryExpression() (operator = <PROD_OPERATOR> right = MultiplicativeExpression() { left = new ASTArithmeticOperation(operator, left, right); } )* { return left; }
 }
 
 ASTExpression UnaryExpression():{
