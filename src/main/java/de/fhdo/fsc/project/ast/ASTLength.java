@@ -20,6 +20,7 @@ public class ASTLength extends ASTExpression {
 
     @Override
     protected Type computeType(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
+        expression.semanticAnalysis(errors, symbolTable);
         return BasicType.intType;
     }
 
