@@ -7,6 +7,7 @@ import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
 import de.fhdo.fsc.project.value.*;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.LinkedList;
 
@@ -61,7 +62,7 @@ public class ASTLiteral extends ASTExpression {
                 value = new CharacterValue(literal.image.charAt(1));
                 break;
             case NewAwkParserConstants.STRING_LITERAL:
-                value = new StringValue(literal.image.substring(1, literal.image.length() - 1));
+                value = new StringValue(StringEscapeUtils.unescapeJava(literal.image.substring(1, literal.image.length() - 1)));
                 break;
         }
 
