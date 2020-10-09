@@ -6,7 +6,7 @@ import de.fhdo.fsc.project.errors.SemanticError;
 import java.util.HashMap;
 
 public class SymbolTable {
-    private HashMap<String, ASTDeclaration> entries = new HashMap<>(); // die eigentliche Tabelle identifier --> Ast-Knoten, in dem der identifier deklariert wurde
+    private HashMap<String, ASTDeclaration> entries = new HashMap<>();
     private SymbolTable parent;
 
     public SymbolTable(SymbolTable parent) {
