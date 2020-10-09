@@ -1,0 +1,14 @@
+string input = read();
+input = input + "!";
+write(input);
+
+bool b = readBool();
+write(b);
+
+int i = readInteger();
+i = i + 10;
+write(i);
+
+double j = readDouble();
+j = j * 2.5;
+write(j);

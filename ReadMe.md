@@ -198,19 +198,54 @@ Bei der angabe eines Dateipfades wird keine Konsolenausgabe geschrieben.
 
 
 ### read
-`string read(path)`
+`string read([path])`
 
 #### Beschreibung
-List eine Datei ein und gibt deren Inhalt zurück.
+List eine Datei [oder eine Zeile von der Kommandozeile, fall path leer ist] ein und gibt deren Inhalt zurück.
 
 #### Parameter
-- `path`: Pfad der Datei, in welche gelesen werden soll
+- `path`: Pfad der Datei, in welche gelesen werden soll, optional
 
 #### Rückgabewert
-
+- `string`: Inhalt der Datei oder Eingabe des Nutzers
 
 #### Beispiele
 - `string str = read("path/to/file");`
+- `string str = read();`
+
+### readBool
+`value get(ArrayType array, int index)`
+
+#### Beschreibung
+Liest Bool
+
+#### Rückgabewert
+- `bool`: Eingelesener Boolean
+
+### readInteger
+`value get(ArrayType array, int index)`
+
+#### Beschreibung
+Liest Integer
+
+#### Rückgabewert
+- `bool`: Eingelesener Integer
+
+
+### readDouble
+`value get(ArrayType array, int index)`
+
+#### Beschreibung
+List Double
+
+#### Rückgabewert
+- `double`: Eingelesener Double
+
+#### Beispiele
+- `string str = get(array,5);`
+
+### set
+`value set(ArrayType array, int index, value element)`
 
 
 ### get

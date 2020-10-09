@@ -15,18 +15,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class ASTRead extends ASTExpression {
     private ASTExpression expression;
+
     private String fileContent;
+    private Boolean line;
+
 
     public ASTRead(Token start, Token end, ASTExpression expression) {
         super(start, end);
         this.expression = expression;
     }
 
+    public ASTRead(Token start, Token end) {
+        super(start, end);
+        this.line = line;
+    }
+
+
+
     @Override
     protected Type computeType(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
+        if (expression == null) // read from Commandline
+            return BasicType.stringType;
         Type expressionType = expression.computeType(errors, symbolTable);
         if (expressionType != BasicType.stringType) {
             CompilerError error = new CompilerError("Read parameter has to be a string, current type is " + expressionType.toString(), getStart(), getEnd());
@@ -43,10 +56,17 @@ public class ASTRead extends ASTExpression {
 
     @Override
     public void run(LinkedList<CompilerError> errors) {
-        try {
-            fileContent = readFile(expression.getValue(errors).toStringValue().getValue());
-        } catch (CompilerError error) {
-            errors.add(error);
+        if (expression == null) {
+            // read from Commandline
+            fileContent = readFromCommandline();
+        }
+
+        else {
+            try {
+                fileContent = readFile(expression.getValue(errors).toStringValue().getValue());
+            } catch (CompilerError error) {
+                errors.add(error);
+            }
         }
     }
 
@@ -75,4 +95,15 @@ public class ASTRead extends ASTExpression {
 
         return builder.toString();
     }
+
+    private String readFromCommandline() {
+        Scanner scanner = new Scanner(System.in);
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(scanner.nextLine());
+
+        return builder.toString();
+    }
+
 }
