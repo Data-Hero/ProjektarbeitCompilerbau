@@ -41,7 +41,7 @@ public class ASTReadInteger extends ASTExpression {
         try {
             input = readFromCommandline();
         } catch (Exception e) {
-            errors.add(new RuntimeError("Input for readBoolean must be Boolean: true or false"));
+            errors.add(new RuntimeError("Input for readInteger must be Integer: 9 (for example)"));
         }
 
     }

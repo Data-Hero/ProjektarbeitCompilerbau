@@ -41,7 +41,8 @@ public class ASTReadDouble extends ASTExpression {
         try {
             input = readFromCommandline();
         } catch (Exception e) {
-            errors.add(new RuntimeError("Input for readBoolean must be Boolean: true or false"));
+            //errors.add(new RuntimeError("Input for readDouble must be Double: 4.5 (for example)"));
+            System.out.println();
         }
 
     }
