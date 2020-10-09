@@ -38,15 +38,21 @@ int b = plusOne(1);
 int c;
 c = 6;
 
-string p = @"test"{
-    "[t].*" { return "h"; }
-    "[t].*" { return "a"; }
-    "[t].*" { return "n"; }
-    "![t].*" { return "z"; }
-    "[t].*" { return "s"; }
+string[][] p = @"teshth"{
+    ":alnum:" { return this; }
+    "[a]" { return "a"; }
+    "[s]" { return "n"; }
+    "![t]" { return "z"; }
+    "[t]" { return "s"; }
 };
 
 write("SMARTSWITCH: " + p);
+
+string[] q = @"teshth"{
+    "[[:alnum:]]" { return this; }
+};
+
+write("SMARTSWITCH: " + q);
 
 print("TEST!!!!!");
 

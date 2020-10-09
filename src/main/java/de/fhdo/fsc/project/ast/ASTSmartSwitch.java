@@ -4,19 +4,24 @@ import de.fhdo.fsc.project.Token;
 import de.fhdo.fsc.project.errors.CompilerError;
 import de.fhdo.fsc.project.errors.RuntimeError;
 import de.fhdo.fsc.project.errors.SemanticError;
+import de.fhdo.fsc.project.type.ArrayType;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.SymbolTable;
 import de.fhdo.fsc.project.type.Type;
+import de.fhdo.fsc.project.value.ArrayValue;
 import de.fhdo.fsc.project.value.StringValue;
 import de.fhdo.fsc.project.value.Value;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ASTSmartSwitch extends ASTExpression {
     private ASTExpression expression;
     private LinkedHashMap<ASTExpression, ASTBlock> cases;
+    private LinkedHashMap<ASTExpression, ASTParameterDeclaration> thisParameters = new LinkedHashMap<>();
 
     public ASTSmartSwitch(Token start, Token end, ASTExpression expression, LinkedHashMap<ASTExpression, ASTBlock> cases) {
         super(start, end);
@@ -28,12 +33,15 @@ public class ASTSmartSwitch extends ASTExpression {
     protected Type computeType(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
         expression.semanticAnalysis(errors, symbolTable);
 
-        for (ASTBlock block : cases.values()) {
-            block.semanticAnalysis(errors, symbolTable);
-        }
+        for (Map.Entry<ASTExpression, ASTBlock> e : cases.entrySet()) {
+            SymbolTable blockSymbolTable = new SymbolTable(symbolTable);
+            ASTParameterDeclaration thisParameter = new ASTParameterDeclaration(new Token(0, "string"), new Token(0, "this"));
+            thisParameters.put(e.getKey(), thisParameter);
 
-        for (ASTExpression e : cases.keySet()) {
-            if (e.getType(errors, symbolTable) != BasicType.stringType) {
+            thisParameter.semanticAnalysis(errors, blockSymbolTable);
+            e.getValue().semanticAnalysis(errors, blockSymbolTable);
+
+            if (e.getKey().getType(errors, symbolTable) != BasicType.stringType) {
                 SemanticError error = new SemanticError("Smart switch expression must be type string", getStart(), getEnd());
                 errors.add(error);
             }
@@ -44,7 +52,7 @@ public class ASTSmartSwitch extends ASTExpression {
             errors.add(error);
         }
 
-        return BasicType.stringType;
+        return new ArrayType(BasicType.stringType, (cases.size() > 1) ? 2 : 1);
     }
 
     @Override
@@ -56,9 +64,17 @@ public class ASTSmartSwitch extends ASTExpression {
     @Override
     public Value getValue(LinkedList<CompilerError> errors) {
         StringValue value = (StringValue) this.expression.getValue(errors);
-        StringValue result = new StringValue("");
+        ArrayValue result;
+
+        if (cases.size() > 1) {
+            result = new ArrayValue(BasicType.stringType, 2);
+        } else {
+            result = new ArrayValue(BasicType.stringType, 1);
+        }
 
         for (Map.Entry<ASTExpression, ASTBlock> e : cases.entrySet()) {
+            ArrayValue temp = new ArrayValue(BasicType.stringType, 1);
+
             String regex = e.getKey().getValue(errors).toStringValue().value;
             boolean negate = false;
 
@@ -71,8 +87,20 @@ public class ASTSmartSwitch extends ASTExpression {
 
             regex = regex.replace("\\!", "!");
 
+            if (negate) {
+                regex = "(?!" + regex + ")";
+            }
+
+            regex = replacePosix(regex);
+            regex = replaceCustom(regex);
+
             try {
-                if (value.getValue().matches(regex) ^ negate) {
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(value.getValue());
+
+                while (matcher.find()) {
+                    thisParameters.get(e.getKey()).bind(new StringValue(matcher.group()));
+
                     ASTBlock block = e.getValue();
                     block.run(errors);
                     ASTExpression returnExpression = block.getReturn();
@@ -83,7 +111,7 @@ public class ASTSmartSwitch extends ASTExpression {
                         errors.add(error);
                     } else {
                         StringValue returnStringValue = (StringValue) returnValue;
-                        result.value += returnStringValue.value;
+                        temp.add(returnStringValue);
                     }
                 }
             } catch (Exception ex) {
@@ -91,8 +119,34 @@ public class ASTSmartSwitch extends ASTExpression {
                 errors.add(error);
             }
 
+            if (cases.size() > 1) {
+                result.add(temp);
+            } else {
+                result = temp;
+            }
         }
 
         return result;
+    }
+
+    private String replacePosix(String s) {
+        s = s.replace(":punct:", "\\p{Punct}");
+        s = s.replace(":graph:", "\\p{Graph}");
+        s = s.replace(":lower:", "\\p{Lower}");
+        s = s.replace(":alpha:", "\\p{Alpha}");
+        s = s.replace(":alnum:", "\\p{Alnum}");
+        s = s.replace(":print:", "\\p{Print}");
+        s = s.replace(":cntrl:", "[\\x00-\\x1F\\x7F]");
+        s = s.replace(":space:", "\\p{Space}");
+        s = s.replace(":blank:", "\\p{Blank}");
+        s = s.replace(":digit:", "\\p{XDigit}");
+
+        return s;
+    }
+
+    private String replaceCustom(String s) {
+        s = s.replace(":Integer:", "(\"+\" | \"-\")? [\"1\"-\"9\"] ([\"0\"-\"9\"])*");
+
+        return s;
     }
 }
