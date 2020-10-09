@@ -222,6 +222,9 @@ Liest Bool
 #### Rückgabewert
 - `bool`: Eingelesener Boolean
 
+#### Beispiele
+- `bool b = readBool();`
+
 ### readInteger
 `value readInteger()`
 
@@ -231,6 +234,8 @@ Liest Integer
 #### Rückgabewert
 - `bool`: Eingelesener Integer
 
+#### Beispiele
+- `int i = readInteger();`
 
 ### readDouble
 `value readDouble()`
@@ -242,7 +247,7 @@ List Double
 - `double`: Eingelesener Double
 
 #### Beispiele
-- `string str = get(array,5);`
+- `double j = readDouble();`
 
 ### set
 `value set(ArrayType array, int index, value element)`
