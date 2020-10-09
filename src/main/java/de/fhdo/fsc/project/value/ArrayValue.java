@@ -92,6 +92,13 @@ public class ArrayValue extends Value {
         return value.get(i);
     }
 
+    public ArrayValue search() {
+        List<Value> valuesKept = new ArrayList<>();
+
+        ArrayType at = (ArrayType) this.type;
+        return new ArrayValue(valuesKept, at.type, at.dimensions);
+    }
+
     public Value set(int i, Value v) throws RuntimeError {
         if (i >= value.size()) {
             throw new RuntimeError("Index " + i + " out of bound " + value.size());

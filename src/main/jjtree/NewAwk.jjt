@@ -84,6 +84,9 @@ TOKEN :
 |   < CHECKTYPE_FUNCTION: ( "isType" )>
 |   < LENGTH_FUNCTION: ( "length" )>
 |   < READ_FUNCTION: ( "read" )>
+|   < READBool_FUNCTION: ( "readBool" )>
+|   < READInt_FUNCTION: ( "readInteger" )>
+|   < READDouble_FUNCTION: ( "readDouble" )>
 |   < WRITE_FUNCTION: ( "write" )>
 |   < GET_FUMCTION: ( "get" )>
 |   < SET_FUMCTION: ( "set" )>
@@ -393,8 +396,12 @@ ASTExpression Read():{
     Token start, end;
     ASTExpression expression;
 } {
-    start = "read" "(" expression = Expression() end = ")"
-    { return new ASTRead(start, end, expression); }
+    (LOOKAHEAD(3)start = "read" "(" expression = Expression() end = ")"
+    { return new ASTRead(start, end, expression); } |
+    start = "read" "(" end = ")" { return new ASTRead(start, end); } |
+    start = "readBool" "(" end = ")" { return new ASTReadBoolean(start, end); } |
+     start = "readInteger" "(" end = ")" { return new ASTReadInteger(start, end); } |
+     start = "readDouble" "(" end = ")" { return new ASTReadDouble(start, end); } )
 }
 
 ASTWriteStatement WriteStatement():{
