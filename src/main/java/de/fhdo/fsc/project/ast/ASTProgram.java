@@ -7,7 +7,6 @@ import de.fhdo.fsc.project.type.SymbolTable;
 import java.util.LinkedList;
 
 public class ASTProgram extends ASTNode {
-    private LinkedList<ASTFunctionDeclaration> functions = new LinkedList<>();
     private ASTBlock block;
 
     public ASTProgram(ASTBlock block) {
@@ -24,18 +23,9 @@ public class ASTProgram extends ASTNode {
         this.block = block;
     }
 
-    public void addFunction(ASTFunctionDeclaration function) {
-        functions.add(function);
-    }
-
     @Override
     public void semanticAnalysis(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
         SymbolTable innerSymbolTable = new SymbolTable(symbolTable);
-
-        for (ASTFunctionDeclaration f : functions) {
-            f.semanticAnalysis(errors, innerSymbolTable);
-        }
-
         block.semanticAnalysis(errors, innerSymbolTable);
     }
 
