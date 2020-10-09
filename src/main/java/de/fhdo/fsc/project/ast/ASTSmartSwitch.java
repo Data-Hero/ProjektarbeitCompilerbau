@@ -136,10 +136,12 @@ public class ASTSmartSwitch extends ASTExpression {
         s = s.replace(":alpha:", "\\p{Alpha}");
         s = s.replace(":alnum:", "\\p{Alnum}");
         s = s.replace(":print:", "\\p{Print}");
-        s = s.replace(":cntrl:", "[\\x00-\\x1F\\x7F]");
+        s = s.replace(":cntrl:", "\\p{Cntrl}");
         s = s.replace(":space:", "\\p{Space}");
         s = s.replace(":blank:", "\\p{Blank}");
         s = s.replace(":digit:", "\\p{XDigit}");
+        s = s.replace(":ascii:", "\\p{ASCII}");
+        s = s.replace(":word:", "\\w");
 
         return s;
     }
