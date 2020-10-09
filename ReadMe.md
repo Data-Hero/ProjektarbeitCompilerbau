@@ -214,7 +214,7 @@ List eine Datei [oder eine Zeile von der Kommandozeile, fall path leer ist] ein 
 - `string str = read();`
 
 ### readBool
-`value get(ArrayType array, int index)`
+`value readBool()`
 
 #### Beschreibung
 Liest Bool
@@ -223,7 +223,7 @@ Liest Bool
 - `bool`: Eingelesener Boolean
 
 ### readInteger
-`value get(ArrayType array, int index)`
+`value readInteger()`
 
 #### Beschreibung
 Liest Integer
@@ -233,7 +233,7 @@ Liest Integer
 
 
 ### readDouble
-`value get(ArrayType array, int index)`
+`value readDouble()`
 
 #### Beschreibung
 List Double
