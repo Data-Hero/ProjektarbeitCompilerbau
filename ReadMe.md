@@ -119,8 +119,6 @@ Gibt die Länge des Wertes zurück.
 - char: 1
 - boolean: 1
 - string: Anzahl der Zeichen
-- type: Anzahl der Optionen
-- Custom Datatype: 1
 - Array: Anzahl der Elemente
 
 #### Beispiele
