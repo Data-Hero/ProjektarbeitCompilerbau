@@ -35,7 +35,6 @@ Note: test note
 
 ## Abweichungen von den Vorgaben
 
-<!--s-->
 - Aufruf `length(x)`;
   - int: 1
   - double: 1
@@ -44,13 +43,13 @@ Note: test note
   - string: Anzahl der Zeichen
   - Array: Anzahl der Elemente
   
-<!--s-->
+<!--v-->
 - Aufruf `isType(string, x);`
 - Aufruf `convert(string, x);`
 - Operator `@{ ... }` (Smart Switch)
   - `@"hello world" { ... }`
   
-<!--s-->
+<!--v-->
 - Array
   - Zugriff
     - Element lesen: `get(arr, i)`
@@ -59,13 +58,13 @@ Note: test note
   - Initialisierung: `string[][] users = [["Schmidt", "Horst"], ["Meier", "Hans"]];`
   
   
-<!--s-->  
+<!--v-->  
 - Programmaufruf
   - Erste Parameter: Quellcodedatei
   - Zweite Parameter bis n. Parameter: Können in der Quellcodedatei aus dem Array args ausgelesen werden
   
 
-<!--s-->  
+<!--v-->  
 - System.print() und System.next()
   - Umsetzung durch `read([path])` und `write(str [, path])` Funktionen
   
@@ -82,7 +81,7 @@ Note: test note
   - Gibt den angegebenen String über die Konsole aus
   - Ist der opionale zweite parameter gegeben, so wird der String in die angegebene Datei geschrieben
 
-<!--s-->      
+<!--v-->      
 - Aus Zeitmangel nicht umgesetzt
   - Feldauswahl per Boolean
   - Stattdessen: Array per foreach-Schleife durchgehen und Werte abspeichern
@@ -105,7 +104,6 @@ write(returnValues); // [2, 3, 4, 5]
 
 <!--s-->      
 ## Schwierigkeiten
-<!--v-->  
 
 - Linksrekursion bei Operator @{ } (Smart Switch)
   - ***Lösung***: @ nach vorne ziehen
