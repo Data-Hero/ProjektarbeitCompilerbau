@@ -50,7 +50,7 @@
                         </goals>
                         <configuration>
                             <!--<debugLookAhead>true</debugLookAhead>-->
-                            <debugParser>true</debugParser>
+                            <!--<debugParser>true</debugParser>-->
                             <!--<debugTokenManager>true</debugTokenManager>-->
                         </configuration>
                     </execution>

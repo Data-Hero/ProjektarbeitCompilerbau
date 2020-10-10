@@ -20,6 +20,7 @@ public class ASTConvert extends ASTExpression {
 
     @Override
     protected Type computeType(LinkedList<CompilerError> errors, SymbolTable symbolTable) {
+        expression.semanticAnalysis(errors, symbolTable);
         return Type.resolve(type.image);
     }
 

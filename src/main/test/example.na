@@ -1,0 +1,54 @@
+string sourcefile = get(args, 0);
+write("Quelldatei:\n" + sourcefile + "\n");
+
+string resultfile = get(args, 1);
+write("Zieldatei:\n" + resultfile + "\n");
+
+string source = read(sourcefile);
+write("Inhalt der Quelldatei:\n" + source);
+
+bool noExit = true;
+while (noExit) {
+    string[][] arr = @source {
+        "[A-Za-z][A-Za-z]+" { return this; }
+        "[0-9]+" { return this; }
+        "[wm]" { return this; }
+    };
+
+    string[] names = get(arr, 0);
+    string[] ages = get(arr, 1);
+    string[] genders = get(arr, 2);
+
+    write("Namen: " + convert(string, names));
+    write("Alter: " + convert(string, ages));
+    write("Geschlecht: " + convert(string, genders) + "\n");
+
+    int i = 0;
+    while (i < length(names)) {
+        string name = get(names, i);
+        string age = get(ages, i);
+        string gender = get(genders, i);
+
+        string result = "Index: " + i + ", Name: " + name + ", Geschlecht: " + gender + ", Alter: " + age;
+
+        write(result);
+        i = i + 1;
+    }
+
+    write("Neuer Eintrag (x zum beenden)\nName: ");
+    string newName = read();
+
+    if (length(newName) == 1) {
+        noExit = false;
+    } else {
+        write("Alter: ");
+        string newAge = read();
+
+        write("Geschlecht: ");
+        string newGender = read();
+
+        source = source + newName + ";" + newAge + ";" + newGender;
+    }
+}
+
+write(source, resultfile);
