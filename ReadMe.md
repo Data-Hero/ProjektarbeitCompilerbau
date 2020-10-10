@@ -334,3 +334,11 @@ int plusOne(int x) {
 .
 int x = plusOne(1); // == 2
 ``
+
+### Präsentation
+```
+cd presentation
+npm install
+sudo npm install -g reveal-md
+reveal-md slides.md
+```
