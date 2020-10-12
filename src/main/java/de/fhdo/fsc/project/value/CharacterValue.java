@@ -3,6 +3,8 @@ package de.fhdo.fsc.project.value;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.Type;
 
+import java.util.Objects;
+
 public class CharacterValue extends BasicValue {
     Character value;
 
@@ -62,5 +64,18 @@ public class CharacterValue extends BasicValue {
     @Override
     public String toString() {
         return "'" + value.toString() + "'";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CharacterValue that = (CharacterValue) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

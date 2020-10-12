@@ -3,6 +3,8 @@ package de.fhdo.fsc.project.value;
 import de.fhdo.fsc.project.type.BasicType;
 import de.fhdo.fsc.project.type.Type;
 
+import java.util.Objects;
+
 public class IntegerValue extends BasicValue {
     Integer value;
 
@@ -63,5 +65,16 @@ public class IntegerValue extends BasicValue {
         return value.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegerValue that = (IntegerValue) o;
+        return Objects.equals(value, that.value);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }
