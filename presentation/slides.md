@@ -87,7 +87,7 @@ Note: test note
   - Stattdessen: Array per foreach-Schleife durchgehen und Werte abspeichern
 
 <!--v-->  
-
+### Beispiel
 ```
 int[] values = [1, 2, 3, 4, 5, 6];
 int[] returnValues;
@@ -120,7 +120,7 @@ write(returnValues); // [2, 3, 4, 5]
   - ***Lösung***: Erstellen der abstrakten Klasse ASTDeclaration, von welcher die Klassen ASTFunctionDeclaration und ASTVariableDecleration erben
 <!--v-->  
 - Setzen der Parameter bei Funktionsaufruf
-  - ***Lösung***: Einführung der Klasse ASTParameterDecleration, welche genutzt werden kann um Variablen in einem (Funktions-)Block reinzugeben. Der Variablenwert wird zur laufzeit an den Parameter "gebunden".
+  - ***Lösung***: Einführung der Klasse ASTParameterDecleration, welche genutzt werden kann um Variablen in einem (Funktions-)Block reinzugeben. Der Variablenwert wird zur Laufzeit an den Parameter "gebunden".
 <!--v-->  
 
 - Wenig Zeit zum Testen, daher weiterhin kleinere Fehler
