@@ -68,6 +68,24 @@ public class BooleanValue extends BasicValue {
                     result = new BooleanValue(((DoubleValue) leftValue).value != ((DoubleValue) rightValue).value);
                     break;
             }
+        } else if (leftValue.type == BasicType.stringType) {
+            switch (operation) {
+                case "==":
+                    result = new BooleanValue(((StringValue) leftValue).value.equals(((StringValue) rightValue).value));
+                    break;
+                case "!=":
+                    result = new BooleanValue(!((StringValue) leftValue).value.equals(((StringValue) rightValue).value));
+                    break;
+            }
+        } else if (leftValue.type.isArray()) {
+            switch (operation) {
+                case "==":
+                    result = new BooleanValue(((ArrayValue) leftValue).value.equals(((ArrayValue) rightValue).value));
+                    break;
+                case "!=":
+                    result = new BooleanValue(!((ArrayValue) leftValue).value.equals(((ArrayValue) rightValue).value));
+                    break;
+            }
         } else {
             switch (operation) {
                 case "&&":
