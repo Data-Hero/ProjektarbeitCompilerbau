@@ -97,6 +97,6 @@
     }
   },
   "dependencies": {
-    "reveal-md": "^4.1.6"
+    "reveal-md": "^5.4.0"
   }
 }
